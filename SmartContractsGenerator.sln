@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28803.452
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartContractsGenerator", "SmartContractsGenerator\SmartContractsGenerator.csproj", "{60DF196D-AE4E-4D5E-B781-D5E66DEE9738}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartContractsGenerator", "SmartContractsGenerator\SmartContractsGenerator.csproj", "{60DF196D-AE4E-4D5E-B781-D5E66DEE9738}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartContractsGeneratorTests", "SmartContractsGeneratorTests\SmartContractsGeneratorTests.csproj", "{03AC48C1-1835-41C3-9478-0FACD0558CD8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{60DF196D-AE4E-4D5E-B781-D5E66DEE9738}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{60DF196D-AE4E-4D5E-B781-D5E66DEE9738}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{60DF196D-AE4E-4D5E-B781-D5E66DEE9738}.Release|Any CPU.Build.0 = Release|Any CPU
+		{03AC48C1-1835-41C3-9478-0FACD0558CD8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{03AC48C1-1835-41C3-9478-0FACD0558CD8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{03AC48C1-1835-41C3-9478-0FACD0558CD8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{03AC48C1-1835-41C3-9478-0FACD0558CD8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
