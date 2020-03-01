@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SmartContractsGenerator.Model;
+using SmartContractsGenerator.Model.AbstractPatterns;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -70,11 +71,16 @@ namespace SmartContractsGenerator.Model.Tests
                 Type = type3
             };
 
+            var pl = new ParametersList()
+            {
+                Parameters = new List<Parameter>() { p1, p2, p3 }
+            };
+
             var cModifier = "public";
             var c = new Constructor()
             {
                 Modifier = cModifier,
-                Parameters = new List<Parameter>() { p1, p2, p3 }
+                Parameters = pl
             };
 
             string contractName = "Test";
@@ -99,11 +105,16 @@ namespace SmartContractsGenerator.Model.Tests
                 Type = type1
             };
 
+            var pl = new ParametersList()
+            {
+                Parameters = new List<Parameter>() { p1 }
+            };
+
             var cModifier = "public";
             var c = new Constructor()
             {
                 Modifier = cModifier,
-                Parameters = new List<Parameter>() { p1 }
+                Parameters = pl
             };
 
             string contractName = "Test";

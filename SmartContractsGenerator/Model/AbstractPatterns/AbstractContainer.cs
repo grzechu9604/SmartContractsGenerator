@@ -18,6 +18,6 @@ namespace SmartContractsGenerator.Model.AbstractPatterns
 
         protected abstract string GetHeader();
         protected abstract string GetContent();
-        protected abstract string GetFooter();
+        protected virtual string GetFooter() => "}";
     }
 }

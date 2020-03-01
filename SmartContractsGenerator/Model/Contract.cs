@@ -34,7 +34,5 @@ namespace SmartContractsGenerator.Model
 
             return codeBuilder.ToString();
         }
-
-        protected override string GetFooter() => "}";
     }
 }

@@ -10,19 +10,13 @@ namespace SmartContractsGenerator.Model
     public class Constructor : AbstractContainer
     {
         public string Modifier { get; set; }
-        public List<Parameter> Parameters { get; set; }
+        public ParametersList Parameters { get; set; }
 
         protected override string GetContent()
         {
             return string.Empty;
         }
 
-        protected override string GetFooter() => "}";
-
-        protected override string GetHeader()
-        {
-            string parametersCode = Parameters != null ? string.Join(", ", Parameters.Select(p => p.GenerateCode())) : string.Empty;
-            return $"constructor({parametersCode}) {Modifier} {{\n";
-        }
+        protected override string GetHeader() => $"constructor({Parameters?.GenerateCode()}) {Modifier} {{\n";
     }
 }

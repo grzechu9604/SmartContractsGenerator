@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SmartContractsGenerator.Model;
+using SmartContractsGenerator.Model.AbstractPatterns;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -31,11 +32,16 @@ namespace SmartContractsGenerator.Model.Tests
                 Type = type1
             };
 
+            var pl = new ParametersList()
+            {
+                Parameters = new List<Parameter>() { p1 }
+            };
+
             var cModifier = "public";
             var c = new Constructor()
             {
                 Modifier = cModifier,
-                Parameters = new List<Parameter>() { p1 }
+                Parameters = pl
             };
 
             Assert.AreEqual($"constructor({type1} {name1}) {cModifier} {{\n}}", c.GenerateCode());
@@ -66,12 +72,17 @@ namespace SmartContractsGenerator.Model.Tests
                 Name = name3,
                 Type = type3
             };
-            
+
+            var pl = new ParametersList()
+            {
+                Parameters = new List<Parameter>() { p1, p2, p3 }
+            };
+
             var cModifier = "public";
             var c = new Constructor()
             {
                 Modifier = cModifier,
-                Parameters = new List<Parameter>() { p1, p2, p3 }
+                Parameters = pl
             };
 
             Assert.AreEqual($"constructor({type1} {name1}, {type2} {name2}, {type3} {name3}) {cModifier} {{\n}}", c.GenerateCode());
