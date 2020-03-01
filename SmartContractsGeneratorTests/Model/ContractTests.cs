@@ -18,7 +18,7 @@ namespace SmartContractsGenerator.Model.Tests
                 Name = "Test"
             };
 
-            string correctContract = $"contract a {contractName} {{\n}}";
+            string correctContract = $"contract {contractName} {{\n}}";
             Assert.AreEqual(correctContract, c.GenerateCode());
         }
     }
