@@ -17,10 +17,7 @@ namespace SmartContractsGenerator.Model
             return string.Empty;
         }
 
-        protected override string GetFooter()
-        {
-            return "}";
-        }
+        protected override string GetFooter() => "}";
 
         protected override string GetHeader()
         {
