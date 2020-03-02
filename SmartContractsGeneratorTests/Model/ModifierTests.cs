@@ -23,7 +23,6 @@ namespace SmartContractsGenerator.Model.Tests
         }
 
         [TestMethod()]
-
         public void EmptyModifierWithOneParameterTest()
         {
             var name1 = "Name1";
@@ -50,7 +49,6 @@ namespace SmartContractsGenerator.Model.Tests
         }
 
         [TestMethod()]
-
         public void EmptyModifierWithParametersTest()
         {
             var name1 = "Name1";
