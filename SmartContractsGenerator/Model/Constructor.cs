@@ -12,9 +12,11 @@ namespace SmartContractsGenerator.Model
         public string Modifier { get; set; }
         public ParametersList Parameters { get; set; }
 
+        public InstructionsList Instructions { get; set; }
+
         protected override string GetContent()
         {
-            return string.Empty;
+            return Instructions?.GenerateCode();
         }
 
         protected override string GetHeader() => $"constructor({Parameters?.GenerateCode()}) {Modifier} {{\n";
