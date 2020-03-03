@@ -9,8 +9,14 @@ namespace SmartContractsGenerator.Model.Tests
     [TestClass()]
     public class ParameterTests
     {
-        [TestMethod()]
-        public void GenerateCodeTest()
+        [TestMethod]
+        [DynamicData(nameof(GetDataForTests), DynamicDataSourceType.Method)]
+        public void GenerateCodeTest(Parameter p, string expected, string message)
+        {
+            Assert.AreEqual(expected, p.GenerateCode(), message);
+        }
+
+        static IEnumerable<object[]> GetDataForTests()
         {
             var name = "_testName";
             var type = "testType";
@@ -21,7 +27,10 @@ namespace SmartContractsGenerator.Model.Tests
                 Type = type
             };
 
-            Assert.AreEqual($"{type} {name}", p.GenerateCode());
+            return new[]
+            {
+                new object[] {p, $"{type} {name}", "Simple parameter test failed" }
+            };
         }
     }
 }

@@ -2,6 +2,7 @@
 using SmartContractsGenerator.Model.AbstractPatterns;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace SmartContractsGenerator.Model.AbstractPatterns.Tests
@@ -9,50 +10,21 @@ namespace SmartContractsGenerator.Model.AbstractPatterns.Tests
     [TestClass()]
     public class ParametersListTests
     {
-        [TestMethod()]
-        public void GenerateCodeNullListTest()
+        [TestMethod]
+        [DynamicData(nameof(GetDataForTests), DynamicDataSourceType.Method)]
+        public void GenerateCodeNullListTest(ParametersList parametersList, string expected)
         {
-            var pl = new ParametersList();
-            Assert.AreEqual(string.Empty, pl.GenerateCode());
+            Assert.AreEqual(expected, parametersList.GenerateCode());
         }
 
-        [TestMethod()]
-        public void GenerateCodeEmptyListTest()
+        static IEnumerable<object[]> GetDataForTests()
         {
-            var pl = new ParametersList()
+            var name1 = "Name";
+            var type1 = "Type";
+            var p1 = new Parameter()
             {
-                Parameters = new List<Parameter>()
-            };
-            Assert.AreEqual(string.Empty, pl.GenerateCode());
-        }
-
-        [TestMethod()]
-        public void GenerateCodeOneElementListTest()
-        {
-            var name = "Name";
-            var type = "Type";
-            var p = new Parameter()
-            {
-                Name = name,
-                Type = type
-            };
-
-            var pl = new ParametersList()
-            {
-                Parameters = new List<Parameter>() { p }
-            };
-            Assert.AreEqual($"{type} {name}", pl.GenerateCode());
-        }
-
-        [TestMethod()]
-        public void GenerateCodeMultiElementListTest()
-        {
-            var name = "Name";
-            var type = "Type";
-            var p = new Parameter()
-            {
-                Name = name,
-                Type = type
+                Name = name1,
+                Type = type1
             };
 
             var name2 = "Name2";
@@ -71,11 +43,30 @@ namespace SmartContractsGenerator.Model.AbstractPatterns.Tests
                 Type = type3
             };
 
-            var pl = new ParametersList()
+            var parameters = new List<Parameter>() { p1, p2, p3 };
+            var expectedAnswers = new Dictionary<int, string>()
             {
-                Parameters = new List<Parameter>() { p, p2, p3 }
+                { 0, string.Empty },
+                { 1, $"{type1} {name1}" },
+                { 2, $"{type1} {name1}, {type2} {name2}" },
+                { 3, $"{type1} {name1}, {type2} {name2}, {type3} {name3}" }
             };
-            Assert.AreEqual($"{type} {name}, {type2} {name2}, {type3} {name3}", pl.GenerateCode());
+
+            List<object[]> data = new List<object[]>()
+            {
+                new object[] { new ParametersList(), string.Empty }
+            };
+
+            foreach (var entry in expectedAnswers)
+            {
+                var pl = new ParametersList()
+                {
+                    Parameters = parameters.Take(entry.Key).ToList()
+                };
+                data.Add(new object[] { pl, entry.Value });
+            }
+
+            return data;
         }
     }
 }
