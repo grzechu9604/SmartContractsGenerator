@@ -5,7 +5,7 @@ namespace SmartContractsGenerator.Model.AbstractPatterns
 {
     public abstract class AbstractContainer : ICodeGenerable
     {
-        public string GenerateCode()
+        public virtual string GenerateCode()
         {
             StringBuilder sb = new StringBuilder();
 
