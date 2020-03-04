@@ -1,5 +1,6 @@
 ﻿using Autofac.Extras.Moq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using SmartContractsGeneratorTests.Model.Helpers;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -8,12 +9,12 @@ namespace SmartContractsGenerator.Model.AbstractPatterns.Tests
     [TestClass()]
     public class ParametersListTests
     {
-        private static List<AutoMock> _mocks = new List<AutoMock>();
+        private static readonly ParametersMocksCreator mockHelper = new ParametersMocksCreator();
 
         [TestCleanup]
         public void Cleanup()
         {
-            _mocks.ForEach(m => m.Dispose());
+            mockHelper.DisposeMocks();
         }
 
         [TestMethod]
@@ -36,7 +37,7 @@ namespace SmartContractsGenerator.Model.AbstractPatterns.Tests
             for (int i = 1; i < bound; i++)
             {
                 var name = $"Type{i} Name{i}";
-                var p = PrepareParameterMock(name);
+                var p = mockHelper.PrepareParameterMock(name);
                 parameters.Add(p);
 
                 for (int j = i; j < bound; j++)
@@ -67,20 +68,6 @@ namespace SmartContractsGenerator.Model.AbstractPatterns.Tests
             }
 
             return data;
-        }
-
-        static Parameter PrepareParameterMock(string expected)
-        {
-            var mock = AutoMock.GetLoose();
-            _mocks.Add(mock);
-
-            mock.Mock<Parameter>()
-                .Setup(x => x.GenerateCode())
-                .Returns(expected);
-
-            var preparedMock = mock.Create<Parameter>();
-
-            return preparedMock;
         }
     }
 }
