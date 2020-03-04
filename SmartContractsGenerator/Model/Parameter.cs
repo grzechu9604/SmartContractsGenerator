@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SmartContractsGenerator.Model
 {
-    public class Parameter : ICodeGenerable
+    public class Parameter : ICodeGenerator
     {
         public string Type { get; set; }
         public string Name { get; set; }

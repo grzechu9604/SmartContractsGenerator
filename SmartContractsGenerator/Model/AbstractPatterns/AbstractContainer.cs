@@ -3,7 +3,7 @@ using System.Text;
 
 namespace SmartContractsGenerator.Model.AbstractPatterns
 {
-    public abstract class AbstractContainer : ICodeGenerable
+    public abstract class AbstractContainer : ICodeGenerator
     {
         public virtual string GenerateCode()
         {

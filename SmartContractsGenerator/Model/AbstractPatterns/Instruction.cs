@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SmartContractsGenerator.Model.AbstractPatterns
 {
-    public abstract class Instruction : ICodeGenerable
+    public abstract class Instruction : ICodeGenerator
     {
         public abstract string GenerateCode();
     }

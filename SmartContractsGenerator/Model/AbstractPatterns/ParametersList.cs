@@ -6,7 +6,7 @@ using System.Text;
 
 namespace SmartContractsGenerator.Model.AbstractPatterns
 {
-    public class ParametersList : ICodeGenerable
+    public class ParametersList : ICodeGenerator
     {
         public List<Parameter> Parameters { get; set; }
 
