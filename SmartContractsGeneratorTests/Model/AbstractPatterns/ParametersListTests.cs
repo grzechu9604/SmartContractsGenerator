@@ -14,7 +14,7 @@ namespace SmartContractsGenerator.Model.AbstractPatterns.Tests
         [TestCleanup]
         public void Cleanup()
         {
-            mockHelper.DisposeMocks();
+            mockHelper.Dispose();
         }
 
         [TestMethod]
@@ -37,7 +37,7 @@ namespace SmartContractsGenerator.Model.AbstractPatterns.Tests
             for (int i = 1; i < bound; i++)
             {
                 var name = $"Type{i} Name{i}";
-                var p = mockHelper.PrepareParameterMock(name);
+                var p = mockHelper.PrepareMock(name);
                 parameters.Add(p);
 
                 for (int j = i; j < bound; j++)

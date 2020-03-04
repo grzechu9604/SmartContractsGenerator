@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SmartContractsGenerator.Model;
 using SmartContractsGenerator.Model.AbstractPatterns;
+using SmartContractsGeneratorTests.Model.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -10,82 +11,50 @@ namespace SmartContractsGenerator.Model.Tests
     [TestClass()]
     public class ConstructorTests
     {
-        [TestMethod()]
-        public void EmptyConstructorTest()
-        {
-            var cModifier = "public";
-            var c = new Constructor()
-            {
-                Modifier = cModifier
-            };
+        private static readonly ParametersListMockCreator mockHelper = new ParametersListMockCreator();
 
-            Assert.AreEqual($"constructor() {cModifier} {{\n}}", c.GenerateCode());
+        [TestCleanup]
+        public void Cleanup()
+        {
+            mockHelper.Dispose();
         }
 
-        public void EmptyConstructorWithOneParameterTest()
+        [TestMethod]
+        [DynamicData(nameof(GetDataForTests), DynamicDataSourceType.Method)]
+        public void ConstructorTest(Constructor c, string expected)
         {
-            var name1 = "Name1";
-            var type1 = "Type1";
-            var p1 = new Parameter()
-            {
-                Name = name1,
-                Type = type1
-            };
-
-            var pl = new ParametersList()
-            {
-                Parameters = new List<Parameter>() { p1 }
-            };
-
-            var cModifier = "public";
-            var c = new Constructor()
-            {
-                Modifier = cModifier,
-                Parameters = pl
-            };
-
-            Assert.AreEqual($"constructor({type1} {name1}) {cModifier} {{\n}}", c.GenerateCode());
+            Assert.AreEqual(expected, c.GenerateCode());
         }
 
-        public void EmptyConstructorWithParametersTest()
+        static IEnumerable<object[]> GetDataForTests()
         {
-            var name1 = "Name1";
-            var type1 = "Type1";
-            var p1 = new Parameter()
-            {
-                Name = name1,
-                Type = type1
-            };
+            List<object[]> data = new List<object[]>();
 
-            var name2 = "Name2";
-            var type2 = "Type2";
-            var p2 = new Parameter()
-            {
-                Name = name2,
-                Type = type2
-            };
+            string publicModifier = "public";
+            string privateModifier = "private";
+            var oneElementParametersListCode = "Type1 Name1";
+            var twoElementParametersListCode = "Type1 Name1, Type2 Name2";
+            var threeElementParametersListCode = "Type1 Name1, Type2 Name2, Type3 Name3";
 
-            var name3 = "Name3";
-            var type3 = "Type3";
-            var p3 = new Parameter()
-            {
-                Name = name3,
-                Type = type3
-            };
 
-            var pl = new ParametersList()
-            {
-                Parameters = new List<Parameter>() { p1, p2, p3 }
-            };
+            data.Add(GenerateRow(null, publicModifier, $"constructor() {publicModifier} {{\n}}"));
+            data.Add(GenerateRow(string.Empty, privateModifier, $"constructor() {privateModifier} {{\n}}"));
+            data.Add(GenerateRow(oneElementParametersListCode, publicModifier, $"constructor({oneElementParametersListCode}) {publicModifier} {{\n}}"));
+            data.Add(GenerateRow(twoElementParametersListCode, publicModifier, $"constructor({twoElementParametersListCode}) {publicModifier} {{\n}}"));
+            data.Add(GenerateRow(threeElementParametersListCode, publicModifier, $"constructor({threeElementParametersListCode}) {publicModifier} {{\n}}"));
 
-            var cModifier = "public";
+            return data;
+        }
+
+        static object[] GenerateRow(string parametersListCode, string modifier, string expected)
+        {
+            var parametersListMock = parametersListCode != null ? mockHelper.PrepareMock(parametersListCode) : null;
             var c = new Constructor()
             {
-                Modifier = cModifier,
-                Parameters = pl
+                Modifier = modifier,
+                Parameters = parametersListMock
             };
-
-            Assert.AreEqual($"constructor({type1} {name1}, {type2} {name2}, {type3} {name3}) {cModifier} {{\n}}", c.GenerateCode());
+            return new object[] { c, expected };
         }
     }
 }

@@ -10,7 +10,7 @@ namespace SmartContractsGenerator.Model.AbstractPatterns
     {
         public List<Parameter> Parameters { get; set; }
 
-        public string GenerateCode()
+        public virtual string GenerateCode()
         {
             return Parameters != null ? string.Join(", ", Parameters.Select(p => p.GenerateCode())) : string.Empty;
         }
