@@ -1,56 +1,56 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SmartContractsGenerator.Model.AbstractPatterns;
-using System;
+﻿using Autofac.Extras.Moq;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace SmartContractsGenerator.Model.AbstractPatterns.Tests
 {
     [TestClass()]
     public class ParametersListTests
     {
+        private static List<AutoMock> _mocks = new List<AutoMock>();
+
+        [TestCleanup]
+        public void Cleanup()
+        {
+            _mocks.ForEach(m => m.Dispose());
+        }
+
         [TestMethod]
         [DynamicData(nameof(GetDataForTests), DynamicDataSourceType.Method)]
-        public void GenerateCodeNullListTest(ParametersList parametersList, string expected)
+        public void GenerateCodetTest(ParametersList parametersList, string expected)
         {
             Assert.AreEqual(expected, parametersList.GenerateCode());
         }
 
         static IEnumerable<object[]> GetDataForTests()
         {
-            var name1 = "Name";
-            var type1 = "Type";
-            var p1 = new Parameter()
-            {
-                Name = name1,
-                Type = type1
-            };
+            var parameters = new List<Parameter>();
 
-            var name2 = "Name2";
-            var type2 = "Type2";
-            var p2 = new Parameter()
-            {
-                Name = name2,
-                Type = type2
-            };
-
-            var name3 = "Name3";
-            var type3 = "Type3";
-            var p3 = new Parameter()
-            {
-                Name = name3,
-                Type = type3
-            };
-
-            var parameters = new List<Parameter>() { p1, p2, p3 };
             var expectedAnswers = new Dictionary<int, string>()
             {
-                { 0, string.Empty },
-                { 1, $"{type1} {name1}" },
-                { 2, $"{type1} {name1}, {type2} {name2}" },
-                { 3, $"{type1} {name1}, {type2} {name2}, {type3} {name3}" }
+                { 0, string.Empty }
             };
+
+            int bound = 4;
+            for (int i = 1; i < bound; i++)
+            {
+                var name = $"Type{i} Name{i}";
+                var p = PrepareParameterMock(name);
+                parameters.Add(p);
+
+                for (int j = i; j < bound; j++)
+                {
+                    if (expectedAnswers.ContainsKey(j))
+                    {
+                        expectedAnswers[j] += $", {name}";
+                    }
+                    else
+                    {
+                        expectedAnswers.Add(j, name);
+                    }
+                }
+            }
 
             List<object[]> data = new List<object[]>()
             {
@@ -67,6 +67,20 @@ namespace SmartContractsGenerator.Model.AbstractPatterns.Tests
             }
 
             return data;
+        }
+
+        static Parameter PrepareParameterMock(string expected)
+        {
+            var mock = AutoMock.GetLoose();
+            _mocks.Add(mock);
+
+            mock.Mock<Parameter>()
+                .Setup(x => x.GenerateCode())
+                .Returns(expected);
+
+            var preparedMock = mock.Create<Parameter>();
+
+            return preparedMock;
         }
     }
 }

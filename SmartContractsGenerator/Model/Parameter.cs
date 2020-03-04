@@ -10,7 +10,7 @@ namespace SmartContractsGenerator.Model
         public string Type { get; set; }
         public string Name { get; set; }
 
-        public string GenerateCode()
+        public virtual string GenerateCode()
         {
             return $"{Type} {Name}";
         }
