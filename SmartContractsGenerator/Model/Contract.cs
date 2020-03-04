@@ -19,7 +19,7 @@ namespace SmartContractsGenerator.Model
 
             if (Constructor != null)
             {
-                codeBuilder.AppendFormat("{0}\n", Constructor.GenerateCode());
+                codeBuilder.Append($"{Constructor.GenerateCode()}\n");
             }
 
             if (Declarations != null && Declarations.Any() )
@@ -29,7 +29,7 @@ namespace SmartContractsGenerator.Model
                     codeBuilder.Append("\n");
                 }
 
-                Declarations.ForEach(declaration => codeBuilder.AppendFormat("{0}\n\n", declaration.GenerateCode()));
+                Declarations.ForEach(declaration => codeBuilder.Append($"{declaration.GenerateCode()}\n\n"));
             }
 
             return codeBuilder.ToString();

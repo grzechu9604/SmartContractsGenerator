@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SmartContractsGeneratorTests.Model.Helpers
 {
-    class ParametersListMockCreator
+    class ParametersListMockCreator : IDisposable
     {
         private readonly MocksHolder mocksHolder = new MocksHolder();
 
