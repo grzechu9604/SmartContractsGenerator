@@ -13,6 +13,7 @@ namespace SmartContractsGenerator.Model.Tests
         [DynamicData(nameof(GetDataForTests), DynamicDataSourceType.Method)]
         public void GenerateCodeTest(Parameter p, string expected, string message)
         {
+            System.Diagnostics.Contracts.Contract.Requires(p != null);
             Assert.AreEqual(expected, p.GenerateCode(), message);
         }
 

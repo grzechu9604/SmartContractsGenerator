@@ -1,11 +1,11 @@
-﻿using SmartContractsGenerator.Model.AbstractPatterns;
+﻿using SmartContractsGenerator.Model;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace SmartContractsGeneratorTests.Model.Helpers
 {
-    class ParametersListMockCreator : IDisposable
+    class ConditionCodeMockCreator :IDisposable
     {
         private readonly MocksHolder mocksHolder = new MocksHolder();
 
@@ -14,15 +14,15 @@ namespace SmartContractsGeneratorTests.Model.Helpers
             mocksHolder.Dispose();
         }
 
-        public ParametersList PrepareMock(string expected)
+        public Condition PrepareMock(string expectedCode)
         {
             var mock = mocksHolder.GetMock();
 
-            mock.Mock<ParametersList>()
+            mock.Mock<Condition>()
                 .Setup(x => x.GenerateCode())
-                .Returns(expected);
+                .Returns(expectedCode);
 
-            var preparedMock = mock.Create<ParametersList>();
+            var preparedMock = mock.Create<Condition>();
 
             return preparedMock;
         }

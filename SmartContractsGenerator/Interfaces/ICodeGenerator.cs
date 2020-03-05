@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SmartContractsGenerator.Interfaces
 {
-    interface ICodeGenerator
+    public interface ICodeGenerator
     {
         string GenerateCode();
     }

@@ -23,6 +23,7 @@ namespace SmartContractsGenerator.Model.Tests
         [DynamicData(nameof(GetDataForTests), DynamicDataSourceType.Method)]
         public void ConstructorTest(Contract c, string expected)
         {
+            System.Diagnostics.Contracts.Contract.Requires(c != null);
             Assert.AreEqual(expected, c.GenerateCode());
         }
 
