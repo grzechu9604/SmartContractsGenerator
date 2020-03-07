@@ -9,7 +9,7 @@ namespace SmartContractsGenerator.Model
 {
     public class Constructor : AbstractContainer
     {
-        public string Modifier { get; set; }
+        public string Visibility { get; set; }
         public ParametersList Parameters { get; set; }
 
         public InstructionsList Instructions { get; set; }
@@ -19,6 +19,6 @@ namespace SmartContractsGenerator.Model
             return Instructions?.GenerateCode();
         }
 
-        protected override string GetHeader() => $"constructor({Parameters?.GenerateCode()}) {Modifier} {{\n";
+        protected override string GetHeader() => $"constructor({Parameters?.GenerateCode()}) {Visibility} {{\n";
     }
 }

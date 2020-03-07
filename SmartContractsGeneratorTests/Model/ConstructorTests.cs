@@ -23,6 +23,7 @@ namespace SmartContractsGenerator.Model.Tests
         [DynamicData(nameof(GetDataForTests), DynamicDataSourceType.Method)]
         public void ConstructorTest(Constructor c, string expected)
         {
+            System.Diagnostics.Contracts.Contract.Requires(c != null);
             Assert.AreEqual(expected, c.GenerateCode());
         }
 
@@ -30,28 +31,28 @@ namespace SmartContractsGenerator.Model.Tests
         {
             List<object[]> data = new List<object[]>();
 
-            string publicModifier = "public";
-            string privateModifier = "private";
+            string publicVisibility = "public";
+            string privateVisibility = "private";
             var oneElementParametersListCode = "Type1 Name1";
             var twoElementParametersListCode = "Type1 Name1, Type2 Name2";
             var threeElementParametersListCode = "Type1 Name1, Type2 Name2, Type3 Name3";
 
 
-            data.Add(GenerateRow(null, publicModifier, $"constructor() {publicModifier} {{\n}}"));
-            data.Add(GenerateRow(string.Empty, privateModifier, $"constructor() {privateModifier} {{\n}}"));
-            data.Add(GenerateRow(oneElementParametersListCode, publicModifier, $"constructor({oneElementParametersListCode}) {publicModifier} {{\n}}"));
-            data.Add(GenerateRow(twoElementParametersListCode, publicModifier, $"constructor({twoElementParametersListCode}) {publicModifier} {{\n}}"));
-            data.Add(GenerateRow(threeElementParametersListCode, publicModifier, $"constructor({threeElementParametersListCode}) {publicModifier} {{\n}}"));
+            data.Add(GenerateRow(null, publicVisibility, $"constructor() {publicVisibility} {{\n}}"));
+            data.Add(GenerateRow(string.Empty, privateVisibility, $"constructor() {privateVisibility} {{\n}}"));
+            data.Add(GenerateRow(oneElementParametersListCode, publicVisibility, $"constructor({oneElementParametersListCode}) {publicVisibility} {{\n}}"));
+            data.Add(GenerateRow(twoElementParametersListCode, publicVisibility, $"constructor({twoElementParametersListCode}) {publicVisibility} {{\n}}"));
+            data.Add(GenerateRow(threeElementParametersListCode, publicVisibility, $"constructor({threeElementParametersListCode}) {publicVisibility} {{\n}}"));
 
             return data;
         }
 
-        static object[] GenerateRow(string parametersListCode, string modifier, string expected)
+        static object[] GenerateRow(string parametersListCode, string visibility, string expected)
         {
             var parametersListMock = parametersListCode != null ? mockHelper.PrepareMock(parametersListCode) : null;
             var c = new Constructor()
             {
-                Modifier = modifier,
+                Visibility = visibility,
                 Parameters = parametersListMock
             };
             return new object[] { c, expected };

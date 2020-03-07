@@ -39,10 +39,10 @@ namespace SmartContractsGenerator
                 Parameters = new List<Parameter>() { p1, p2, p3 }
             };
 
-            var cModifier = "public";
+            var visibility = "public";
             var c = new Constructor()
             {
-                Modifier = cModifier,
+                Visibility = visibility,
                 Parameters = pl
             };
 
