@@ -1,5 +1,6 @@
 ﻿using SmartContractsGenerator.Model;
 using SmartContractsGenerator.Model.AbstractPatterns;
+using SmartContractsGenerator.Model.Enums;
 using System;
 using System.Collections.Generic;
 
@@ -39,10 +40,9 @@ namespace SmartContractsGenerator
                 Parameters = new List<Parameter>() { p1, p2, p3 }
             };
 
-            var visibility = "public";
             var c = new Constructor()
             {
-                Visibility = visibility,
+                Visibility = Visibility.Public,
                 Parameters = pl
             };
 

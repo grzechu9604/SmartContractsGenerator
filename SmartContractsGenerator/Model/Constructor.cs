@@ -1,15 +1,27 @@
-﻿using SmartContractsGenerator.Interfaces;
+﻿using SmartContractsGenerator.Exceptions;
 using SmartContractsGenerator.Model.AbstractPatterns;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using SmartContractsGenerator.Model.Enums;
 
 namespace SmartContractsGenerator.Model
 {
     public class Constructor : AbstractContainer
     {
-        public string Visibility { get; set; }
+        public Visibility? Visibility 
+        { 
+            get => visibility; 
+            set
+            {
+                if (value == Enums.Visibility.Public || value == Enums.Visibility.Internal)
+                {
+                    visibility = value;
+                }
+                else
+                {
+                    throw new InvalidVisibilitySpecifierException("Constructor must be public or internal");
+                }
+            }
+        }
+        private Visibility? visibility;
         public ParametersList Parameters { get; set; }
 
         public InstructionsList Instructions { get; set; }
@@ -19,6 +31,13 @@ namespace SmartContractsGenerator.Model
             return Instructions?.GenerateCode();
         }
 
-        protected override string GetHeader() => $"constructor({Parameters?.GenerateCode()}) {Visibility} {{\n";
+        protected override string GetHeader() 
+        {
+            if (!Visibility.HasValue)
+            {
+                throw new MissingMandatoryElementException("Visibility specifier is required for constructor");
+            }
+            return $"constructor({Parameters?.GenerateCode()}) {Visibility.Value.GenerateCode()} {{\n";
+        }
     }
 }
