@@ -1,4 +1,5 @@
-﻿using SmartContractsGenerator.Model.AbstractPatterns;
+﻿using SmartContractsGenerator.Exceptions;
+using SmartContractsGenerator.Model.AbstractPatterns;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -13,10 +14,22 @@ namespace SmartContractsGenerator.Model
 
         public override string GenerateCode()
         {
+            if (Condition == null)
+            {
+                throw new MissingMandatoryElementException("Condition is required in if statement!");
+            }
+
             StringBuilder codeBuilder = new StringBuilder();
 
-            codeBuilder.Append($"if ({Condition.GenerateCode()}) {{\n");
-            codeBuilder.Append($"{TrueInstructions.GenerateCode()}\n}}");
+            codeBuilder.Append($"if ({Condition.GenerateCode()}) {{");
+
+            if (TrueInstructions != null)
+            {
+                codeBuilder.Append($"\n{TrueInstructions.GenerateCode()}");
+            }
+
+            codeBuilder.Append("\n}");
+
 
             if (FalseInstructions != null && FalseInstructions.Any())
             {

@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using SmartContractsGenerator.Exceptions;
 using SmartContractsGenerator.Model;
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,24 @@ namespace SmartContractsGenerator.Model.Tests
     [TestClass()]
     public class ParameterTests
     {
+
+        [TestMethod()]
+        [ExpectedException(typeof(MissingMandatoryElementException))]
+        public void EmptyParameterNameTest()
+        {
+            new Parameter().GenerateCode();
+        }
+
+        [TestMethod()]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void InvalidParameterNameTest()
+        {
+            new Parameter()
+            {
+                Name = "123"
+            };
+        }
+
         [TestMethod]
         [DynamicData(nameof(GetDataForTests), DynamicDataSourceType.Method)]
         public void GenerateCodeTest(Parameter p, string expected, string message)
@@ -28,10 +47,7 @@ namespace SmartContractsGenerator.Model.Tests
                 Type = type
             };
 
-            return new[]
-            {
-                new object[] {p, $"{type} {name}", "Simple parameter test failed" }
-            };
+            yield return new object[] { p, $"{type} {name}", "Simple parameter test failed" };
         }
     }
 }

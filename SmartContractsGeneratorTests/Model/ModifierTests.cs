@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using SmartContractsGenerator.Exceptions;
 using SmartContractsGenerator.Model;
 using SmartContractsGenerator.Model.AbstractPatterns;
 using SmartContractsGeneratorTests.Model.Helpers;
@@ -19,6 +20,23 @@ namespace SmartContractsGenerator.Model.Tests
             mockHelper.Dispose();
         }
 
+        [TestMethod()]
+        [ExpectedException(typeof(MissingMandatoryElementException))]
+        public void EmptyModifierNameTest()
+        {
+            new Modifier().GenerateCode();
+        }
+
+        [TestMethod()]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void InvalidModifierNameTest()
+        {
+            new Modifier()
+            {
+                Name = "123"
+            };
+        }
+
         [TestMethod]
         [DynamicData(nameof(GetDataForTests), DynamicDataSourceType.Method)]
         public void ConstructorTest(Modifier m, string expected)
@@ -29,21 +47,17 @@ namespace SmartContractsGenerator.Model.Tests
 
         static IEnumerable<object[]> GetDataForTests()
         {
-            List<object[]> data = new List<object[]>();
-
             string modifierName1 = "Name";
             string modifierName2 = "Name2";
             var oneElementParametersListCode = "Type1 Name1";
             var twoElementParametersListCode = "Type1 Name1, Type2 Name2";
             var threeElementParametersListCode = "Type1 Name1, Type2 Name2, Type3 Name3";
 
-            data.Add(GenerateRow(null, modifierName1, $"modifier {modifierName1}() {{\n_;\n}}"));
-            data.Add(GenerateRow(string.Empty, modifierName2, $"modifier {modifierName2}() {{\n_;\n}}"));
-            data.Add(GenerateRow(oneElementParametersListCode, modifierName1, $"modifier {modifierName1}({oneElementParametersListCode}) {{\n_;\n}}"));
-            data.Add(GenerateRow(twoElementParametersListCode, modifierName2, $"modifier {modifierName2}({twoElementParametersListCode}) {{\n_;\n}}"));
-            data.Add(GenerateRow(threeElementParametersListCode, modifierName1, $"modifier {modifierName1}({threeElementParametersListCode}) {{\n_;\n}}"));
-
-            return data;
+            yield return GenerateRow(null, modifierName1, $"modifier {modifierName1}() {{\n_;\n}}");
+            yield return GenerateRow(string.Empty, modifierName2, $"modifier {modifierName2}() {{\n_;\n}}");
+            yield return GenerateRow(oneElementParametersListCode, modifierName1, $"modifier {modifierName1}({oneElementParametersListCode}) {{\n_;\n}}");
+            yield return GenerateRow(twoElementParametersListCode, modifierName2, $"modifier {modifierName2}({twoElementParametersListCode}) {{\n_;\n}}");
+            yield return GenerateRow(threeElementParametersListCode, modifierName1, $"modifier {modifierName1}({threeElementParametersListCode}) {{\n_;\n}}");
         }
 
         static object[] GenerateRow(string parametersListCode, string name, string expected)
