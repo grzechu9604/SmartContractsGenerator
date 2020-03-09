@@ -1,10 +1,8 @@
 ﻿using Autofac.Extras.Moq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SmartContractsGenerator.Model;
-using SmartContractsGenerator.Model.AbstractPatterns;
+using SmartContractsGenerator.Exceptions;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace SmartContractsGenerator.Model.Tests
 {
@@ -17,6 +15,23 @@ namespace SmartContractsGenerator.Model.Tests
         public void Cleanup()
         {
             mocks.ForEach(m => m.Dispose());
+        }
+
+        [TestMethod()]
+        [ExpectedException(typeof(MissingMandatoryElementException))]
+        public void EmptyConstructorNameTest()
+        {
+            new Contract().GenerateCode();
+        }
+
+        [TestMethod()]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void InvalidConstructorNameTest()
+        {
+            new Contract()
+            {
+                Name = "123"
+            };
         }
 
         [TestMethod]
