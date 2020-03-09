@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using SmartContractsGenerator.Exceptions;
 using SmartContractsGenerator.Model;
 using SmartContractsGenerator.Model.AbstractPatterns;
 using SmartContractsGeneratorTests.Model.Helpers;
@@ -26,6 +27,13 @@ namespace SmartContractsGenerator.Model.Tests
         {
             instructionsListMockHelper.Dispose();
             conditionMockHelper.Dispose();
+        }
+
+        [TestMethod()]
+        [ExpectedException(typeof(MissingMandatoryElementException))]
+        public void EmptyIfStatementTest()
+        {
+            new IfStatement().GenerateCode();
         }
 
         [TestMethod]
