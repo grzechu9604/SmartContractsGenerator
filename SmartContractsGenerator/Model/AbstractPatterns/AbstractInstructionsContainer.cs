@@ -10,7 +10,14 @@ namespace SmartContractsGenerator.Model.AbstractPatterns
 
         protected override string GetContent()
         {
-            return Instructions?.GenerateCode();
+            if (Instructions != null && Instructions.Any())
+            {
+                return Instructions.GenerateCode() + '\n';
+            }
+            else
+            {
+                return string.Empty;
+            }
         }
     }
 }

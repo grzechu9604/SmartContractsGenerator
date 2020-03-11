@@ -9,7 +9,7 @@ using System.Text;
 
 namespace SmartContractsGenerator.Model
 {
-    public class Modifier : AbstractContainer
+    public class Modifier : AbstractInstructionsContainer
     {
         public ParametersList Parameters { get; set; }
         public string Name
@@ -28,11 +28,6 @@ namespace SmartContractsGenerator.Model
             }
         }
         private string name;
-
-        protected override string GetContent()
-        {
-            return string.Empty;
-        }
 
         protected override string GetFooter() => "_;\n}";
 
