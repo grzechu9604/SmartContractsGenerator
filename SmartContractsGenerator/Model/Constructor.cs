@@ -4,7 +4,7 @@ using SmartContractsGenerator.Model.Enums;
 
 namespace SmartContractsGenerator.Model
 {
-    public class Constructor : AbstractContainer
+    public class Constructor : AbstractInstructionsContainer
     {
         public Visibility? Visibility 
         { 
@@ -23,13 +23,6 @@ namespace SmartContractsGenerator.Model
         }
         private Visibility? visibility;
         public ParametersList Parameters { get; set; }
-
-        public InstructionsList Instructions { get; set; }
-
-        protected override string GetContent()
-        {
-            return Instructions?.GenerateCode();
-        }
 
         protected override string GetHeader() 
         {
