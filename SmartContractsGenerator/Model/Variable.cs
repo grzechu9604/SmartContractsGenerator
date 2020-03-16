@@ -1,4 +1,5 @@
 ﻿using SmartContractsGenerator.Exceptions;
+using SmartContractsGenerator.Interfaces;
 using SmartContractsGenerator.Validators;
 using System;
 using System.Collections.Generic;
@@ -6,7 +7,7 @@ using System.Text;
 
 namespace SmartContractsGenerator.Model
 {
-    public class Variable
+    public class Variable : IValueContainer, IAssignable
     {
         public string Name
         {
@@ -42,7 +43,7 @@ namespace SmartContractsGenerator.Model
             return $"{Type} {Name}";
         }
 
-        public string GenerateUsageCode()
+        public string GenerateCode()
         {
             if (string.IsNullOrWhiteSpace(Name))
             {

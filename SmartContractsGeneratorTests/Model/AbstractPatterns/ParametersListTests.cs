@@ -9,7 +9,7 @@ namespace SmartContractsGenerator.Model.AbstractPatterns.Tests
     [TestClass()]
     public class ParametersListTests
     {
-        private static readonly ParametersMocksCreator mockHelper = new ParametersMocksCreator();
+        private static readonly VariableMocksCreator mockHelper = new VariableMocksCreator();
 
         [TestCleanup]
         public void Cleanup()
@@ -26,7 +26,7 @@ namespace SmartContractsGenerator.Model.AbstractPatterns.Tests
 
         static IEnumerable<object[]> GetDataForTests()
         {
-            var parameters = new List<Parameter>();
+            var parameters = new List<Variable>();
 
             var expectedAnswers = new Dictionary<int, string>()
             {

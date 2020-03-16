@@ -24,7 +24,7 @@ namespace SmartContractsGenerator.Model.Tests
         [ExpectedException(typeof(MissingMandatoryElementException))]
         public void EmptyNameGenerateUsageCodeTest()
         {
-            new Variable().GenerateUsageCode();
+            new Variable().GenerateCode();
         }
 
         [TestMethod()]
@@ -55,7 +55,7 @@ namespace SmartContractsGenerator.Model.Tests
                 Name = name
             };
 
-            Assert.AreEqual($"{name}", v.GenerateUsageCode());
+            Assert.AreEqual($"{name}", v.GenerateCode());
         }
 
         [TestMethod()]

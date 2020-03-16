@@ -6,7 +6,7 @@ using System.Text;
 
 namespace SmartContractsGeneratorTests.Model.Helpers
 {
-    class ParametersMocksCreator : IDisposable
+    class VariableMocksCreator : IDisposable
     {
         private readonly MocksHolder mocksHolder = new MocksHolder();
 
@@ -15,15 +15,15 @@ namespace SmartContractsGeneratorTests.Model.Helpers
             mocksHolder.Dispose();
         }
 
-        public Parameter PrepareMock(string expected)
+        public Variable PrepareMock(string expected)
         {
             var mock = mocksHolder.GetMock();
 
-            mock.Mock<Parameter>()
+            mock.Mock<Variable>()
                 .Setup(x => x.GenerateCode())
                 .Returns(expected);
 
-            var preparedMock = mock.Create<Parameter>();
+            var preparedMock = mock.Create<Variable>();
 
             return preparedMock;
         }
