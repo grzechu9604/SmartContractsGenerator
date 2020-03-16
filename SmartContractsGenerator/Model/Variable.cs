@@ -28,7 +28,7 @@ namespace SmartContractsGenerator.Model
 
         public string Type { get; set; } // consider enum
 
-        public string GenerateDeclarationCode()
+        public virtual string GenerateDeclarationCode()
         {
             if (string.IsNullOrWhiteSpace(Name))
             {
@@ -43,7 +43,7 @@ namespace SmartContractsGenerator.Model
             return $"{Type} {Name}";
         }
 
-        public string GenerateCode()
+        public virtual string GenerateCode()
         {
             if (string.IsNullOrWhiteSpace(Name))
             {

@@ -15,13 +15,17 @@ namespace SmartContractsGeneratorTests.Model.Helpers
             mocksHolder.Dispose();
         }
 
-        public Variable PrepareMock(string expected)
+        public Variable PrepareMock(string expectedCode, string expectedDeclarationCode)
         {
             var mock = mocksHolder.GetMock();
 
             mock.Mock<Variable>()
                 .Setup(x => x.GenerateCode())
-                .Returns(expected);
+                .Returns(expectedCode);
+
+            mock.Mock<Variable>()
+                .Setup(x => x.GenerateDeclarationCode())
+                .Returns(expectedDeclarationCode);
 
             var preparedMock = mock.Create<Variable>();
 

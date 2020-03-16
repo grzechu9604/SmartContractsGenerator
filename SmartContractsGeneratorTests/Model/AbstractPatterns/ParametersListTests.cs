@@ -19,8 +19,9 @@ namespace SmartContractsGenerator.Model.AbstractPatterns.Tests
 
         [TestMethod]
         [DynamicData(nameof(GetDataForTests), DynamicDataSourceType.Method)]
-        public void GenerateCodetTest(ParametersList parametersList, string expected)
+        public void GenerateCodeTest(ParametersList parametersList, string expected)
         {
+            System.Diagnostics.Contracts.Contract.Requires(parametersList != null);
             Assert.AreEqual(expected, parametersList.GenerateCode());
         }
 
@@ -37,7 +38,7 @@ namespace SmartContractsGenerator.Model.AbstractPatterns.Tests
             for (int i = 1; i < bound; i++)
             {
                 var name = $"Type{i} Name{i}";
-                var p = mockHelper.PrepareMock(name);
+                var p = mockHelper.PrepareMock(string.Empty, name);
                 parameters.Add(p);
 
                 for (int j = i; j < bound; j++)
