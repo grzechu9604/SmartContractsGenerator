@@ -27,7 +27,8 @@ namespace SmartContractsGenerator.Model
         }
         private string name;
         public Constructor Constructor { get; set; }
-        public List<Declaration> Declarations { get; set; }
+        public List<ContractFunction> Functions { get; set; }
+        public List<ContractEvent> Events { get; set; }
 
         protected override string GetHeader()
         {
@@ -42,19 +43,35 @@ namespace SmartContractsGenerator.Model
         {
             StringBuilder codeBuilder = new StringBuilder();
 
+            bool constructorAdded = false;
             if (Constructor != null)
             {
                 codeBuilder.Append($"{Constructor.GenerateCode()}\n");
+                constructorAdded = true;
             }
 
-            if (Declarations != null && Declarations.Any() )
+            bool eventsAdded = false;
+            if (Events != null && Events.Any())
             {
-                if (Constructor != null)
+                if (constructorAdded)
                 {
                     codeBuilder.Append("\n");
                 }
 
-                Declarations.ForEach(declaration => codeBuilder.Append($"{declaration.GenerateCode()}\n\n"));
+                Events.ForEach(contractEvent => codeBuilder.Append($"{contractEvent.GenerateCode()}\n"));
+                eventsAdded = true;
+            }
+
+            if (Functions != null && Functions.Any())
+            {
+                if (constructorAdded || eventsAdded)
+                {
+                    codeBuilder.Append("\n");
+                }
+
+                Functions.Take(Functions.Count - 1).ToList().ForEach(function => codeBuilder.Append($"{function.GenerateCode()}\n\n"));
+
+                codeBuilder.Append($"{Functions.Last().GenerateCode()}\n");
             }
 
             return codeBuilder.ToString();

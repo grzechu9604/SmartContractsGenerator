@@ -45,7 +45,7 @@ namespace SmartContractsGenerator.Model
             return $"function {Name}({Parameters?.GenerateCode()}) {Visibility.Value.GenerateCode()} {{\n";
         }
 
-        public string GenerateCallCode()
+        public virtual string GenerateCallCode()
         {
             if (string.IsNullOrWhiteSpace(Name))
             {

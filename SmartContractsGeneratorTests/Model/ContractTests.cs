@@ -1,20 +1,25 @@
-﻿using Autofac.Extras.Moq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SmartContractsGenerator.Exceptions;
+using SmartContractsGeneratorTests.Model.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SmartContractsGenerator.Model.Tests
 {
     [TestClass()]
     public class ContractTests
     {
-        private static readonly List<AutoMock> mocks = new List<AutoMock>();
+        private static readonly ConstructorMockCreator constructorMock = new ConstructorMockCreator();
+        private static readonly FunctionMockCreator functionMock = new FunctionMockCreator();
+        private static readonly EventMockCreator eventMock = new EventMockCreator();
 
         [TestCleanup]
         public void Cleanup()
         {
-            mocks.ForEach(m => m.Dispose());
+            constructorMock.Dispose();
+            functionMock.Dispose();
+            eventMock.Dispose();
         }
 
         [TestMethod()]
@@ -44,23 +49,34 @@ namespace SmartContractsGenerator.Model.Tests
 
         static IEnumerable<object[]> GetDataForTests()
         {
-            List<object[]> data = new List<object[]>();
-
             string name1 = "name1";
             string name2 = "name2";
             string constructorCode1 = "CONSTRUCTOR CODE 1";
             string constructorCode2 = "CONSTRUCTOR CODE 2";
             string constructorCode3 = "CONSTRUCTOR CODE 3";
+            string eventCode1 = "EVENT CODE 1";
+            string eventCode2 = "EVENT CODE 2";
+            string eventCode3 = "EVENT CODE 3";
+            string funcCode1 = "FUNC CODE 1";
+            string funcCode2 = "FUNC CODE 2";
+            string funcCode3 = "FUNC CODE 3";
 
-            data.Add(GenerateRow(null, name1, $"contract {name1} {{\n}}"));
-            data.Add(GenerateRow(constructorCode1, name1, $"contract {name1} {{\n{constructorCode1}\n}}"));
-            data.Add(GenerateRow(constructorCode2, name2, $"contract {name2} {{\n{constructorCode2}\n}}"));
-            data.Add(GenerateRow(constructorCode3, name1, $"contract {name1} {{\n{constructorCode3}\n}}"));
-           
-            return data;
+            yield return GenerateRow(null, name1, null, null, $"contract {name1} {{\n}}");
+            yield return GenerateRow(constructorCode1, name1, null, null, $"contract {name1} {{\n{constructorCode1}\n}}");
+            yield return GenerateRow(constructorCode2, name2, null, null, $"contract {name2} {{\n{constructorCode2}\n}}");
+            yield return GenerateRow(constructorCode3, name1, null, null, $"contract {name1} {{\n{constructorCode3}\n}}");
+            yield return GenerateRow(null, name1, new List<string>() { eventCode1 }, null, $"contract {name1} {{\n{eventCode1}\n}}");
+            yield return GenerateRow(null, name1, new List<string>() { eventCode1, eventCode2 }, null, $"contract {name1} {{\n{eventCode1}\n{eventCode2}\n}}");
+            yield return GenerateRow(null, name1, new List<string>() { eventCode1, eventCode2, eventCode3 }, null, $"contract {name1} {{\n{eventCode1}\n{eventCode2}\n{eventCode3}\n}}");
+            yield return GenerateRow(null, name1, null, new List<string>() { funcCode1 }, $"contract {name1} {{\n{funcCode1}\n}}");
+            yield return GenerateRow(null, name1, null, new List<string>() { funcCode1, funcCode2 }, $"contract {name1} {{\n{funcCode1}\n\n{funcCode2}\n}}");
+            yield return GenerateRow(null, name1, null, new List<string>() { funcCode1, funcCode2, funcCode3 }, $"contract {name1} {{\n{funcCode1}\n\n{funcCode2}\n\n{funcCode3}\n}}");
+            yield return GenerateRow(constructorCode1, name1, null, new List<string>() { funcCode1, funcCode2, funcCode3 }, $"contract {name1} {{\n{constructorCode1}\n\n{funcCode1}\n\n{funcCode2}\n\n{funcCode3}\n}}");
+            yield return GenerateRow(constructorCode1, name1, new List<string>() { eventCode1, eventCode2, eventCode3 }, null, $"contract {name1} {{\n{constructorCode1}\n\n{eventCode1}\n{eventCode2}\n{eventCode3}\n}}");
+            yield return GenerateRow(constructorCode1, name1, new List<string>() { eventCode1, eventCode2, eventCode3 }, new List<string>() { funcCode1, funcCode2, funcCode3 }, $"contract {name1} {{\n{constructorCode1}\n\n{eventCode1}\n{eventCode2}\n{eventCode3}\n\n{funcCode1}\n\n{funcCode2}\n\n{funcCode3}\n}}");
         }
 
-        static object[] GenerateRow(string constructorCode, string name, string expected)
+        static object[] GenerateRow(string constructorCode, string name, List<string> expectedEventsCode, List<string> expectedFunctionsCode, string expected)
         {
             var c = new Contract()
             {
@@ -69,14 +85,17 @@ namespace SmartContractsGenerator.Model.Tests
 
             if (constructorCode != null)
             {
-                var autoMock = AutoMock.GetLoose();
-                mocks.Add(autoMock);
+                c.Constructor = constructorMock.PrepareMock(constructorCode);
+            }
 
-                autoMock.Mock<Constructor>()
-                    .Setup(x => x.GenerateCode())
-                    .Returns(constructorCode);
+            if (expectedEventsCode != null)
+            {
+                c.Events = expectedEventsCode.Select(code => eventMock.PrepareMock(code, null)).ToList();
+            }
 
-                c.Constructor = autoMock.Create<Constructor>();
+            if (expectedFunctionsCode != null)
+            {
+                c.Functions = expectedFunctionsCode.Select(code => functionMock.PrepareMock(code, null)).ToList();
             }
 
             return new object[] { c, expected };

@@ -26,7 +26,7 @@ namespace SmartContractsGenerator.Model
         private string name;
         public ParametersList Parameters { get; set; }
 
-        public string GenerateCode()
+        public virtual string GenerateCode()
         {
             if (string.IsNullOrWhiteSpace(Name))
             {
@@ -36,7 +36,7 @@ namespace SmartContractsGenerator.Model
             return $"event {Name}({Parameters?.GenerateCode()});";
         }
 
-        public string GenerateCallCode()
+        public virtual string GenerateCallCode()
         {
             if (string.IsNullOrWhiteSpace(Name))
             {
