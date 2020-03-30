@@ -1,11 +1,9 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SmartContractsGenerator.Exceptions;
-using SmartContractsGenerator.Model;
 using SmartContractsGenerator.Model.Enums;
 using SmartContractsGeneratorTests.Model.Helpers;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace SmartContractsGenerator.Model.Tests
 {
@@ -91,7 +89,7 @@ namespace SmartContractsGenerator.Model.Tests
             yield return GenerateRow(parametersCode2, name1, null, visibility4, expectedWithParams);
         }
 
-        static object[] GenerateRow(string parametersListCode, string name, string instructionsListCode, Visibility? visibility , string expected)
+        static object[] GenerateRow(string parametersListCode, string name, string instructionsListCode, Visibility? visibility, string expected)
         {
             var parametersListMock = parametersListCode != null ? mockHelper.PrepareMock(parametersListCode) : null;
             var instructionsListMock = instructionsListCode != null ? instructionsListMockHelper.PrepareMock(instructionsListCode, false, !string.IsNullOrWhiteSpace(instructionsListCode)) : null;
@@ -104,6 +102,24 @@ namespace SmartContractsGenerator.Model.Tests
                 Visibility = visibility
             };
             return new object[] { f, expected };
+        }
+
+        [TestMethod]
+        [DynamicData(nameof(GenerateDataForGenerateCallCodeTest), DynamicDataSourceType.Method)]
+        public void GenerateCallCodeTest(ContractFunction f, string expected)
+        {
+            System.Diagnostics.Contracts.Contract.Requires(f != null);
+            Assert.AreEqual(expected, f.GenerateCallCode());
+        }
+
+
+        static IEnumerable<object[]> GenerateDataForGenerateCallCodeTest()
+        {
+            var name1 = "Name1";
+            yield return new object[] { new ContractFunction() { Name = name1 }, name1 };
+
+            var name2 = "Name2";
+            yield return new object[] { new ContractFunction() { Name = name2 }, name2 };
         }
     }
 }

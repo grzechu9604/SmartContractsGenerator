@@ -1,14 +1,13 @@
 ﻿using SmartContractsGenerator.Exceptions;
+using SmartContractsGenerator.Interfaces;
 using SmartContractsGenerator.Model.AbstractPatterns;
 using SmartContractsGenerator.Model.Enums;
 using SmartContractsGenerator.Validators;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SmartContractsGenerator.Model
 {
-    public class ContractFunction : AbstractInstructionsContainer
+    public class ContractFunction : AbstractInstructionsContainer, ICallable
     {
         public string Name
         {
@@ -44,6 +43,16 @@ namespace SmartContractsGenerator.Model
             }
 
             return $"function {Name}({Parameters?.GenerateCode()}) {Visibility.Value.GenerateCode()} {{\n";
+        }
+
+        public string GenerateCallCode()
+        {
+            if (string.IsNullOrWhiteSpace(Name))
+            {
+                throw new MissingMandatoryElementException("Name is mandatory element of contract function");
+            }
+
+            return Name;
         }
     }
 }

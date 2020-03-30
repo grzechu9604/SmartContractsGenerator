@@ -6,8 +6,8 @@ namespace SmartContractsGenerator.Model
 {
     public class Call : Instruction
     {
-        ICallable Callable { get; set; }
-        ParametersList Parameters { get; set; }
+        public ICallable Callable { get; set; }
+        public ParametersList Parameters { get; set; }
 
         public override string GenerateCode()
         {
