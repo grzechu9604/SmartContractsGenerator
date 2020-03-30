@@ -30,7 +30,7 @@ namespace SmartContractsGenerator.Model
         {
             if (string.IsNullOrWhiteSpace(Name))
             {
-                throw new MissingMandatoryElementException("Name is mandatory element of contract");
+                throw new MissingMandatoryElementException("Name is mandatory element of event");
             }
 
             return $"event {Name}({Parameters?.GenerateCode()});";
@@ -40,7 +40,7 @@ namespace SmartContractsGenerator.Model
         {
             if (string.IsNullOrWhiteSpace(Name))
             {
-                throw new MissingMandatoryElementException("Name is mandatory element of contract");
+                throw new MissingMandatoryElementException("Name is mandatory element of event");
             }
 
             return $"emit {Name}";
