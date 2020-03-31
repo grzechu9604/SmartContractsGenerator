@@ -9,7 +9,7 @@ namespace SmartContractsGenerator.Model
         public IAssignable LeftSide { get; set; }
         public IAssignable RightSide { get; set; }
 
-        public ArithmeticOperator? Operator { get; set; }
+        public OperationOperator? Operator { get; set; }
 
         public virtual string GenerateCode()
         {
@@ -25,7 +25,7 @@ namespace SmartContractsGenerator.Model
 
             if (Operator.Value.IsUnaryOperator())
             {
-                return $"{Operator.Value.GenerateCode()}{LeftSide.GenerateCode()}";
+                return $"{Operator.Value.GenerateCode()}({LeftSide.GenerateCode()})";
             }
 
             if (RightSide == null)
@@ -33,7 +33,7 @@ namespace SmartContractsGenerator.Model
                 throw new MissingMandatoryElementException("RightSide is mandatory in Operation with non-unary operator");
             }
 
-            return $"{LeftSide.GenerateCode()} {Operator.Value.GenerateCode()} {RightSide.GenerateCode()}";
+            return $"({LeftSide.GenerateCode()}) {Operator.Value.GenerateCode()} ({RightSide.GenerateCode()})";
         }
     }
 }

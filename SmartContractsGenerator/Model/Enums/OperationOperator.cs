@@ -1,6 +1,6 @@
 ﻿namespace SmartContractsGenerator.Model.Enums
 {
-    public enum ArithmeticOperator
+    public enum OperationOperator
     {
         Plus = 0,
         Minus = 1,
@@ -10,6 +10,8 @@
         Negation = 5,
         OR = 6,
         AND = 7,
-        XOR = 8
+        XOR = 8,
+        Equals = 9,
+        NotEquals = 10
     }
 }
