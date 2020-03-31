@@ -4,23 +4,23 @@ using SmartContractsGenerator.Model.Enums;
 
 namespace SmartContractsGenerator.Model
 {
-    public class ArithmeticOperation : IAssignable
+    public class Operation : IAssignable
     {
         public IAssignable LeftSide { get; set; }
         public IAssignable RightSide { get; set; }
 
         public ArithmeticOperator? Operator { get; set; }
 
-        public string GenerateCode()
+        public virtual string GenerateCode()
         {
             if (LeftSide == null)
             {
-                throw new MissingMandatoryElementException("LeftSide is mandatory in ArithmeticOperation");
+                throw new MissingMandatoryElementException("LeftSide is mandatory in Operation");
             }
 
             if (Operator == null)
             {
-                throw new MissingMandatoryElementException("Operator is mandatory in ArithmeticOperation");
+                throw new MissingMandatoryElementException("Operator is mandatory in Operation");
             }
 
             if (Operator.Value.IsUnaryOperator())
@@ -30,7 +30,7 @@ namespace SmartContractsGenerator.Model
 
             if (RightSide == null)
             {
-                throw new MissingMandatoryElementException("RightSide is mandatory in ArithmeticOperation with non-unary operator");
+                throw new MissingMandatoryElementException("RightSide is mandatory in Operation with non-unary operator");
             }
 
             return $"{LeftSide.GenerateCode()} {Operator.Value.GenerateCode()} {RightSide.GenerateCode()}";
