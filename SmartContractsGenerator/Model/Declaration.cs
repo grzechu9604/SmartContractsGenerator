@@ -1,15 +1,12 @@
 ﻿using SmartContractsGenerator.Exceptions;
 using SmartContractsGenerator.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SmartContractsGenerator.Model
 {
     public class Declaration : IValueContainer
     {
         public Variable Variable { get; set; }
-        public string GenerateCode()
+        public virtual string GenerateCode()
         {
             if (Variable == null)
             {
