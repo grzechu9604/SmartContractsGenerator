@@ -78,8 +78,8 @@ namespace SmartContractsGenerator.Model.Tests
         {
             string name1 = "Name";
             string name2 = "Name2";
-            yield return new object[] { new ContractEvent() { Name = name1 }, $"emit {name1}" };
-            yield return new object[] { new ContractEvent() { Name = name2 }, $"emit {name2}" };
+            yield return new object[] { new ContractEvent() { Name = name1 }, name1 };
+            yield return new object[] { new ContractEvent() { Name = name2 }, name2 };
         }
 
         static object[] GenerateRow(string parametersListCode, string name, string expected)

@@ -9,6 +9,14 @@ namespace SmartContractsGenerator.Model.Tests
     public class OperationTests
     {
         private static readonly VariableMocksCreator variableMocksCreator = new VariableMocksCreator();
+        private static readonly FunctionMockCreator functionMockCreator = new FunctionMockCreator();
+
+        [TestCleanup]
+        public void Cleanup()
+        {
+            variableMocksCreator.Dispose();
+            functionMockCreator.Dispose();
+        }
 
         [TestMethod()]
         [ExpectedException(typeof(MissingMandatoryElementException))]
@@ -88,6 +96,19 @@ namespace SmartContractsGenerator.Model.Tests
                 RightSide = op4
             };
             yield return new object[] { op5, $"(((!(true)) || ((1) == (1))) && ({variableName})) == (((!(true)) || ((1) == (1))) && ({variableName}))" };
+
+            var functionName = "fName";
+            var fc = new FunctionCall()
+            {
+                FunctionToCall = functionMockCreator.PrepareMock(null, functionName)
+            };
+            var op6 = new Operation()
+            {
+                LeftSide = fc,
+                Operator = Enums.OperationOperator.NotEquals,
+                RightSide = op5
+            };
+            yield return new object[] { op6, $"({functionName}()) != ((((!(true)) || ((1) == (1))) && ({variableName})) == (((!(true)) || ((1) == (1))) && ({variableName})))" };
         }
     }
 }

@@ -20,7 +20,7 @@ namespace SmartContractsGenerator.Model
                 throw new MissingMandatoryElementException("Source is required in assignment!");
             }
 
-            return $"{Destination.GenerateCode()} = {Source.GenerateCode()};";
+            return $"{Destination.GenerateCode()} = {Source.GenerateCode()}";
         }
     }
 }

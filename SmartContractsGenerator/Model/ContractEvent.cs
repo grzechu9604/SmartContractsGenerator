@@ -43,7 +43,7 @@ namespace SmartContractsGenerator.Model
                 throw new MissingMandatoryElementException("Name is mandatory element of event");
             }
 
-            return $"emit {Name}";
+            return Name;
         }
     }
 }

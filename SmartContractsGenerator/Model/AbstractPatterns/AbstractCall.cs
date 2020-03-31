@@ -1,13 +1,12 @@
 ﻿using SmartContractsGenerator.Exceptions;
 using SmartContractsGenerator.Interfaces;
-using SmartContractsGenerator.Model.AbstractPatterns;
 
-namespace SmartContractsGenerator.Model
+namespace SmartContractsGenerator.Model.AbstractPatterns
 {
-    //TODO: function call should aslo have possibility to be assigned!!! - IAssignable interface
-    public class Call : IOneLineInstruction
+    public abstract class AbstractCall : IOneLineInstruction
     {
-        public ICallable Callable { get; set; }
+        public abstract ICallable Callable { get; }
+        public abstract string CallingPrefix { get; }
         public ParametersList Parameters { get; set; }
 
         public virtual string GenerateCode()
@@ -17,7 +16,7 @@ namespace SmartContractsGenerator.Model
                 throw new MissingMandatoryElementException("Element to call is mandatory element of Call");
             }
 
-            return $"{Callable.GenerateCallCode()}({Parameters?.GenerateCallCode()})";
+            return $"{CallingPrefix}{Callable.GenerateCallCode()}({Parameters?.GenerateCallCode()})";
         }
     }
 }

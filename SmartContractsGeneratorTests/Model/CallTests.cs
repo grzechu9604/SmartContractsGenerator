@@ -9,7 +9,7 @@ namespace SmartContractsGenerator.Model.Tests
     {
         [TestMethod]
         [DynamicData(nameof(GetDataForGenerateCodeTest), DynamicDataSourceType.Method)]
-        public void GenerateCodeTest(Call c, string expected)
+        public void GenerateCodeTest(AbstractCall c, string expected)
         {
             System.Diagnostics.Contracts.Contract.Requires(c != null);
             Assert.AreEqual(expected, c.GenerateCode());
@@ -22,9 +22,9 @@ namespace SmartContractsGenerator.Model.Tests
             {
                 Name = funcName
             };
-            var functionCall = new Call()
+            var functionCall = new FunctionCall()
             {
-                Callable = function
+                FunctionToCall = function
             };
             yield return new object[] { functionCall, $"{funcName}()" };
 
@@ -33,9 +33,9 @@ namespace SmartContractsGenerator.Model.Tests
             {
                 Name = eventName
             };
-            var eventCall = new Call()
+            var eventCall = new EventCall()
             {
-                Callable = contractEvent
+                EventToCall = contractEvent
             };
             yield return new object[] { eventCall, $"emit {eventName}()" };
 
