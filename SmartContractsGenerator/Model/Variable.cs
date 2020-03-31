@@ -2,8 +2,6 @@
 using SmartContractsGenerator.Interfaces;
 using SmartContractsGenerator.Validators;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SmartContractsGenerator.Model
 {

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace SmartContractsGenerator.Model.AbstractPatterns
+﻿namespace SmartContractsGenerator.Model.AbstractPatterns
 {
     public abstract class AbstractInstructionsContainer : AbstractContainer
     {

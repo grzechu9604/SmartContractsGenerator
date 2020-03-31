@@ -1,8 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SmartContractsGenerator.Validators;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace SmartContractsGenerator.Validators.Tests
 {

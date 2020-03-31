@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace SmartContractsGenerator.Model.Enums
+﻿namespace SmartContractsGenerator.Model.Enums
 {
     public enum ArithmeticOperator
     {

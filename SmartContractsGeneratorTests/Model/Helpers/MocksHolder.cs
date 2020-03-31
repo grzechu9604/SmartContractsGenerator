@@ -1,7 +1,6 @@
 ﻿using Autofac.Extras.Moq;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace SmartContractsGeneratorTests.Model.Helpers
 {

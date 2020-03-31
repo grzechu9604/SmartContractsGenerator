@@ -1,11 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SmartContractsGenerator.Exceptions;
-using SmartContractsGenerator.Model;
 using SmartContractsGenerator.Model.AbstractPatterns;
 using SmartContractsGeneratorTests.Model.Helpers;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace SmartContractsGenerator.Model.Tests
 {

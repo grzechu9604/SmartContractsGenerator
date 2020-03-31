@@ -1,8 +1,5 @@
-﻿using Autofac.Extras.Moq;
-using SmartContractsGenerator.Model;
+﻿using SmartContractsGenerator.Model;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SmartContractsGeneratorTests.Model.Helpers
 {
