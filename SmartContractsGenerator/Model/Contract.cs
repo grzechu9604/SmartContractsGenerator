@@ -29,6 +29,7 @@ namespace SmartContractsGenerator.Model
         public Constructor Constructor { get; set; }
         public List<ContractFunction> Functions { get; set; }
         public List<ContractEvent> Events { get; set; }
+        public List<ContractProperty> Properties { get; set; }
 
         protected override string GetHeader()
         {
@@ -50,10 +51,22 @@ namespace SmartContractsGenerator.Model
                 constructorAdded = true;
             }
 
+            bool propertiesAdded = false;
+            if (Properties != null && Properties.Any())
+            {
+                if (constructorAdded)
+                {
+                    codeBuilder.Append("\n");
+                }
+
+                Properties.ForEach(property => codeBuilder.Append($"{property.GenerateDeclarationCode()}\n"));
+                propertiesAdded = true;
+            }
+
             bool eventsAdded = false;
             if (Events != null && Events.Any())
             {
-                if (constructorAdded)
+                if (constructorAdded || propertiesAdded)
                 {
                     codeBuilder.Append("\n");
                 }
@@ -64,7 +77,7 @@ namespace SmartContractsGenerator.Model
 
             if (Functions != null && Functions.Any())
             {
-                if (constructorAdded || eventsAdded)
+                if (constructorAdded || propertiesAdded || eventsAdded)
                 {
                     codeBuilder.Append("\n");
                 }
