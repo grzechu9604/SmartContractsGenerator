@@ -1,23 +1,40 @@
-﻿using SmartContractsGenerator.Model.AbstractPatterns;
+﻿using SmartContractsGenerator.Exceptions;
+using SmartContractsGenerator.Model.AbstractPatterns;
+using SmartContractsGenerator.Validators;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace SmartContractsGenerator.Model
 {
-    public class Modifier : AbstractContainer
+    public class Modifier : AbstractInstructionsContainer
     {
         public ParametersList Parameters { get; set; }
-        public string Name { get; set; }
-
-        protected override string GetContent()
+        public string Name
         {
-            return string.Empty;
+            get => name;
+            set
+            {
+                if (NameValidator.IsValidName(value))
+                {
+                    name = value;
+                }
+                else
+                {
+                    throw new InvalidOperationException("Defined contract has invalid name");
+                }
+            }
         }
+        private string name;
 
         protected override string GetFooter() => "_;\n}";
 
-        protected override string GetHeader() =>  $"modifier {Name}({Parameters?.GenerateCode()}) {{\n";
+        protected override string GetHeader()
+        {
+            if (string.IsNullOrWhiteSpace(Name))
+            {
+                throw new MissingMandatoryElementException("Name is mandatory element of modifier");
+            }
+
+            return $"modifier {Name}({Parameters?.GenerateCode()}) {{\n";
+        }
     }
 }

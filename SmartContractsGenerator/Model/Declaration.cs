@@ -1,15 +1,19 @@
-﻿using SmartContractsGenerator.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using SmartContractsGenerator.Exceptions;
+using SmartContractsGenerator.Interfaces;
 
 namespace SmartContractsGenerator.Model
 {
-    public class Declaration : ICodeGenerator
+    public class Declaration : IValueContainer
     {
-        public string GenerateCode()
+        public Variable Variable { get; set; }
+        public virtual string GenerateCode()
         {
-            throw new NotImplementedException();
+            if (Variable == null)
+            {
+                throw new MissingMandatoryElementException("Variable is required for Declaration");
+            }
+
+            return Variable.GenerateDeclarationCode();
         }
     }
 }

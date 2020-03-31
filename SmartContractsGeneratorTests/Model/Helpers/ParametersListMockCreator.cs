@@ -1,7 +1,5 @@
 ﻿using SmartContractsGenerator.Model.AbstractPatterns;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SmartContractsGeneratorTests.Model.Helpers
 {

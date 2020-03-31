@@ -1,12 +1,9 @@
-﻿using Autofac.Extras.Moq;
-using SmartContractsGenerator.Model;
+﻿using SmartContractsGenerator.Model;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SmartContractsGeneratorTests.Model.Helpers
 {
-    class ParametersMocksCreator : IDisposable
+    class ConstructorMockCreator : IDisposable
     {
         private readonly MocksHolder mocksHolder = new MocksHolder();
 
@@ -15,15 +12,15 @@ namespace SmartContractsGeneratorTests.Model.Helpers
             mocksHolder.Dispose();
         }
 
-        public Parameter PrepareMock(string expected)
+        public Constructor PrepareMock(string expectedCode)
         {
             var mock = mocksHolder.GetMock();
 
-            mock.Mock<Parameter>()
+            mock.Mock<Constructor>()
                 .Setup(x => x.GenerateCode())
-                .Returns(expected);
+                .Returns(expectedCode);
 
-            var preparedMock = mock.Create<Parameter>();
+            var preparedMock = mock.Create<Constructor>();
 
             return preparedMock;
         }

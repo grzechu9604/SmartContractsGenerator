@@ -1,15 +1,21 @@
-﻿using SmartContractsGenerator.Interfaces;
+﻿using SmartContractsGenerator.Exceptions;
+using SmartContractsGenerator.Interfaces;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SmartContractsGenerator.Model
 {
     public class Condition : ICodeGenerator
     {
+        public Operation ConditionOperation { get; set; }
+
         public virtual string GenerateCode()
         {
-            throw new NotImplementedException();
+            if (ConditionOperation == null)
+            {
+                throw new MissingMandatoryElementException("Condition operation is mandatory in Condition");
+            }
+
+            return ConditionOperation.GenerateCode();
         }
     }
 }

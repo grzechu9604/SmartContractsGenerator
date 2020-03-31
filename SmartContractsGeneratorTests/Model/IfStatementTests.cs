@@ -1,10 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SmartContractsGenerator.Model;
+using SmartContractsGenerator.Exceptions;
 using SmartContractsGenerator.Model.AbstractPatterns;
 using SmartContractsGeneratorTests.Model.Helpers;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace SmartContractsGenerator.Model.Tests
 {
@@ -26,6 +24,13 @@ namespace SmartContractsGenerator.Model.Tests
         {
             instructionsListMockHelper.Dispose();
             conditionMockHelper.Dispose();
+        }
+
+        [TestMethod()]
+        [ExpectedException(typeof(MissingMandatoryElementException))]
+        public void EmptyIfStatementTest()
+        {
+            new IfStatement().GenerateCode();
         }
 
         [TestMethod]
@@ -63,15 +68,13 @@ namespace SmartContractsGenerator.Model.Tests
 
         static IEnumerable<object[]> GetDataForTests()
         {
-            List<object[]> data = new List<object[]>();
-
             var onlyTrueInstructions = new IfStatement()
             {
                 Condition = conditionMockHelper.PrepareMock(ConditionCode),
                 TrueInstructions = instructionsListMockHelper.PrepareMock(TrueInstructionsCode, false, true),
                 FalseInstructions = instructionsListMockHelper.PrepareMock(FalseInstructionsCode, false, false)
             };
-            data.Add(new object[] { onlyTrueInstructions, $"if ({ConditionCode}) {{\n{TrueInstructionsCode}\n}}"});
+            yield return new object[] { onlyTrueInstructions, $"if ({ConditionCode}) {{\n{TrueInstructionsCode}\n}}"};
 
             var trueAndFalseInstructions = new IfStatement()
             {
@@ -79,7 +82,7 @@ namespace SmartContractsGenerator.Model.Tests
                 TrueInstructions = instructionsListMockHelper.PrepareMock(TrueInstructionsCode, false, true),
                 FalseInstructions = instructionsListMockHelper.PrepareMock(FalseInstructionsCode, false, true)
             };
-            data.Add(new object[] { trueAndFalseInstructions, $"if ({ConditionCode}) {{\n{TrueInstructionsCode}\n}} else {{\n{FalseInstructionsCode}\n}}" });
+            yield return new object[] { trueAndFalseInstructions, $"if ({ConditionCode}) {{\n{TrueInstructionsCode}\n}} else {{\n{FalseInstructionsCode}\n}}" };
 
             var trueAndElseIfInstructions = new IfStatement()
             {
@@ -87,9 +90,14 @@ namespace SmartContractsGenerator.Model.Tests
                 TrueInstructions = instructionsListMockHelper.PrepareMock(TrueInstructionsCode, false, true),
                 FalseInstructions = instructionsListMockHelper.PrepareMock(FalseInstructionsCode, true, true)
             };
-            data.Add(new object[] { trueAndElseIfInstructions, $"if ({ConditionCode}) {{\n{TrueInstructionsCode}\n}} else {FalseInstructionsCode}" });
+            yield return new object[] { trueAndElseIfInstructions, $"if ({ConditionCode}) {{\n{TrueInstructionsCode}\n}} else {FalseInstructionsCode}" };
 
-            return data;
+
+            var onlyCondition = new IfStatement()
+            {
+                Condition = conditionMockHelper.PrepareMock(ConditionCode)
+            };
+            yield return new object[] { onlyCondition, $"if ({ConditionCode}) {{\n}}" };
         }
     }
 }
