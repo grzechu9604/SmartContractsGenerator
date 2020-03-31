@@ -59,7 +59,7 @@ namespace SmartContractsGenerator.Model
                     codeBuilder.Append("\n");
                 }
 
-                Properties.ForEach(property => codeBuilder.Append($"{property.GenerateDeclarationCode()}\n"));
+                Properties.ForEach(property => codeBuilder.Append($"{property.GenerateDeclarationCode()};\n"));
                 propertiesAdded = true;
             }
 
@@ -71,7 +71,7 @@ namespace SmartContractsGenerator.Model
                     codeBuilder.Append("\n");
                 }
 
-                Events.ForEach(contractEvent => codeBuilder.Append($"{contractEvent.GenerateCode()}\n"));
+                Events.ForEach(contractEvent => codeBuilder.Append($"{contractEvent.GenerateCode()};\n"));
                 eventsAdded = true;
             }
 

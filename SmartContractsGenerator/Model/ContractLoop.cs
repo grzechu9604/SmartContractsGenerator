@@ -4,7 +4,7 @@ using SmartContractsGenerator.Model.AbstractPatterns;
 
 namespace SmartContractsGenerator.Model
 {
-    public class ContractLoop : AbstractInstructionsContainer
+    public class ContractLoop : AbstractInstructionsContainer, IInstruction
     {
         public Declaration InitialDeclaration { get; set; }
         public Condition BreakCondition { get; set; }

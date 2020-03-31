@@ -10,13 +10,15 @@ namespace SmartContractsGenerator.Model.AbstractPatterns
 
         public virtual string GenerateCode()
         {
-            return string.Join("\n", _instructions.Select(p => p.GenerateCode()));
+            return string.Join("\n", _instructions.Select(i => $"{i.GenerateCode()}{GetInstructionEnding(i)}"));
         }
 
         public virtual void AppendInstruction(IInstruction instruction)
         {
             _instructions.Add(instruction);
         }
+
+        public static string GetInstructionEnding(IInstruction i) => i is IOneLineInstruction ? ";" : string.Empty;
 
         public virtual bool Any() => _instructions.Any();
 
