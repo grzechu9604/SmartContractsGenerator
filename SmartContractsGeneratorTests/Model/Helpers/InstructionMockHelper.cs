@@ -1,7 +1,5 @@
-﻿using SmartContractsGenerator.Model.AbstractPatterns;
+﻿using SmartContractsGenerator.Interfaces;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SmartContractsGeneratorTests.Model.Helpers
 {
@@ -14,15 +12,26 @@ namespace SmartContractsGeneratorTests.Model.Helpers
             mocksHolder.Dispose();
         }
 
-        public Instruction PrepareMock(string expectedCode)
+        public IInstruction PrepareMock(string expectedCode)
         {
             var mock = mocksHolder.GetMock();
 
-            mock.Mock<Instruction>()
+            mock.Mock<IInstruction>()
                 .Setup(x => x.GenerateCode())
                 .Returns(expectedCode);
 
-            return mock.Create<Instruction>();
+            return mock.Create<IInstruction>();
+        }
+
+        public IOneLineInstruction PrepareOneLineInstructionMock(string expectedCode)
+        {
+            var mock = mocksHolder.GetMock();
+
+            mock.Mock<IOneLineInstruction>()
+                .Setup(x => x.GenerateCode())
+                .Returns(expectedCode);
+
+            return mock.Create<IOneLineInstruction>();
         }
     }
 }

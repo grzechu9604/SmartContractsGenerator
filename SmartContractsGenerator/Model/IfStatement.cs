@@ -1,18 +1,17 @@
 ﻿using SmartContractsGenerator.Exceptions;
+using SmartContractsGenerator.Interfaces;
 using SmartContractsGenerator.Model.AbstractPatterns;
-using System;
-using System.Collections.Generic;
 using System.Text;
 
 namespace SmartContractsGenerator.Model
 {
-    public class IfStatement : Instruction
+    public class IfStatement : IInstruction
     {
         public InstructionsList TrueInstructions { get; set; }
         public InstructionsList FalseInstructions { get; set; }
         public Condition Condition { get; set; }
 
-        public override string GenerateCode()
+        public virtual string GenerateCode()
         {
             if (Condition == null)
             {

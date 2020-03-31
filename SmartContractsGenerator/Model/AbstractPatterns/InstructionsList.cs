@@ -1,20 +1,19 @@
-﻿using System;
+﻿using SmartContractsGenerator.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace SmartContractsGenerator.Model.AbstractPatterns
 {
     public class InstructionsList
     {
-        private readonly List<Instruction> _instructions = new List<Instruction>();
+        private readonly List<IInstruction> _instructions = new List<IInstruction>();
 
         public virtual string GenerateCode()
         {
             return string.Join("\n", _instructions.Select(p => p.GenerateCode()));
         }
 
-        public virtual void AppendInstruction(Instruction instruction)
+        public virtual void AppendInstruction(IInstruction instruction)
         {
             _instructions.Add(instruction);
         }

@@ -82,7 +82,7 @@ namespace SmartContractsGenerator.Model.Tests
                 BreakCondition = conditionCodeMockCreator.PrepareMock(breakConditionCode),
                 Instructions = instructionsListMockCreator.PrepareMock(instructionCode, false, true),
                 InitialDeclaration = declarationMockCreator.PrepareMock(initialDeclaration),
-                StepInstruction = instructionMockHelper.PrepareMock(stepInstruction)
+                StepInstruction = instructionMockHelper.PrepareOneLineInstructionMock(stepInstruction)
             };
         }
     }

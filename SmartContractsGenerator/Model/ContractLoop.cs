@@ -1,4 +1,5 @@
 ﻿using SmartContractsGenerator.Exceptions;
+using SmartContractsGenerator.Interfaces;
 using SmartContractsGenerator.Model.AbstractPatterns;
 
 namespace SmartContractsGenerator.Model
@@ -7,7 +8,7 @@ namespace SmartContractsGenerator.Model
     {
         public Declaration InitialDeclaration { get; set; }
         public Condition BreakCondition { get; set; }
-        public Instruction StepInstruction { get; set; }
+        public IOneLineInstruction StepInstruction { get; set; }
         protected override string GetHeader()
         {
             if (InitialDeclaration == null)

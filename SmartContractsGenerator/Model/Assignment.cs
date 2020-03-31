@@ -1,18 +1,14 @@
 ﻿using SmartContractsGenerator.Exceptions;
 using SmartContractsGenerator.Interfaces;
-using SmartContractsGenerator.Model.AbstractPatterns;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SmartContractsGenerator.Model
 {
-    public class Assignment : Instruction
+    public class Assignment : IOneLineInstruction
     {
         public IValueContainer Destination { get; set; }
         public IAssignable Source { get; set; }
 
-        public override string GenerateCode()
+        public virtual string GenerateCode()
         {
             if (Destination == null)
             {
