@@ -6,12 +6,12 @@ namespace SmartContractsGenerator.Model
 {
     public class ContractLoop : AbstractInstructionsContainer, IInstruction
     {
-        public Declaration InitialDeclaration { get; set; }
+        public Assignment InitialAssignment { get; set; }
         public Condition BreakCondition { get; set; }
         public IOneLineInstruction StepInstruction { get; set; }
         protected override string GetHeader()
         {
-            if (InitialDeclaration == null)
+            if (InitialAssignment == null)
             {
                 throw new MissingMandatoryElementException("Initial declaration is required in loop statement");
             }
@@ -26,7 +26,7 @@ namespace SmartContractsGenerator.Model
                 throw new MissingMandatoryElementException("Step instruction is required in loop statement");
             }
 
-            return $"for ({InitialDeclaration.GenerateCode()}; {BreakCondition.GenerateCode()}; {StepInstruction.GenerateCode()}) {{\n";
+            return $"for ({InitialAssignment.GenerateCode()}; {BreakCondition.GenerateCode()}; {StepInstruction.GenerateCode()}) {{\n";
         }
     }
 }

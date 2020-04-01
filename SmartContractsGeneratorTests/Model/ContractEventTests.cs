@@ -65,13 +65,13 @@ namespace SmartContractsGenerator.Model.Tests
             var twoElementParametersListCode = "Type1 Name1, Type2 Name2";
             var threeElementParametersListCode = "Type1 Name1, Type2 Name2, Type3 Name3";
 
-            yield return GenerateRow(null, name1, $"event {name1}();");
-            yield return GenerateRow(null, name2, $"event {name2}();");
-            yield return GenerateRow(string.Empty, name1, $"event {name1}();");
-            yield return GenerateRow(string.Empty, name2, $"event {name2}();");
-            yield return GenerateRow(oneElementParametersListCode, name1, $"event {name1}({oneElementParametersListCode});");
-            yield return GenerateRow(twoElementParametersListCode, name2, $"event {name2}({twoElementParametersListCode});");
-            yield return GenerateRow(threeElementParametersListCode, name2, $"event {name2}({threeElementParametersListCode});");
+            yield return GenerateRow(null, name1, $"event {name1}()");
+            yield return GenerateRow(null, name2, $"event {name2}()");
+            yield return GenerateRow(string.Empty, name1, $"event {name1}()");
+            yield return GenerateRow(string.Empty, name2, $"event {name2}()");
+            yield return GenerateRow(oneElementParametersListCode, name1, $"event {name1}({oneElementParametersListCode})");
+            yield return GenerateRow(twoElementParametersListCode, name2, $"event {name2}({twoElementParametersListCode})");
+            yield return GenerateRow(threeElementParametersListCode, name2, $"event {name2}({threeElementParametersListCode})");
         }
 
         static IEnumerable<object[]> GetDataForGenerateCallCodeTest()

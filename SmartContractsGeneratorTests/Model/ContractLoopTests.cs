@@ -11,7 +11,7 @@ namespace SmartContractsGenerator.Model.Tests
         private static readonly ConditionCodeMockCreator conditionCodeMockCreator = new ConditionCodeMockCreator();
         private static readonly InstructionsListMockCreator instructionsListMockCreator = new InstructionsListMockCreator();
         private static readonly InstructionMockHelper instructionMockHelper = new InstructionMockHelper();
-        private static readonly DeclarationMockCreator declarationMockCreator = new DeclarationMockCreator();
+        private static readonly AssignmentMockCreator assignmentMockCreator = new AssignmentMockCreator();
 
         [TestCleanup]
         public void Cleanup()
@@ -19,7 +19,7 @@ namespace SmartContractsGenerator.Model.Tests
             conditionCodeMockCreator.Dispose();
             instructionsListMockCreator.Dispose();
             instructionMockHelper.Dispose();
-            declarationMockCreator.Dispose();
+            assignmentMockCreator.Dispose();
         }
 
         [TestMethod()]
@@ -36,7 +36,7 @@ namespace SmartContractsGenerator.Model.Tests
         {
             new ContractLoop()
             {
-                InitialDeclaration = new Declaration()
+                InitialAssignment = new Assignment()
             }.GenerateCode();
         }
 
@@ -46,7 +46,7 @@ namespace SmartContractsGenerator.Model.Tests
         {
             new ContractLoop()
             {
-                InitialDeclaration = new Declaration(),
+                InitialAssignment = new Assignment(),
                 BreakCondition = new Condition()
             }.GenerateCode();
         }
@@ -81,7 +81,7 @@ namespace SmartContractsGenerator.Model.Tests
             {
                 BreakCondition = conditionCodeMockCreator.PrepareMock(breakConditionCode),
                 Instructions = instructionsListMockCreator.PrepareMock(instructionCode, false, true),
-                InitialDeclaration = declarationMockCreator.PrepareMock(initialDeclaration),
+                InitialAssignment = assignmentMockCreator.PrepareMock(initialDeclaration),
                 StepInstruction = instructionMockHelper.PrepareOneLineInstructionMock(stepInstruction)
             };
         }

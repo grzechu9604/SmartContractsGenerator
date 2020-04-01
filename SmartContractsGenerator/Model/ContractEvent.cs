@@ -33,7 +33,7 @@ namespace SmartContractsGenerator.Model
                 throw new MissingMandatoryElementException("Name is mandatory element of event");
             }
 
-            return $"event {Name}({Parameters?.GenerateCode()});";
+            return $"event {Name}({Parameters?.GenerateCode()})";
         }
 
         public virtual string GenerateCallCode()
