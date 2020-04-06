@@ -7,7 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartContractsGenerator", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartContractsGeneratorTests", "SmartContractsGeneratorTests\SmartContractsGeneratorTests.csproj", "{03AC48C1-1835-41C3-9478-0FACD0558CD8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartContractGeneratorManualTests", "SmartContractGeneratorManualTests\SmartContractGeneratorManualTests.csproj", "{5C123FC8-8871-4D54-875B-110525A082D0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartContractGeneratorManualTests", "SmartContractGeneratorManualTests\SmartContractGeneratorManualTests.csproj", "{5C123FC8-8871-4D54-875B-110525A082D0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartContractsGenerator.WebApp", "SmartContractsGenerator.WebApp\SmartContractsGenerator.WebApp.csproj", "{54A036E7-7D8D-4FC6-9796-910B1108E89C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{5C123FC8-8871-4D54-875B-110525A082D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5C123FC8-8871-4D54-875B-110525A082D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5C123FC8-8871-4D54-875B-110525A082D0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{54A036E7-7D8D-4FC6-9796-910B1108E89C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{54A036E7-7D8D-4FC6-9796-910B1108E89C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{54A036E7-7D8D-4FC6-9796-910B1108E89C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{54A036E7-7D8D-4FC6-9796-910B1108E89C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
