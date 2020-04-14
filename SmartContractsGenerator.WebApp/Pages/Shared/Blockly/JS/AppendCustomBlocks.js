@@ -29,7 +29,7 @@ Blockly.Blocks['contract_constructor'] = {
             .appendField("Constructor");
         this.appendDummyInput()
             .appendField("Visibility")
-            .appendField(new Blockly.FieldDropdown([["Internal", "1"], ["External", "2"]]), "Visibility");
+            .appendField(new Blockly.FieldDropdown([["Public", "1"], ["Internal", "2"]]), "Visibility");
         this.appendDummyInput()
             .appendField("Instructions");
         this.appendStatementInput("Instrictions")
@@ -47,7 +47,7 @@ Blockly.Blocks['contract_property'] = {
             .appendField("Property");
         this.appendDummyInput()
             .appendField("Visibility")
-            .appendField(new Blockly.FieldDropdown([["External", "External"], ["Public", "Public"], ["Private", "Private"], ["Internal", "Internal"]]), "Visibility");
+            .appendField(new Blockly.FieldDropdown([["External", "0"], ["Public", "1"], ["Private", "3"], ["Internal", "2"]]), "Visibility");
         this.appendValueInput("NAME")
             .setCheck("Variable")
             .appendField("Variable");
