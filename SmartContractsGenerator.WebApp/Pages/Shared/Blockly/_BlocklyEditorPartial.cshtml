@@ -2,6 +2,9 @@
 <script src="~/lib/blockly/blockly_compressed.js"></script>
 <script src="~/lib/blockly/blocks_compressed.js"></script>
 <script src="~/lib/blockly/msg/js/en.js"></script>
+<script src="~/CustomBlocklyJS/AppendCustomBlocks.js"></script>
+
+
 @*<script>
         var blocklyArea = document.getElementById('blocklyArea');
         var blocklyDiv = document.getElementById('blocklyDiv');
@@ -30,27 +33,83 @@
     </script>*@
 
 
-<div id="blocklyDiv" style="height: 480px; width: 600px;"></div>
+<div id="blocklyDiv" style="height: 480px; width: 100%;"></div>
 <xml xmlns="https://developers.google.com/blockly/xml" id="toolbox" style="display: none">
-    <category name="Control">
-        <block type="controls_if"></block>
-        <block type="logic_compare"></block>
-        <block type="controls_repeat_ext"></block>
-        <block type="math_number">
-            <field name="NUM">123</field>
+    <category name="Contract">
+        <block type="contract">
+            <field name="Name">[insert contract name]</field>
         </block>
     </category>
-    <category name="Logic">
-        <block type="math_arithmetic"></block>
-        <block type="text"></block>
-        <block type="text_print"></block>
+    <category name="Contract elements">
+        <block type="contract_property">
+            <field name="Visibility">External</field>
+        </block>
+        <block type="contract_event">
+            <field name="NAME">[contract name]</field>
+        </block>
+        <block type="contract_constructor">
+            <field name="Visibility">1</field>
+        </block>
+        <block type="contract_function">
+            <field name="Name">[function name]</field>
+            <field name="Visibility">1</field>
+        </block>
+        <block type="modifier">
+            <field name="Name">[modifier name]</field>
+        </block>
+    </category>
+    <category name="Function elements">
+        <block type="declaration"></block>
+        <block type="assignment"></block>
+        <block type="event_call"></block>
+        <block type="call_void_function"></block>
+        <block type="requirement"></block>
+        <block type="contract_loop"></block>
+        <block type="if_statement"></block>
+    </category>
+    <category name="All">
+        <block type="contract">
+            <field name="Name">[insert contract name]</field>
+        </block>
+        <block type="assignment"></block>
+        <block type="constant_value">
+            <field name="Value">[value]</field>
+        </block>
+        <block type="contract_property">
+            <field name="Visibility">External</field>
+        </block>
+        <block type="contract_constructor">
+            <field name="Visibility">1</field>
+        </block>
+        <block type="event_call"></block>
+        <block type="declaration"></block>
+        <block type="contract_event">
+            <field name="NAME">[contract name]</field>
+        </block>
+        <block type="call_returnable_function"></block>
+        <block type="call_void_function"></block>
+        <block type="condition"></block>
+        <block type="operation">
+            <field name="Operator">+</field>
+        </block>
+        <block type="requirement"></block>
+        <block type="variable"></block>
+        <block type="contract_loop"></block>
+        <block type="if_statement"></block>
+        <block type="contract_function">
+            <field name="Name">[function name]</field>
+            <field name="Visibility">1</field>
+        </block>
+        <block type="modifier">
+            <field name="Name">[modifier name]</field>
+        </block>
     </category>
 </xml>
+<button id="GenerateCodeButton">Generate code</button>
 
 <script>
     var demoWorkspace = Blockly.inject('blocklyDiv',
         {
-            //media: '../../media/',
             toolbox: document.getElementById('toolbox'),
             scrollbars: true
         });
