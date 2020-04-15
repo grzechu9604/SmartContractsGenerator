@@ -29,13 +29,10 @@ namespace SmartContractsGenerator.Mappers
 
         public Contract GetContractFromXmlNode(XmlNode node, XmlNamespaceManager nsmgr)
         {
-            Contract c = new Contract();
-
-            var nameNode = node.SelectSingleNode("gxml:field[@name=\"Name\"]", nsmgr);
-            if (nameNode != null)
+            Contract c = new Contract()
             {
-                c.Name = nameNode.InnerText;
-            }
+                Name = GetNameForElementNode(node, nsmgr)
+            };
 
             var constructorNode = node.SelectSingleNode("gxml:statement[@name=\"Constructor\"]/gxml:block[@type=\"contract_constructor\"]", nsmgr);
             if (constructorNode != null)
@@ -43,30 +40,72 @@ namespace SmartContractsGenerator.Mappers
                 c.Constructor = GetConstructorFromXmlNode(constructorNode, nsmgr);
             }
 
+            var functionNode = node.SelectSingleNode("gxml:statement[@name=\"Functions\"]/gxml:block[@type=\"contract_function\"]", nsmgr);
+            if (functionNode != null)
+            {
+                c.Functions = GetFunctionFromXmlNode(functionNode, nsmgr);
+            }
+
             return c;
         }
 
         public Constructor GetConstructorFromXmlNode(XmlNode node, XmlNamespaceManager nsmgr)
         {
-            Constructor c = new Constructor();
-
-            var visibilityNode = node.SelectSingleNode("gxml:field[@name=\"Visibility\"]", nsmgr);
-            if (visibilityNode != null)
+            Constructor c = new Constructor()
             {
-                c.Visibility = GetVisibilityFromXmlNode(visibilityNode);
-            }
+                Visibility = GetVisibilityForElementNode(node, nsmgr)
+            };
 
             return c;
         }
 
-        public Visibility? GetVisibilityFromXmlNode(XmlNode node)
+        public Visibility? GetVisibilityForElementNode(XmlNode node, XmlNamespaceManager nsmgr)
         {
-            if (node.InnerText.All(c => char.IsDigit(c)))
+
+            var visibilityNode = node.SelectSingleNode("gxml:field[@name=\"Visibility\"]", nsmgr);
+            if (visibilityNode != null)
             {
-                return (Visibility)Convert.ToInt32(node.InnerText);
+                if (visibilityNode.InnerText.All(c => char.IsDigit(c)))
+                {
+                    return (Visibility)Convert.ToInt32(visibilityNode.InnerText);
+                }
             }
 
             return null;
+        }
+
+        public List<ContractFunction> GetFunctionFromXmlNode(XmlNode node, XmlNamespaceManager nsmgr)
+        {
+            var functions = new List<ContractFunction>();
+
+            while (node != null)
+            {
+                var f = new ContractFunction()
+                {
+                    Name = GetNameForElementNode(node, nsmgr),
+                    Visibility = GetVisibilityForElementNode(node, nsmgr)
+                };
+
+                functions.Add(f);
+
+                node = node.SelectSingleNode("gxml:next/gxml:block[@type=\"contract_function\"]", nsmgr);
+            }
+
+            return functions;
+        }
+
+        public string GetNameForElementNode(XmlNode node, XmlNamespaceManager nsmgr)
+        {
+            var nameNode = node.SelectSingleNode("gxml:field[@name=\"Name\"]", nsmgr);
+            if (nameNode != null)
+            {
+                return nameNode.InnerText;
+            }
+            else
+            {
+                return string.Empty;
+            }
+
         }
     }
 }

@@ -285,7 +285,7 @@ Blockly.Blocks['contract_function'] = {
             .appendField(new Blockly.FieldTextInput("[function name]"), "Name");
         this.appendDummyInput()
             .appendField("Visibility")
-            .appendField(new Blockly.FieldDropdown([["Internal", "1"], ["External", "2"]]), "Visibility");
+            .appendField(new Blockly.FieldDropdown([["External", "0"], ["Public", "1"], ["Private", "3"], ["Internal", "2"]]), "Visibility");
         this.appendDummyInput()
             .appendField("Instructions");
         this.appendStatementInput("Instrictions")
