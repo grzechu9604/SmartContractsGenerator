@@ -3,7 +3,6 @@
 <script src="~/lib/blockly/blocks_compressed.js"></script>
 <script src="~/lib/blockly/msg/js/en.js"></script>
 <script src="~/CustomBlocklyJS/AppendCustomBlocks.js"></script>
-<script src="~/CustomBlocklyJS/XmlCodeGenerator.js"></script>
 
 
 @*<script>
@@ -118,11 +117,13 @@
     $(document).ready(function () {
         $("#GenerateCodeButton").click(function (e) {
             e.preventDefault();
+            var blocks = Blockly.Xml.workspaceToDom(demoWorkspace);
+            var blocksXmlCode = new XMLSerializer().serializeToString(blocks);
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("GetCode", "Blockly")",
                 data: {
-                    code: Blockly.XmlGenerator.workspaceToCode(demoWorkspace)
+                    code: blocksXmlCode
                 },
                 success: function (result) {
                     alert(result);

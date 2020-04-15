@@ -13,35 +13,30 @@ namespace SmartContractsGenerator.Mappers
         {
             if (document != null)
             {
-                var c = new Contract();
-                var contractNode = document.SelectSingleNode("contract");
-                if (contractNode != null)
+                XmlNamespaceManager nsmgr = new XmlNamespaceManager(document.NameTable);
+                nsmgr.AddNamespace("gxml", "https://developers.google.com/blockly/xml");
+                XmlNode root = document.DocumentElement;
+
+                var contractNodes = root.SelectNodes("descendant::gxml:block[@type=\"contract\"]", nsmgr);
+                if (contractNodes.Count > 0)
                 {
-                    var nameNode = contractNode.SelectSingleNode("name");
-                    if (nameNode != null)
-                    {
-                        c.Name = nameNode.InnerText;
-                    }
-
-                    var constructorNode = contractNode.SelectSingleNode("constructor");
-                    if (constructorNode != null)
-                    {
-                        var constructor = new Constructor();
-                        var visibilityNode = constructorNode.SelectSingleNode("visibility");
-                        if (visibilityNode != null && visibilityNode.InnerText.All(c => char.IsDigit(c)))
-                        {
-                            constructor.Visibility = (Model.Enums.Visibility)Convert.ToInt32(visibilityNode.InnerText);
-                        }
-
-                        c.Constructor = constructor;
-                    }
+                    return GetContractFromXmlNode(contractNodes.Item(0), nsmgr);
                 }
-                return c;
             }
-            else
+            return null;
+        }
+
+        public Contract GetContractFromXmlNode(XmlNode node, XmlNamespaceManager nsmgr)
+        {
+            Contract c = new Contract();
+
+            var nameNode = node.SelectSingleNode("gxml:field", nsmgr);
+            if (nameNode != null)
             {
-                return null;
+                c.Name = nameNode.InnerText;
             }
+
+            return c;
         }
     }
 }
