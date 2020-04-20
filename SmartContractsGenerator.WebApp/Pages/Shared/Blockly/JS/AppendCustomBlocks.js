@@ -6,7 +6,7 @@
             .appendField("Name")
             .appendField(new Blockly.FieldTextInput("[insert contract name]"), "Name");
         this.appendStatementInput("Properties")
-            .setCheck("")
+            .setCheck("contract_property")
             .appendField("Properties");
         this.appendStatementInput("Events")
             .setCheck(null)
@@ -48,11 +48,11 @@ Blockly.Blocks['contract_property'] = {
         this.appendDummyInput()
             .appendField("Visibility")
             .appendField(new Blockly.FieldDropdown([["External", "0"], ["Public", "1"], ["Private", "3"], ["Internal", "2"]]), "Visibility");
-        this.appendValueInput("NAME")
-            .setCheck("Variable")
+        this.appendValueInput("Variable")
+            .setCheck("variable")
             .appendField("Variable");
-        this.setPreviousStatement(true, "ContractProperty");
-        this.setNextStatement(true, "ContractProperty");
+        this.setPreviousStatement(true, "contract_property");
+        this.setNextStatement(true, "contract_property");
         this.setColour(230);
         this.setTooltip("");
         this.setHelpUrl("");
@@ -218,9 +218,9 @@ Blockly.Blocks['variable'] = {
     init: function () {
         this.appendDummyInput()
             .appendField("Variable");
-        this.appendValueInput("Name")
-            .setCheck("String")
-            .appendField("Name");
+        this.appendDummyInput()
+            .appendField("Name")
+            .appendField(new Blockly.FieldVariable("item"), "Name");
         this.appendValueInput("Type")
             .setCheck(null)
             .appendField("Type");
@@ -310,6 +310,24 @@ Blockly.Blocks['modifier'] = {
         this.appendStatementInput("Instrictions")
             .setCheck(null);
         this.setPreviousStatement(true, "contract_constructor");
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+    }
+};
+
+Blockly.Blocks['variable_declaration'] = {
+    init: function () {
+        this.appendDummyInput()
+            .appendField("Variable declaration");
+        this.appendDummyInput()
+            .appendField("Name")
+            .appendField(new Blockly.FieldVariable("item"), "Name");
+        this.appendDummyInput()
+            .appendField("Type")
+            .appendField(new Blockly.FieldDropdown([["int256", "int256"], ["uint256", "uint256"], ["bool", "bool"]]), "Type");
+        this.setInputsInline(false);
+        this.setOutput(true, "variable");
         this.setColour(230);
         this.setTooltip("");
         this.setHelpUrl("");
