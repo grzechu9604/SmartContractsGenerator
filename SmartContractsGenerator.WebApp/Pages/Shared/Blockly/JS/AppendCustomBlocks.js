@@ -32,7 +32,7 @@ Blockly.Blocks['contract_constructor'] = {
             .appendField(new Blockly.FieldDropdown([["Public", "1"], ["Internal", "2"]]), "Visibility");
         this.appendDummyInput()
             .appendField("Instructions");
-        this.appendStatementInput("Instrictions")
+        this.appendStatementInput("Instructions")
             .setCheck(null);
         this.setPreviousStatement(true, "contract_constructor");
         this.setColour(230);
@@ -65,7 +65,7 @@ Blockly.Blocks['contract_event'] = {
             .appendField("Contract event");
         this.appendDummyInput()
             .appendField("Name")
-            .appendField(new Blockly.FieldTextInput("[contract name]"), "NAME");
+            .appendField(new Blockly.FieldTextInput("[contract name]"), "Name");
         this.appendStatementInput("Parameters")
             .setCheck("Variable");
         this.setPreviousStatement(true, null);
@@ -106,11 +106,11 @@ Blockly.Blocks['assignment'] = {
     init: function () {
         this.appendDummyInput()
             .appendField("Assignment");
-        this.appendStatementInput("Destination")
+        this.appendValueInput("Destination")
             .setCheck(null);
         this.appendDummyInput()
             .appendField("=");
-        this.appendStatementInput("Source")
+        this.appendValueInput("Source")
             .setCheck(null);
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
@@ -138,7 +138,7 @@ Blockly.Blocks['call_returnable_function'] = {
     init: function () {
         this.appendDummyInput()
             .appendField("Call function and get value");
-        this.appendValueInput("NAME")
+        this.appendValueInput("Name")
             .setCheck(null)
             .appendField("Function");
         this.setOutput(true, null);
@@ -152,7 +152,7 @@ Blockly.Blocks['call_void_function'] = {
     init: function () {
         this.appendDummyInput()
             .appendField("Call function");
-        this.appendValueInput("NAME")
+        this.appendValueInput("Name")
             .setCheck(null)
             .appendField("Function");
         this.setPreviousStatement(true, null);
@@ -165,7 +165,7 @@ Blockly.Blocks['call_void_function'] = {
 
 Blockly.Blocks['condition'] = {
     init: function () {
-        this.appendValueInput("NAME")
+        this.appendValueInput("Name")
             .setCheck("Operation")
             .appendField("Condition")
             .appendField("");
@@ -217,13 +217,8 @@ Blockly.Blocks['requirement'] = {
 Blockly.Blocks['variable'] = {
     init: function () {
         this.appendDummyInput()
-            .appendField("Variable");
-        this.appendDummyInput()
-            .appendField("Name")
+            .appendField("Variable")
             .appendField(new Blockly.FieldVariable("item"), "Name");
-        this.appendValueInput("Type")
-            .setCheck(null)
-            .appendField("Type");
         this.setOutput(true, "variable");
         this.setColour(230);
         this.setTooltip("");
@@ -244,7 +239,7 @@ Blockly.Blocks['contract_loop'] = {
         this.appendValueInput("break_condition")
             .setCheck("Operation")
             .appendField("Break contition");
-        this.appendStatementInput("instructions")
+        this.appendStatementInput("Instructions")
             .setCheck(null)
             .appendField("Instructions");
         this.setPreviousStatement(true, null);
@@ -288,7 +283,7 @@ Blockly.Blocks['contract_function'] = {
             .appendField(new Blockly.FieldDropdown([["External", "0"], ["Public", "1"], ["Private", "3"], ["Internal", "2"]]), "Visibility");
         this.appendDummyInput()
             .appendField("Instructions");
-        this.appendStatementInput("Instrictions")
+        this.appendStatementInput("Instructions")
             .setCheck(null);
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
@@ -307,7 +302,7 @@ Blockly.Blocks['modifier'] = {
             .appendField(new Blockly.FieldTextInput("[modifier name]"), "Name");
         this.appendDummyInput()
             .appendField("Instructions");
-        this.appendStatementInput("Instrictions")
+        this.appendStatementInput("Instructions")
             .setCheck(null);
         this.setPreviousStatement(true, "contract_constructor");
         this.setColour(230);

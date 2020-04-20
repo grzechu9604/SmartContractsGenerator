@@ -1,4 +1,6 @@
-﻿using SmartContractsGenerator.Model;
+﻿using SmartContractsGenerator.Interfaces;
+using SmartContractsGenerator.Model;
+using SmartContractsGenerator.Model.AbstractPatterns;
 using SmartContractsGenerator.Model.Enums;
 using System;
 using System.Collections.Generic;
@@ -59,10 +61,95 @@ namespace SmartContractsGenerator.Mappers
         {
             Constructor c = new Constructor()
             {
-                Visibility = GetVisibilityForElementNode(node, nsmgr)
+                Visibility = GetVisibilityForElementNode(node, nsmgr),
+                Instructions = GetInstructionsListFromXmlNode(node, nsmgr)
             };
 
             return c;
+        }
+
+        public InstructionsList GetInstructionsListFromXmlNode(XmlNode node, XmlNamespaceManager nsmgr)
+        {
+            var instructions = new InstructionsList();
+
+            var instructionsNode = node.SelectSingleNode("gxml:statement[@name=\"Instructions\"]/gxml:block", nsmgr);
+
+            while (instructionsNode != null)
+            {
+                var instruction = GetInstructionFromXmlNode(instructionsNode, nsmgr);
+                instructions.AppendInstruction(instruction);
+                instructionsNode = instructionsNode.SelectSingleNode("gxml:next/gxml:block", nsmgr);
+            }
+
+            return instructions;
+        }
+
+        public IInstruction GetInstructionFromXmlNode(XmlNode node, XmlNamespaceManager nsmgr)
+        {
+            if (node.Attributes["type"] != null)
+            {
+                switch (node.Attributes["type"].Value)
+                {
+                    case "assignment":
+                        return GetAssignmentFromXmlNode(node, nsmgr);
+                }
+            }
+
+            return null;
+        }
+
+        public Assignment GetAssignmentFromXmlNode(XmlNode node, XmlNamespaceManager nsmgr)
+        {
+            var destinationNode = node.SelectSingleNode("gxml:value[@name=\"Destination\"]/gxml:block", nsmgr);
+            var sourceNode = node.SelectSingleNode("gxml:value[@name=\"Source\"]/gxml:block", nsmgr);
+
+            return new Assignment()
+            {
+                Destination = GetValueContainerFromXmlNode(destinationNode, nsmgr),
+                Source = GetAssignableFromXmlNode(sourceNode, nsmgr)
+            };
+        }
+
+        public IValueContainer GetValueContainerFromXmlNode(XmlNode node, XmlNamespaceManager nsmgr)
+        {
+            if (node.Attributes["type"] != null)
+            {
+                switch (node.Attributes["type"].Value)
+                {
+                    case "variable":
+                        return GetVariableUsageForElementNode(node, nsmgr);
+                }
+            }
+
+            return null;
+        }
+
+        public IAssignable GetAssignableFromXmlNode(XmlNode node, XmlNamespaceManager nsmgr)
+        {
+            if (node != null && node.Attributes["type"] != null)
+            {
+                switch (node.Attributes["type"].InnerText)
+                {
+                    case "constant_value":
+                        return GetConstantValueFromElementNode(node, nsmgr);
+
+                }
+            }
+
+            return null;
+        }
+
+        public ConstantValue GetConstantValueFromElementNode(XmlNode node, XmlNamespaceManager nsmgr)
+        {
+            if (node != null)
+            {
+                return new ConstantValue()
+                {
+                    Value = node.InnerText
+                };
+            }
+
+            return null;
         }
 
         public Visibility? GetVisibilityForElementNode(XmlNode node, XmlNamespaceManager nsmgr)
@@ -80,7 +167,7 @@ namespace SmartContractsGenerator.Mappers
             return null;
         }
 
-        public Variable GetVariableForElementNode(XmlNode node, XmlNamespaceManager nsmgr)
+        public Variable GetVariableDeclarationForElementNode(XmlNode node, XmlNamespaceManager nsmgr)
         {
             var variableNode = node.SelectSingleNode("gxml:value[@name=\"Variable\"]/gxml:block[@type=\"variable_declaration\"]", nsmgr);
             if (variableNode != null)
@@ -89,6 +176,19 @@ namespace SmartContractsGenerator.Mappers
                 {
                     Name = GetNameForElementNode(variableNode, nsmgr),
                     Type = GeTypeForElementNode(variableNode, nsmgr)
+                };
+            }
+
+            return null;
+        }
+
+        public Variable GetVariableUsageForElementNode(XmlNode node, XmlNamespaceManager nsmgr)
+        {
+            if (node != null)
+            {
+                return new Variable()
+                {
+                    Name = GetNameForElementNode(node, nsmgr)
                 };
             }
 
@@ -124,7 +224,7 @@ namespace SmartContractsGenerator.Mappers
                 var cp = new ContractProperty()
                 {
                     Visibility = GetVisibilityForElementNode(node, nsmgr),
-                    Variable = GetVariableForElementNode(node, nsmgr)
+                    Variable = GetVariableDeclarationForElementNode(node, nsmgr)
                 };
 
                 properties.Add(cp);
