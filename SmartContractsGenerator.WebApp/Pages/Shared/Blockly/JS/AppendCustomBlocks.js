@@ -165,7 +165,7 @@ Blockly.Blocks['call_void_function'] = {
 
 Blockly.Blocks['condition'] = {
     init: function () {
-        this.appendValueInput("Name")
+        this.appendValueInput("condition")
             .setCheck("operation")
             .appendField("Condition")
             .appendField("");

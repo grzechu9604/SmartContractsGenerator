@@ -22,6 +22,7 @@ namespace SmartContractsGenerator.Mappers
         private const string ConstantValueBlockType = "constant_value";
         private const string OperationBlockType = "operation";
         private const string VariableDeclarationBlockType = "variable_declaration";
+        private const string IfStatementBlockType = "if_statement";
 
         private const string PropertiesStatementName = "Properties";
         private const string ConstructorStatementName = "Constructor";
@@ -29,9 +30,12 @@ namespace SmartContractsGenerator.Mappers
         private const string InstructionsStatementName = "Instructions";
         private const string DestinationStatementName = "Destination";
         private const string SourceStatementName = "Source";
+        private const string TrueInstructionsStatementName = "true_instructions";
+        private const string FalseInstructionsStatementName = "false_instructions";
 
         private const string LeftSideValueName = "left_side";
         private const string RightSideValueName = "right_side";
+        private const string ConditionValueName = "condition";
 
         private const string VisibilityFieldName = "Visibility";
         private const string OperatorFieldName = "Operator";
@@ -58,7 +62,8 @@ namespace SmartContractsGenerator.Mappers
 
             InstructionMappers = new Dictionary<string, Func<XmlNode, XmlNamespaceManager, IInstruction>>()
             {
-                {AssignmentBlockType, GetAssignmentFromXmlNode }
+                {AssignmentBlockType, GetAssignmentFromXmlNode },
+                {IfStatementBlockType, GetIfStatementFromXmlNode }
             };
         }
         
@@ -109,10 +114,11 @@ namespace SmartContractsGenerator.Mappers
 
         public Constructor GetConstructorFromXmlNode(XmlNode node, XmlNamespaceManager nsmgr)
         {
+            var instructionNode = node.SelectSingleNode($"gxml:statement[@name=\"{InstructionsStatementName}\"]/gxml:block", nsmgr);
             Constructor c = new Constructor()
             {
                 Visibility = GetVisibilityForElementNode(node, nsmgr),
-                Instructions = GetInstructionsListFromXmlNode(node, nsmgr)
+                Instructions = GetInstructionsListFromXmlNode(instructionNode, nsmgr)
             };
 
             return c;
@@ -122,13 +128,11 @@ namespace SmartContractsGenerator.Mappers
         {
             var instructions = new InstructionsList();
 
-            var instructionsNode = node.SelectSingleNode($"gxml:statement[@name=\"{InstructionsStatementName}\"]/gxml:block", nsmgr);
-
-            while (instructionsNode != null)
+            while (node != null)
             {
-                var instruction = GetInstructionFromXmlNode(instructionsNode, nsmgr);
+                var instruction = GetInstructionFromXmlNode(node, nsmgr);
                 instructions.AppendInstruction(instruction);
-                instructionsNode = instructionsNode.SelectSingleNode("gxml:next/gxml:block", nsmgr);
+                node = node.SelectSingleNode("gxml:next/gxml:block", nsmgr);
             }
 
             return instructions;
@@ -154,6 +158,24 @@ namespace SmartContractsGenerator.Mappers
                 Destination = GetValueContainerFromXmlNode(destinationNode, nsmgr),
                 Source = GetAssignableFromXmlNode(sourceNode, nsmgr)
             };
+        }
+
+        public IfStatement GetIfStatementFromXmlNode(XmlNode node, XmlNamespaceManager nsmgr)
+        {
+            if (node != null)
+            {
+                var conditionNode = node.SelectSingleNode($"gxml:value[@name=\"{ConditionValueName}\"]/gxml:block", nsmgr);
+                var trueInstructionsRoot = node.SelectSingleNode($"gxml:statement[@name=\"{TrueInstructionsStatementName}\"]/gxml:block", nsmgr);
+                var falseInstructionsRoot = node.SelectSingleNode($"gxml:statement[@name=\"{FalseInstructionsStatementName}\"]/gxml:block", nsmgr);
+                return new IfStatement()
+                {
+                    Condition = GetConditionFromXmlNode(conditionNode, nsmgr),
+                    TrueInstructions = GetInstructionsListFromXmlNode(trueInstructionsRoot, nsmgr),
+                    FalseInstructions = GetInstructionsListFromXmlNode(falseInstructionsRoot, nsmgr)
+                };
+            }
+
+            return null;
         }
 
         public IValueContainer GetValueContainerFromXmlNode(XmlNode node, XmlNamespaceManager nsmgr)
@@ -186,6 +208,19 @@ namespace SmartContractsGenerator.Mappers
                 };
             }
 
+            return null;
+        }
+
+        public Condition GetConditionFromXmlNode(XmlNode node, XmlNamespaceManager nsmgr)
+        {
+            if (node != null)
+            {
+                var conditionNode = node.SelectSingleNode($"gxml:value[@name=\"{NameFieldName}\"]//gxml:block[@type=\"{OperationBlockType}\"]", nsmgr);
+                return new Condition()
+                {
+                    ConditionOperation = GetOperationFromElementNode(conditionNode, nsmgr)
+                };
+            }
             return null;
         }
 
