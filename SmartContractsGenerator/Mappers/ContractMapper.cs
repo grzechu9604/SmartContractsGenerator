@@ -17,6 +17,7 @@ namespace SmartContractsGenerator.Mappers
         private const string ContractPropertyBlockType = "contract_property";
         private const string ContractConstructorBlockType = "contract_constructor";
         private const string ContractFunctionBlockType = "contract_function";
+        private const string ContractEventBlockType = "contract_event";
         private const string AssignmentBlockType = "assignment";
         private const string VariableBlockType = "variable";
         private const string ConstantValueBlockType = "constant_value";
@@ -27,6 +28,7 @@ namespace SmartContractsGenerator.Mappers
         private const string PropertiesStatementName = "Properties";
         private const string ConstructorStatementName = "Constructor";
         private const string FunctionsStatementName = "Functions";
+        private const string EventsStatementName = "Events";
         private const string InstructionsStatementName = "Instructions";
         private const string DestinationStatementName = "Destination";
         private const string SourceStatementName = "Source";
@@ -107,6 +109,12 @@ namespace SmartContractsGenerator.Mappers
             if (functionsRootNode != null)
             {
                 c.Functions = GetFunctionFromXmlNode(functionsRootNode, nsmgr);
+            }
+
+            var eventsRootNode = node.SelectSingleNode($"gxml:statement[@name=\"{EventsStatementName}\"]/gxml:block[@type=\"{ContractEventBlockType}\"]", nsmgr);
+            if (eventsRootNode != null)
+            {
+                c.Events = GetContractEventsFromXmlNode(eventsRootNode, nsmgr);
             }
 
             return c;
@@ -310,6 +318,25 @@ namespace SmartContractsGenerator.Mappers
             }
 
             return functions;
+        }
+
+        public List<ContractEvent> GetContractEventsFromXmlNode(XmlNode node, XmlNamespaceManager nsmgr)
+        {
+            var events = new List<ContractEvent>();
+
+            while (node != null)
+            {
+                var e = new ContractEvent()
+                {
+                    Name = GetNameForElementNode(node, nsmgr)
+                };
+
+                events.Add(e);
+
+                node = node.SelectSingleNode($"gxml:next/gxml:block[@type=\"{ContractEventBlockType}\"]", nsmgr);
+            }
+
+            return events;
         }
 
         public List<ContractProperty> GetPropertiesFromXmlNode(XmlNode node, XmlNamespaceManager nsmgr)
