@@ -67,7 +67,7 @@ Blockly.Blocks['contract_event'] = {
             .appendField("Name")
             .appendField(new Blockly.FieldTextInput("[contract name]"), "Name");
         this.appendStatementInput("Parameters")
-            .setCheck("Variable");
+            .setCheck("variable");
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
         this.setColour(230);
@@ -81,7 +81,7 @@ Blockly.Blocks['declaration'] = {
         this.appendDummyInput()
             .appendField("Declaration");
         this.appendStatementInput("Variable")
-            .setCheck("Variable");
+            .setCheck("variable");
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
         this.setColour(230);
@@ -166,10 +166,10 @@ Blockly.Blocks['call_void_function'] = {
 Blockly.Blocks['condition'] = {
     init: function () {
         this.appendValueInput("Name")
-            .setCheck("Operation")
+            .setCheck("operation")
             .appendField("Condition")
             .appendField("");
-        this.setOutput(true, "Condition");
+        this.setOutput(true, "condition");
         this.setColour(230);
         this.setTooltip("");
         this.setHelpUrl("");
@@ -181,13 +181,13 @@ Blockly.Blocks['operation'] = {
         this.appendDummyInput()
             .appendField("Operation");
         this.appendValueInput("left_side")
-            .setCheck("Operation")
+            .setCheck("operation")
             .appendField("Left");
         this.appendDummyInput()
             .appendField("Operator")
             .appendField(new Blockly.FieldDropdown([["+", "+"], ["-", "-"], ["*", "*"]]), "Operator");
         this.appendValueInput("right_side")
-            .setCheck("Operation")
+            .setCheck("operation")
             .appendField("Right");
         this.setOutput(true, "operation");
         this.setColour(230);
@@ -201,10 +201,10 @@ Blockly.Blocks['requirement'] = {
         this.appendDummyInput()
             .appendField("Condition of execution");
         this.appendValueInput("Condition")
-            .setCheck("Condition")
+            .setCheck("condition")
             .appendField("Condition");
         this.appendValueInput("Message")
-            .setCheck("String")
+            .setCheck("string")
             .appendField("Error message");
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
@@ -231,13 +231,13 @@ Blockly.Blocks['contract_loop'] = {
         this.appendDummyInput()
             .appendField("Loop");
         this.appendValueInput("Initial_assignment")
-            .setCheck("Assignment")
+            .setCheck("assignment")
             .appendField("Initial assignment");
         this.appendValueInput("step_instruction")
-            .setCheck("Operation")
+            .setCheck("operation")
             .appendField("Step instruction");
         this.appendValueInput("break_condition")
-            .setCheck("Operation")
+            .setCheck("operation")
             .appendField("Break contition");
         this.appendStatementInput("Instructions")
             .setCheck(null)
@@ -255,7 +255,7 @@ Blockly.Blocks['if_statement'] = {
         this.appendDummyInput()
             .appendField("Conditional instruction");
         this.appendValueInput("condition")
-            .setCheck("Condition")
+            .setCheck("condition")
             .appendField("Condition");
         this.appendStatementInput("true_instructions")
             .setCheck(null)
