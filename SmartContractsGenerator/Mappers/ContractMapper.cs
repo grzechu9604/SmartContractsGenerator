@@ -209,14 +209,10 @@ namespace SmartContractsGenerator.Mappers
 
         public Visibility? GetVisibilityForElementNode(XmlNode node, XmlNamespaceManager nsmgr)
         {
-            //TODO Refactor 
             var visibilityNode = node.SelectSingleNode($"gxml:field[@name=\"{VisibilityFieldName}\"]", nsmgr);
             if (visibilityNode != null)
             {
-                if (visibilityNode.InnerText.All(c => char.IsDigit(c)))
-                {
-                    return (Visibility)Convert.ToInt32(visibilityNode.InnerText);
-                }
+                return EnumMappers.MapBlocklyCodeToVisibility(visibilityNode.InnerText);
             }
 
             return null;
@@ -224,12 +220,10 @@ namespace SmartContractsGenerator.Mappers
 
         public OperationOperator? GetOperatorForElementNode(XmlNode node, XmlNamespaceManager nsmgr)
         {
-
             var operatorNode = node.SelectSingleNode($"gxml:field[@name=\"{OperatorFieldName}\"]", nsmgr);
             if (operatorNode != null)
             {
-                //TODO Add proper mapper
-                return OperationOperator.Plus;
+                return EnumMappers.MapBlocklyCodeToOperationOperator(operatorNode.InnerText);
             }
 
             return null;

@@ -185,7 +185,7 @@ Blockly.Blocks['operation'] = {
             .appendField("Left");
         this.appendDummyInput()
             .appendField("Operator")
-            .appendField(new Blockly.FieldDropdown([["+", "+"], ["-", "-"], ["*", "*"]]), "Operator");
+            .appendField(new Blockly.FieldDropdown([["+", "0"], ["-", "1"], ["%", "2"], ["/", "3"], ["*", "4"], ["!", "5"], ["||", "6"], ["&&", "7"], ["^", "8"], ["==", "9"], ["!=", "10"]]), "Operator");
         this.appendValueInput("right_side")
             .setCheck("operation")
             .appendField("Right");
