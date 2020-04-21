@@ -41,7 +41,8 @@ namespace SmartContractsGenerator.Mappers
 
         private readonly Dictionary<string, Func<XmlNode, XmlNamespaceManager, IAssignable>> AssignableMappers;
         private readonly Dictionary<string, Func<XmlNode, XmlNamespaceManager, IValueContainer>> ValueContainerMappers;
-        
+        private readonly Dictionary<string, Func<XmlNode, XmlNamespaceManager, IInstruction>> InstructionMappers;
+
         public ContractMapper()
         {
             AssignableMappers = new Dictionary<string, Func<XmlNode, XmlNamespaceManager, IAssignable>>()
@@ -53,6 +54,11 @@ namespace SmartContractsGenerator.Mappers
             ValueContainerMappers = new Dictionary<string, Func<XmlNode, XmlNamespaceManager, IValueContainer>>()
             {
                 { VariableBlockType, GetVariableUsageForElementNode }
+            };
+
+            InstructionMappers = new Dictionary<string, Func<XmlNode, XmlNamespaceManager, IInstruction>>()
+            {
+                {AssignmentBlockType, GetAssignmentFromXmlNode }
             };
         }
         
@@ -130,13 +136,9 @@ namespace SmartContractsGenerator.Mappers
 
         public IInstruction GetInstructionFromXmlNode(XmlNode node, XmlNamespaceManager nsmgr)
         {
-            if (node.Attributes["type"] != null)
+            if (node != null && node.Attributes["type"] != null)
             {
-                switch (node.Attributes["type"].Value)
-                {
-                    case AssignmentBlockType:
-                        return GetAssignmentFromXmlNode(node, nsmgr);
-                }
+                return InstructionMappers[node.Attributes["type"].Value].Invoke(node, nsmgr);
             }
 
             return null;
@@ -207,7 +209,7 @@ namespace SmartContractsGenerator.Mappers
 
         public Visibility? GetVisibilityForElementNode(XmlNode node, XmlNamespaceManager nsmgr)
         {
-
+            //TODO Refactor 
             var visibilityNode = node.SelectSingleNode($"gxml:field[@name=\"{VisibilityFieldName}\"]", nsmgr);
             if (visibilityNode != null)
             {
