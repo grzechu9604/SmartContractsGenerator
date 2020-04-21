@@ -4,6 +4,7 @@ using SmartContractsGenerator.Model.AbstractPatterns;
 using SmartContractsGenerator.Model.Enums;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Xml;
@@ -12,6 +13,34 @@ namespace SmartContractsGenerator.Mappers
 {
     public class ContractMapper
     {
+        private const string ContractBlockType = "contract";
+        private const string ContractPropertyBlockType = "contract_property";
+        private const string ContractConstructorBlockType = "contract_constructor";
+        private const string ContractFunctionBlockType = "contract_function";
+        private const string AssignmentBlockType = "assignment";
+        private const string VariableBlockType = "variable";
+        private const string ConstantValueBlockType = "constant_value";
+        private const string OperationBlockType = "operation";
+        private const string VariableDeclarationBlockType = "variable_declaration";
+
+        private const string PropertiesStatementName = "Properties";
+        private const string ConstructorStatementName = "Constructor";
+        private const string FunctionsStatementName = "Functions";
+        private const string InstructionsStatementName = "Instructions";
+        private const string DestinationStatementName = "Destination";
+        private const string SourceStatementName = "Source";
+
+        private const string LeftSideValueName = "left_side";
+        private const string RightSideValueName = "right_side";
+
+        private const string VisibilityFieldName = "Visibility";
+        private const string OperatorFieldName = "Operator";
+        private const string VariableFieldName = "Variable";
+        private const string NameFieldName = "Name";
+        private const string TypeFieldName = "Type";
+        
+
+
         public Contract MapXmlDocumentToContract(XmlDocument document)
         {
             if (document != null)
@@ -20,7 +49,7 @@ namespace SmartContractsGenerator.Mappers
                 nsmgr.AddNamespace("gxml", "https://developers.google.com/blockly/xml");
                 XmlNode root = document.DocumentElement;
 
-                var contractNodes = root.SelectNodes("descendant::gxml:block[@type=\"contract\"]", nsmgr);
+                var contractNodes = root.SelectNodes($"descendant::gxml:block[@type=\"{ContractBlockType}\"]", nsmgr);
                 if (contractNodes.Count > 0)
                 {
                     return GetContractFromXmlNode(contractNodes.Item(0), nsmgr);
@@ -36,19 +65,19 @@ namespace SmartContractsGenerator.Mappers
                 Name = GetNameForElementNode(node, nsmgr)
             };
 
-            var propertiesRootNode = node.SelectSingleNode("gxml:statement[@name=\"Properties\"]/gxml:block[@type=\"contract_property\"]", nsmgr);
+            var propertiesRootNode = node.SelectSingleNode($"gxml:statement[@name=\"{PropertiesStatementName}\"]/gxml:block[@type=\"{ContractPropertyBlockType}\"]", nsmgr);
             if (propertiesRootNode != null)
             {
                 c.Properties = GetPropertiesFromXmlNode(propertiesRootNode, nsmgr);
             }
 
-            var constructorNode = node.SelectSingleNode("gxml:statement[@name=\"Constructor\"]/gxml:block[@type=\"contract_constructor\"]", nsmgr);
+            var constructorNode = node.SelectSingleNode($"gxml:statement[@name=\"{ConstructorStatementName}\"]/gxml:block[@type=\"{ContractConstructorBlockType}\"]", nsmgr);
             if (constructorNode != null)
             {
                 c.Constructor = GetConstructorFromXmlNode(constructorNode, nsmgr);
             }
 
-            var functionsRootNode = node.SelectSingleNode("gxml:statement[@name=\"Functions\"]/gxml:block[@type=\"contract_function\"]", nsmgr);
+            var functionsRootNode = node.SelectSingleNode($"gxml:statement[@name=\"{FunctionsStatementName}\"]/gxml:block[@type=\"{ContractFunctionBlockType}\"]", nsmgr);
             if (functionsRootNode != null)
             {
                 c.Functions = GetFunctionFromXmlNode(functionsRootNode, nsmgr);
@@ -72,7 +101,7 @@ namespace SmartContractsGenerator.Mappers
         {
             var instructions = new InstructionsList();
 
-            var instructionsNode = node.SelectSingleNode("gxml:statement[@name=\"Instructions\"]/gxml:block", nsmgr);
+            var instructionsNode = node.SelectSingleNode($"gxml:statement[@name=\"{InstructionsStatementName}\"]/gxml:block", nsmgr);
 
             while (instructionsNode != null)
             {
@@ -90,7 +119,7 @@ namespace SmartContractsGenerator.Mappers
             {
                 switch (node.Attributes["type"].Value)
                 {
-                    case "assignment":
+                    case AssignmentBlockType:
                         return GetAssignmentFromXmlNode(node, nsmgr);
                 }
             }
@@ -100,8 +129,8 @@ namespace SmartContractsGenerator.Mappers
 
         public Assignment GetAssignmentFromXmlNode(XmlNode node, XmlNamespaceManager nsmgr)
         {
-            var destinationNode = node.SelectSingleNode("gxml:value[@name=\"Destination\"]/gxml:block", nsmgr);
-            var sourceNode = node.SelectSingleNode("gxml:value[@name=\"Source\"]/gxml:block", nsmgr);
+            var destinationNode = node.SelectSingleNode($"gxml:value[@name=\"{DestinationStatementName}\"]/gxml:block", nsmgr);
+            var sourceNode = node.SelectSingleNode($"gxml:value[@name=\"{SourceStatementName}\"]/gxml:block", nsmgr);
 
             return new Assignment()
             {
@@ -116,7 +145,7 @@ namespace SmartContractsGenerator.Mappers
             {
                 switch (node.Attributes["type"].Value)
                 {
-                    case "variable":
+                    case VariableBlockType:
                         return GetVariableUsageForElementNode(node, nsmgr);
                 }
             }
@@ -130,9 +159,9 @@ namespace SmartContractsGenerator.Mappers
             {
                 switch (node.Attributes["type"].InnerText)
                 {
-                    case "constant_value":
+                    case ConstantValueBlockType:
                         return GetConstantValueFromElementNode(node, nsmgr);
-                    case "operation":
+                    case OperationBlockType:
                         return GetOperationFromElementNode(node, nsmgr);
                 }
             }
@@ -157,8 +186,8 @@ namespace SmartContractsGenerator.Mappers
         {
             if (node != null)
             {
-                var left = node.SelectSingleNode("gxml:value[@name=\"left_side\"]/gxml:block", nsmgr);
-                var right = node.SelectSingleNode("gxml:value[@name=\"right_side\"]/gxml:block", nsmgr);
+                var left = node.SelectSingleNode($"gxml:value[@name=\"{LeftSideValueName}\"]/gxml:block", nsmgr);
+                var right = node.SelectSingleNode($"gxml:value[@name=\"{RightSideValueName}\"]/gxml:block", nsmgr);
 
                 return new Operation()
                 {
@@ -174,7 +203,7 @@ namespace SmartContractsGenerator.Mappers
         public Visibility? GetVisibilityForElementNode(XmlNode node, XmlNamespaceManager nsmgr)
         {
 
-            var visibilityNode = node.SelectSingleNode("gxml:field[@name=\"Visibility\"]", nsmgr);
+            var visibilityNode = node.SelectSingleNode($"gxml:field[@name=\"{VisibilityFieldName}\"]", nsmgr);
             if (visibilityNode != null)
             {
                 if (visibilityNode.InnerText.All(c => char.IsDigit(c)))
@@ -189,7 +218,7 @@ namespace SmartContractsGenerator.Mappers
         public OperationOperator? GetOperatorForElementNode(XmlNode node, XmlNamespaceManager nsmgr)
         {
 
-            var operatorNode = node.SelectSingleNode("gxml:field[@name=\"Operator\"]", nsmgr);
+            var operatorNode = node.SelectSingleNode($"gxml:field[@name=\"{OperatorFieldName}\"]", nsmgr);
             if (operatorNode != null)
             {
                 //TODO Add proper mapper
@@ -201,7 +230,7 @@ namespace SmartContractsGenerator.Mappers
 
         public Variable GetVariableDeclarationForElementNode(XmlNode node, XmlNamespaceManager nsmgr)
         {
-            var variableNode = node.SelectSingleNode("gxml:value[@name=\"Variable\"]/gxml:block[@type=\"variable_declaration\"]", nsmgr);
+            var variableNode = node.SelectSingleNode($"gxml:value[@name=\"{VariableFieldName}\"]/gxml:block[@type=\"{VariableDeclarationBlockType}\"]", nsmgr);
             if (variableNode != null)
             {
                 return new Variable()
@@ -241,7 +270,7 @@ namespace SmartContractsGenerator.Mappers
 
                 functions.Add(f);
 
-                node = node.SelectSingleNode("gxml:next/gxml:block[@type=\"contract_function\"]", nsmgr);
+                node = node.SelectSingleNode($"gxml:next/gxml:block[@type=\"{ContractFunctionBlockType}\"]", nsmgr);
             }
 
             return functions;
@@ -261,7 +290,7 @@ namespace SmartContractsGenerator.Mappers
 
                 properties.Add(cp);
 
-                node = node.SelectSingleNode("gxml:next/gxml:block[@type=\"contract_property\"]", nsmgr);
+                node = node.SelectSingleNode($"gxml:next/gxml:block[@type=\"{ContractPropertyBlockType}\"]", nsmgr);
             }
 
             return properties;
@@ -270,12 +299,12 @@ namespace SmartContractsGenerator.Mappers
 
         public string GetNameForElementNode(XmlNode node, XmlNamespaceManager nsmgr)
         {
-            return GetValueFromFieldForElementNode(node, nsmgr, "Name");
+            return GetValueFromFieldForElementNode(node, nsmgr, NameFieldName);
         }
 
         public string GeTypeForElementNode(XmlNode node, XmlNamespaceManager nsmgr)
         {
-            return GetValueFromFieldForElementNode(node, nsmgr, "Type");
+            return GetValueFromFieldForElementNode(node, nsmgr, TypeFieldName);
         }
 
         private string GetValueFromFieldForElementNode(XmlNode node, XmlNamespaceManager nsmgr, string fieldName)
@@ -293,7 +322,7 @@ namespace SmartContractsGenerator.Mappers
 
         public string GetValueForConstantValueNode(XmlNode node, XmlNamespaceManager nsmgr)
         {
-            var nameNode = node.SelectSingleNode("gxml:field[@name=\"Name\"]", nsmgr);
+            var nameNode = node.SelectSingleNode($"gxml:field[@name=\"{NameFieldName}\"]", nsmgr);
             if (nameNode != null)
             {
                 return nameNode.InnerText;
