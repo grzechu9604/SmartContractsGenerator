@@ -132,7 +132,8 @@ namespace SmartContractsGenerator.Mappers
                 {
                     case "constant_value":
                         return GetConstantValueFromElementNode(node, nsmgr);
-
+                    case "operation":
+                        return GetOperationFromElementNode(node, nsmgr);
                 }
             }
 
@@ -152,6 +153,24 @@ namespace SmartContractsGenerator.Mappers
             return null;
         }
 
+        public Operation GetOperationFromElementNode(XmlNode node, XmlNamespaceManager nsmgr)
+        {
+            if (node != null)
+            {
+                var left = node.SelectSingleNode("gxml:value[@name=\"left_side\"]/gxml:block", nsmgr);
+                var right = node.SelectSingleNode("gxml:value[@name=\"right_side\"]/gxml:block", nsmgr);
+
+                return new Operation()
+                {
+                    LeftSide = GetAssignableFromXmlNode(left, nsmgr),
+                    RightSide = GetAssignableFromXmlNode(right, nsmgr),
+                    Operator = GetOperatorForElementNode(node, nsmgr)
+                };
+            }
+
+            return null;
+        }
+
         public Visibility? GetVisibilityForElementNode(XmlNode node, XmlNamespaceManager nsmgr)
         {
 
@@ -162,6 +181,19 @@ namespace SmartContractsGenerator.Mappers
                 {
                     return (Visibility)Convert.ToInt32(visibilityNode.InnerText);
                 }
+            }
+
+            return null;
+        }
+
+        public OperationOperator? GetOperatorForElementNode(XmlNode node, XmlNamespaceManager nsmgr)
+        {
+
+            var operatorNode = node.SelectSingleNode("gxml:field[@name=\"Operator\"]", nsmgr);
+            if (operatorNode != null)
+            {
+                //TODO Add proper mapper
+                return OperationOperator.Plus;
             }
 
             return null;
