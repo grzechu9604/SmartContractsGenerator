@@ -38,9 +38,24 @@ namespace SmartContractsGenerator.Mappers
         private const string VariableFieldName = "Variable";
         private const string NameFieldName = "Name";
         private const string TypeFieldName = "Type";
+
+        private readonly Dictionary<string, Func<XmlNode, XmlNamespaceManager, IAssignable>> AssignableMappers;
+        private readonly Dictionary<string, Func<XmlNode, XmlNamespaceManager, IValueContainer>> ValueContainerMappers;
         
+        public ContractMapper()
+        {
+            AssignableMappers = new Dictionary<string, Func<XmlNode, XmlNamespaceManager, IAssignable>>()
+            {
+                { ConstantValueBlockType, GetConstantValueFromElementNode },
+                { OperationBlockType, GetOperationFromElementNode }
+            };
 
-
+            ValueContainerMappers = new Dictionary<string, Func<XmlNode, XmlNamespaceManager, IValueContainer>>()
+            {
+                { VariableBlockType, GetVariableUsageForElementNode }
+            };
+        }
+        
         public Contract MapXmlDocumentToContract(XmlDocument document)
         {
             if (document != null)
@@ -141,13 +156,9 @@ namespace SmartContractsGenerator.Mappers
 
         public IValueContainer GetValueContainerFromXmlNode(XmlNode node, XmlNamespaceManager nsmgr)
         {
-            if (node.Attributes["type"] != null)
+            if (node != null && node.Attributes["type"] != null)
             {
-                switch (node.Attributes["type"].Value)
-                {
-                    case VariableBlockType:
-                        return GetVariableUsageForElementNode(node, nsmgr);
-                }
+                return ValueContainerMappers[node.Attributes["type"].Value].Invoke(node, nsmgr);
             }
 
             return null;
@@ -157,13 +168,7 @@ namespace SmartContractsGenerator.Mappers
         {
             if (node != null && node.Attributes["type"] != null)
             {
-                switch (node.Attributes["type"].InnerText)
-                {
-                    case ConstantValueBlockType:
-                        return GetConstantValueFromElementNode(node, nsmgr);
-                    case OperationBlockType:
-                        return GetOperationFromElementNode(node, nsmgr);
-                }
+                return AssignableMappers[node.Attributes["type"].InnerText].Invoke(node, nsmgr);
             }
 
             return null;
