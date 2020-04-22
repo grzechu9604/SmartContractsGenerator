@@ -59,7 +59,8 @@ namespace SmartContractsGenerator.Mappers
             AssignableMappers = new Dictionary<string, Func<XmlNode, XmlNamespaceManager, IAssignable>>()
             {
                 { ConstantValueBlockType, GetConstantValueFromElementNode },
-                { OperationBlockType, GetOperationFromElementNode }
+                { OperationBlockType, GetOperationFromElementNode },
+                { VariableBlockType, GetVariableUsageForElementNode }
             };
 
             ValueContainerMappers = new Dictionary<string, Func<XmlNode, XmlNamespaceManager, IValueContainer>>()
