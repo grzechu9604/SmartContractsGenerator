@@ -49,7 +49,7 @@ Blockly.Blocks['contract_property'] = {
             .appendField("Visibility")
             .appendField(new Blockly.FieldDropdown([["External", "0"], ["Public", "1"], ["Private", "3"], ["Internal", "2"]]), "Visibility");
         this.appendValueInput("Variable")
-            .setCheck("variable")
+            .setCheck("variable_declaration")
             .appendField("Variable");
         this.setPreviousStatement(true, "contract_property");
         this.setNextStatement(true, "contract_property");
@@ -95,7 +95,7 @@ Blockly.Blocks['constant_value'] = {
         this.appendDummyInput()
             .appendField("Value: ")
             .appendField(new Blockly.FieldTextInput("[value]"), "Value");
-        this.setOutput(true, null);
+        this.setOutput(true, "constant_value");
         this.setColour(230);
         this.setTooltip("");
         this.setHelpUrl("");
@@ -107,11 +107,11 @@ Blockly.Blocks['assignment'] = {
         this.appendDummyInput()
             .appendField("Assignment");
         this.appendValueInput("Destination")
-            .setCheck(null);
+            .setCheck(["variable", "variable_declaration"]);
         this.appendDummyInput()
             .appendField("=");
         this.appendValueInput("Source")
-            .setCheck(null);
+            .setCheck(["variable", "operation", "constant_value"]);
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
         this.setColour(230);
@@ -181,13 +181,13 @@ Blockly.Blocks['operation'] = {
         this.appendDummyInput()
             .appendField("Operation");
         this.appendValueInput("left_side")
-            .setCheck(["variable", "operation"])
+            .setCheck(["variable", "operation", "constant_value"])
             .appendField("Left");
         this.appendDummyInput()
             .appendField("Operator")
             .appendField(new Blockly.FieldDropdown([["+", "0"], ["-", "1"], ["%", "2"], ["/", "3"], ["*", "4"], ["!", "5"], ["||", "6"], ["&&", "7"], ["^", "8"], ["==", "9"], ["!=", "10"]]), "Operator");
         this.appendValueInput("right_side")
-            .setCheck(["variable", "operation"])
+            .setCheck(["variable", "operation", "constant_value"])
             .appendField("Right");
         this.setOutput(true, "operation");
         this.setColour(230);
@@ -204,7 +204,7 @@ Blockly.Blocks['requirement'] = {
             .setCheck("condition")
             .appendField("Condition");
         this.appendValueInput("Message")
-            .setCheck("string")
+            .setCheck("constant_value")
             .appendField("Error message");
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
@@ -322,7 +322,7 @@ Blockly.Blocks['variable_declaration'] = {
             .appendField("Type")
             .appendField(new Blockly.FieldDropdown([["int256", "int256"], ["uint256", "uint256"], ["bool", "bool"]]), "Type");
         this.setInputsInline(false);
-        this.setOutput(true, "variable");
+        this.setOutput(true, "variable_declaration");
         this.setColour(230);
         this.setTooltip("");
         this.setHelpUrl("");
