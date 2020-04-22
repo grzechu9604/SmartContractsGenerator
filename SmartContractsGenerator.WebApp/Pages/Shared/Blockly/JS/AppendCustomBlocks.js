@@ -230,14 +230,14 @@ Blockly.Blocks['contract_loop'] = {
     init: function () {
         this.appendDummyInput()
             .appendField("Loop");
-        this.appendValueInput("Initial_assignment")
+        this.appendStatementInput("Initial_assignment")
             .setCheck("assignment")
             .appendField("Initial assignment");
-        this.appendValueInput("step_instruction")
+        this.appendStatementInput("step_instruction")
             .setCheck("operation")
             .appendField("Step instruction");
         this.appendValueInput("break_condition")
-            .setCheck("operation")
+            .setCheck("condition")
             .appendField("Break contition");
         this.appendStatementInput("Instructions")
             .setCheck(null)

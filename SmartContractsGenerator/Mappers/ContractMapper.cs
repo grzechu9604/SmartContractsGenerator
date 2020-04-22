@@ -24,6 +24,7 @@ namespace SmartContractsGenerator.Mappers
         private const string OperationBlockType = "operation";
         private const string VariableDeclarationBlockType = "variable_declaration";
         private const string IfStatementBlockType = "if_statement";
+        private const string ContractLoopBlockType = "contract_loop";
 
         private const string PropertiesStatementName = "Properties";
         private const string ConstructorStatementName = "Constructor";
@@ -38,6 +39,9 @@ namespace SmartContractsGenerator.Mappers
         private const string LeftSideValueName = "left_side";
         private const string RightSideValueName = "right_side";
         private const string ConditionValueName = "condition";
+        private const string InitialAssignmentValueName = "Initial_assignment";
+        private const string BreakConditionValueName = "break_condition";
+        private const string StepInstructionValueName = "step_instruction";
 
         private const string VisibilityFieldName = "Visibility";
         private const string OperatorFieldName = "Operator";
@@ -48,6 +52,7 @@ namespace SmartContractsGenerator.Mappers
         private readonly Dictionary<string, Func<XmlNode, XmlNamespaceManager, IAssignable>> AssignableMappers;
         private readonly Dictionary<string, Func<XmlNode, XmlNamespaceManager, IValueContainer>> ValueContainerMappers;
         private readonly Dictionary<string, Func<XmlNode, XmlNamespaceManager, IInstruction>> InstructionMappers;
+        private readonly Dictionary<string, Func<XmlNode, XmlNamespaceManager, IOneLineInstruction>> OneLineInstructionMappers;
 
         public ContractMapper()
         {
@@ -65,7 +70,13 @@ namespace SmartContractsGenerator.Mappers
             InstructionMappers = new Dictionary<string, Func<XmlNode, XmlNamespaceManager, IInstruction>>()
             {
                 {AssignmentBlockType, GetAssignmentFromXmlNode },
-                {IfStatementBlockType, GetIfStatementFromXmlNode }
+                {IfStatementBlockType, GetIfStatementFromXmlNode },
+                {ContractLoopBlockType, GetContractLoopFromXmlNode }
+            };
+
+            OneLineInstructionMappers = new Dictionary<string, Func<XmlNode, XmlNamespaceManager, IOneLineInstruction>>()
+            {
+                {AssignmentBlockType, GetAssignmentFromXmlNode }
             };
         }
         
@@ -156,6 +167,16 @@ namespace SmartContractsGenerator.Mappers
             return null;
         }
 
+        public IOneLineInstruction GetOneLineInstructionFromXmlNode(XmlNode node, XmlNamespaceManager nsmgr)
+        {
+            if (node != null && node.Attributes["type"] != null)
+            {
+                return OneLineInstructionMappers[node.Attributes["type"].Value].Invoke(node, nsmgr);
+            }
+
+            return null;
+        }
+
         public Assignment GetAssignmentFromXmlNode(XmlNode node, XmlNamespaceManager nsmgr)
         {
             var destinationNode = node.SelectSingleNode($"gxml:value[@name=\"{DestinationStatementName}\"]/gxml:block", nsmgr);
@@ -180,6 +201,27 @@ namespace SmartContractsGenerator.Mappers
                     Condition = GetConditionFromXmlNode(conditionNode, nsmgr),
                     TrueInstructions = GetInstructionsListFromXmlNode(trueInstructionsRoot, nsmgr),
                     FalseInstructions = GetInstructionsListFromXmlNode(falseInstructionsRoot, nsmgr)
+                };
+            }
+
+            return null;
+        }
+
+        public ContractLoop GetContractLoopFromXmlNode(XmlNode node, XmlNamespaceManager nsmgr)
+        {
+            if (node != null)
+            {
+                var conditionNode = node.SelectSingleNode($"gxml:value[@name=\"{BreakConditionValueName}\"]/gxml:block", nsmgr);
+                var initialNode = node.SelectSingleNode($"gxml:statement[@name=\"{InitialAssignmentValueName}\"]/gxml:block", nsmgr);
+                var instructionsNode = node.SelectSingleNode($"gxml:statement[@name=\"{InstructionsStatementName}\"]/gxml:block", nsmgr);
+                var stepInstructionNode = node.SelectSingleNode($"gxml:statement[@name=\"{StepInstructionValueName}\"]/gxml:block", nsmgr);
+
+                return new ContractLoop()
+                {
+                    BreakCondition = GetConditionFromXmlNode(conditionNode, nsmgr),
+                    InitialAssignment = GetAssignmentFromXmlNode(initialNode, nsmgr),
+                    Instructions = GetInstructionsListFromXmlNode(instructionsNode, nsmgr),
+                    StepInstruction = GetOneLineInstructionFromXmlNode(stepInstructionNode, nsmgr)
                 };
             }
 
@@ -223,7 +265,7 @@ namespace SmartContractsGenerator.Mappers
         {
             if (node != null)
             {
-                var conditionNode = node.SelectSingleNode($"gxml:value[@name=\"{NameFieldName}\"]//gxml:block[@type=\"{OperationBlockType}\"]", nsmgr);
+                var conditionNode = node.SelectSingleNode($"gxml:value[@name=\"{ConditionValueName}\"]//gxml:block[@type=\"{OperationBlockType}\"]", nsmgr);
                 return new Condition()
                 {
                     ConditionOperation = GetOperationFromElementNode(conditionNode, nsmgr)
