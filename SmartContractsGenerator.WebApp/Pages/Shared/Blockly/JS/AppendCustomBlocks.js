@@ -76,20 +76,6 @@ Blockly.Blocks['contract_event'] = {
     }
 };
 
-Blockly.Blocks['declaration'] = {
-    init: function () {
-        this.appendDummyInput()
-            .appendField("Declaration");
-        this.appendStatementInput("Variable")
-            .setCheck("variable");
-        this.setPreviousStatement(true, null);
-        this.setNextStatement(true, null);
-        this.setColour(230);
-        this.setTooltip("");
-        this.setHelpUrl("");
-    }
-};
-
 Blockly.Blocks['constant_value'] = {
     init: function () {
         this.appendDummyInput()

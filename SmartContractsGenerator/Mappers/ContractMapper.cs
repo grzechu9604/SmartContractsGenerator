@@ -60,12 +60,13 @@ namespace SmartContractsGenerator.Mappers
             {
                 { ConstantValueBlockType, GetConstantValueFromElementNode },
                 { OperationBlockType, GetOperationFromElementNode },
-                { VariableBlockType, GetVariableUsageForElementNode }
+                { VariableBlockType, GetVariableFormXmlNode }
             };
 
             ValueContainerMappers = new Dictionary<string, Func<XmlNode, XmlNamespaceManager, IValueContainer>>()
             {
-                { VariableBlockType, GetVariableUsageForElementNode }
+                { VariableBlockType, GetVariableFormXmlNode },
+                { VariableDeclarationBlockType, GetVariableDeclarationFromXmlNode }
             };
 
             InstructionMappers = new Dictionary<string, Func<XmlNode, XmlNamespaceManager, IInstruction>>()
@@ -315,28 +316,27 @@ namespace SmartContractsGenerator.Mappers
             return null;
         }
 
-        public Variable GetVariableDeclarationForElementNode(XmlNode node, XmlNamespaceManager nsmgr)
+        public Declaration GetVariableDeclarationFromXmlNode(XmlNode node, XmlNamespaceManager nsmgr)
         {
-            var variableNode = node.SelectSingleNode($"gxml:value[@name=\"{VariableFieldName}\"]/gxml:block[@type=\"{VariableDeclarationBlockType}\"]", nsmgr);
-            if (variableNode != null)
+            if (node != null)
             {
-                return new Variable()
+                return new Declaration()
                 {
-                    Name = GetNameForElementNode(variableNode, nsmgr),
-                    Type = GeTypeForElementNode(variableNode, nsmgr)
+                    Variable = GetVariableFormXmlNode(node, nsmgr)
                 };
             }
 
             return null;
         }
 
-        public Variable GetVariableUsageForElementNode(XmlNode node, XmlNamespaceManager nsmgr)
+        public Variable GetVariableFormXmlNode(XmlNode node, XmlNamespaceManager nsmgr)
         {
             if (node != null)
             {
                 return new Variable()
                 {
-                    Name = GetNameForElementNode(node, nsmgr)
+                    Name = GetNameForElementNode(node, nsmgr),
+                    Type = GeTypeForElementNode(node, nsmgr)
                 };
             }
 
@@ -388,10 +388,11 @@ namespace SmartContractsGenerator.Mappers
 
             while (node != null)
             {
+                var variableNode = node.SelectSingleNode($"gxml:value[@name=\"{VariableFieldName}\"]/gxml:block[@type=\"{VariableDeclarationBlockType}\"]", nsmgr);
                 var cp = new ContractProperty()
                 {
                     Visibility = GetVisibilityForElementNode(node, nsmgr),
-                    Variable = GetVariableDeclarationForElementNode(node, nsmgr)
+                    Variable = GetVariableFormXmlNode(variableNode, nsmgr)
                 };
 
                 properties.Add(cp);
