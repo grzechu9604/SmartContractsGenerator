@@ -26,6 +26,7 @@ namespace SmartContractsGenerator.Mappers
         private const string EventCallBlockType = "event_call";
         private const string CallReturnableFunctionBlockType = "call_returnable_function";
         private const string CallVoidFunctionBlockType = "call_void_function";
+        private const string ModifierBlockType = "modifier";
 
         private const string PropertiesStatementName = "Properties";
         private const string ConstructorStatementName = "Constructor";
@@ -36,6 +37,7 @@ namespace SmartContractsGenerator.Mappers
         private const string SourceStatementName = "Source";
         private const string TrueInstructionsStatementName = "true_instructions";
         private const string FalseInstructionsStatementName = "false_instructions";
+        private const string ModifiersStatementName = "Modifiers";
 
         private const string LeftSideValueName = "left_side";
         private const string RightSideValueName = "right_side";
@@ -136,6 +138,12 @@ namespace SmartContractsGenerator.Mappers
                 if (eventsRootNode != null)
                 {
                     c.Events = GetContractEventsFromXmlNode(eventsRootNode, nsmgr);
+                }
+
+                var modifiersRootNode = node.SelectSingleNode($"gxml:statement[@name=\"{ModifiersStatementName}\"]/gxml:block[@type=\"{ModifierBlockType}\"]", nsmgr);
+                if (modifiersRootNode != null)
+                {
+                    c.Modifiers = GetModifiersFromXmlNode(modifiersRootNode, nsmgr);
                 }
 
                 return c;
@@ -422,6 +430,35 @@ namespace SmartContractsGenerator.Mappers
                 {
                     Name = GetNameForElementNode(node, nsmgr),
                     Visibility = GetVisibilityForElementNode(node, nsmgr),
+                    Instructions = GetInstructionsListFromXmlNode(instructionNode, nsmgr)
+                };
+            }
+
+            return null;
+        }
+
+        public List<Modifier> GetModifiersFromXmlNode(XmlNode node, XmlNamespaceManager nsmgr)
+        {
+            var modifiers = new List<Modifier>();
+
+            while (node != null)
+            {
+                modifiers.Add(GetModifierFromXmlNode(node, nsmgr));
+                node = node.SelectSingleNode($"gxml:next/gxml:block[@type=\"{ModifierBlockType}\"]", nsmgr);
+            }
+
+            return modifiers;
+        }
+
+        public Modifier GetModifierFromXmlNode(XmlNode node, XmlNamespaceManager nsmgr)
+        {
+            if (node != null)
+            {
+                var instructionNode = node.SelectSingleNode($"gxml:statement[@name=\"{InstructionsStatementName}\"]/gxml:block", nsmgr);
+
+                return new Modifier()
+                {
+                    Name = GetNameForElementNode(node, nsmgr),
                     Instructions = GetInstructionsListFromXmlNode(instructionNode, nsmgr)
                 };
             }

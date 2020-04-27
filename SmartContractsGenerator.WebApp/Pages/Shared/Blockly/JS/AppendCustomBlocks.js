@@ -11,6 +11,9 @@
         this.appendStatementInput("Events")
             .setCheck(null)
             .appendField("Events");
+        this.appendStatementInput("Modifiers")
+            .setCheck(null)
+            .appendField("Modifiers");
         this.appendStatementInput("Constructor")
             .setCheck("contract_constructor")
             .appendField("Constructor");
@@ -280,12 +283,13 @@ Blockly.Blocks['modifier'] = {
             .appendField("Modifier");
         this.appendDummyInput()
             .appendField("Name")
-            .appendField(new Blockly.FieldTextInput("[modifier name]"), "Name");
+            .appendField(new Blockly.FieldVariable("[modifier name]"), "Name");
         this.appendDummyInput()
             .appendField("Instructions");
         this.appendStatementInput("Instructions")
             .setCheck(null);
         this.setPreviousStatement(true, "contract_constructor");
+        this.setNextStatement(true, null);
         this.setColour(230);
         this.setTooltip("");
         this.setHelpUrl("");
