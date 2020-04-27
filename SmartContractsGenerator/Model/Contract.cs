@@ -45,21 +45,9 @@ namespace SmartContractsGenerator.Model
         {
             StringBuilder codeBuilder = new StringBuilder();
 
-            bool constructorAdded = false;
-            if (Constructor != null)
-            {
-                codeBuilder.Append($"{Constructor.GenerateCode()}\n");
-                constructorAdded = true;
-            }
-
             bool propertiesAdded = false;
             if (Properties != null && Properties.Any())
             {
-                if (constructorAdded)
-                {
-                    codeBuilder.Append("\n");
-                }
-
                 Properties.ForEach(property => codeBuilder.Append($"{property.GenerateDeclarationCode()};\n"));
                 propertiesAdded = true;
             }
@@ -67,13 +55,24 @@ namespace SmartContractsGenerator.Model
             bool eventsAdded = false;
             if (Events != null && Events.Any())
             {
-                if (constructorAdded || propertiesAdded)
+                if (propertiesAdded)
                 {
                     codeBuilder.Append("\n");
                 }
 
                 Events.ForEach(contractEvent => codeBuilder.Append($"{contractEvent.GenerateCode()};\n"));
                 eventsAdded = true;
+            }
+
+            bool constructorAdded = false;
+            if (Constructor != null)
+            {
+                if (propertiesAdded || eventsAdded)
+                {
+                    codeBuilder.Append("\n");
+                }
+                codeBuilder.Append($"{Constructor.GenerateCode()}\n");
+                constructorAdded = true;
             }
 
             bool modifiersAdded = false;
