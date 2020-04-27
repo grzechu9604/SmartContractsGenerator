@@ -186,12 +186,12 @@ Blockly.Blocks['requirement'] = {
     init: function () {
         this.appendDummyInput()
             .appendField("Condition of execution");
-        this.appendValueInput("Condition")
+        this.appendValueInput("condition")
             .setCheck("condition")
             .appendField("Condition");
-        this.appendValueInput("Message")
-            .setCheck("constant_value")
-            .appendField("Error message");
+        this.appendDummyInput()
+            .appendField("Error message:")
+            .appendField(new Blockly.FieldTextInput("[message]"), "ErrorMessage");
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
         this.setColour(230);

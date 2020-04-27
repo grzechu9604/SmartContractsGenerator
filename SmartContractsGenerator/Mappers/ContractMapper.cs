@@ -25,6 +25,7 @@ namespace SmartContractsGenerator.Mappers
         private const string VariableDeclarationBlockType = "variable_declaration";
         private const string IfStatementBlockType = "if_statement";
         private const string ContractLoopBlockType = "contract_loop";
+        private const string RequirementBlockType = "requirement";
 
         private const string PropertiesStatementName = "Properties";
         private const string ConstructorStatementName = "Constructor";
@@ -48,6 +49,7 @@ namespace SmartContractsGenerator.Mappers
         private const string VariableFieldName = "Variable";
         private const string NameFieldName = "Name";
         private const string TypeFieldName = "Type";
+        private const string ErrorMessageFieldName = "ErrorMessage";
 
         private readonly Dictionary<string, Func<XmlNode, XmlNamespaceManager, IAssignable>> AssignableMappers;
         private readonly Dictionary<string, Func<XmlNode, XmlNamespaceManager, IValueContainer>> ValueContainerMappers;
@@ -73,7 +75,8 @@ namespace SmartContractsGenerator.Mappers
             {
                 {AssignmentBlockType, GetAssignmentFromXmlNode },
                 {IfStatementBlockType, GetIfStatementFromXmlNode },
-                {ContractLoopBlockType, GetContractLoopFromXmlNode }
+                {ContractLoopBlockType, GetContractLoopFromXmlNode },
+                {RequirementBlockType, GetRequirementFromXmlNode }
             };
 
             OneLineInstructionMappers = new Dictionary<string, Func<XmlNode, XmlNamespaceManager, IOneLineInstruction>>()
@@ -230,6 +233,23 @@ namespace SmartContractsGenerator.Mappers
             return null;
         }
 
+        public Requirement GetRequirementFromXmlNode(XmlNode node, XmlNamespaceManager nsmgr)
+        {
+            if (node != null)
+            {
+                var conditionNode = node.SelectSingleNode($"gxml:value[@name=\"{ConditionValueName}\"]/gxml:block", nsmgr);
+                var errorMessageNode = node.SelectSingleNode($"gxml:field[@name=\"{ErrorMessageFieldName}\"]", nsmgr);
+
+                return new Requirement()
+                {
+                    Condition = GetConditionFromXmlNode(conditionNode, nsmgr),
+                    ErrorMessage = GetErrorMessageFromElementNode(errorMessageNode, nsmgr)
+                };
+            }
+
+            return null;
+        }
+
         public IValueContainer GetValueContainerFromXmlNode(XmlNode node, XmlNamespaceManager nsmgr)
         {
             if (node != null && node.Attributes["type"] != null)
@@ -258,6 +278,17 @@ namespace SmartContractsGenerator.Mappers
                 {
                     Value = node.InnerText
                 };
+            }
+
+            return null;
+        }
+
+        public string GetErrorMessageFromElementNode(XmlNode node, XmlNamespaceManager nsmgr)
+        {
+            if (node != null)
+            {
+                //TODO escape special chars
+                return $"\"{node.InnerText}\"";
             }
 
             return null;
