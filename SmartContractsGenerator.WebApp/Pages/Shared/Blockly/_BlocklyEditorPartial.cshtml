@@ -1,0 +1,137 @@
+﻿
+<script src="~/lib/blockly/blockly_compressed.js"></script>
+<script src="~/lib/blockly/blocks_compressed.js"></script>
+<script src="~/lib/blockly/msg/js/en.js"></script>
+<script src="~/CustomBlocklyJS/AppendCustomBlocks.js"></script>
+
+
+@*<script>
+        var blocklyArea = document.getElementById('blocklyArea');
+        var blocklyDiv = document.getElementById('blocklyDiv');
+        var workspace = Blockly.inject(blocklyDiv,
+            { toolbox: document.getElementById('toolbox') });
+        var onresize = function (e) {
+            // Compute the absolute coordinates and dimensions of blocklyArea.
+            var element = blocklyArea;
+            var x = 0;
+            var y = 0;
+            do {
+                x += element.offsetLeft;
+                y += element.offsetTop;
+                element = element.offsetParent;
+            } while (element);
+            // Position blocklyDiv over blocklyArea.
+            blocklyDiv.style.left = x + 'px';
+            blocklyDiv.style.top = y + 'px';
+            blocklyDiv.style.width = blocklyArea.offsetWidth + 'px';
+            blocklyDiv.style.height = blocklyArea.offsetHeight + 'px';
+            Blockly.svgResize(workspace);
+        };
+        window.addEventListener('resize', onresize, false);
+        onresize();
+        Blockly.svgResize(workspace);
+    </script>*@
+
+
+<div id="blocklyDiv" style="height: 480px; width: 100%;"></div>
+<xml xmlns="https://developers.google.com/blockly/xml" id="toolbox" style="display: none">
+    <category name="Contract">
+        <block type="contract">
+            <field name="Name">[insert contract name]</field>
+        </block>
+    </category>
+    <category name="Contract elements">
+        <block type="contract_property">
+            <field name="Visibility">1</field>
+        </block>
+        <block type="contract_event">
+            <field name="Name">[event name]</field>
+        </block>
+        <block type="contract_constructor">
+            <field name="Visibility">1</field>
+        </block>
+        <block type="contract_function">
+            <field name="Name">[function name]</field>
+            <field name="Visibility">1</field>
+        </block>
+        <block type="modifier">
+            <field name="Name">[modifier name]</field>
+        </block>
+    </category>
+    <category name="Function elements">
+        <block type="assignment"></block>
+        <block type="event_call"></block>
+        <block type="call_void_function"></block>
+        <block type="requirement"></block>
+        <block type="contract_loop"></block>
+        <block type="if_statement"></block>
+    </category>
+    <category name="All">
+        <block type="contract">
+            <field name="Name">[insert contract name]</field>
+        </block>
+        <block type="assignment"></block>
+        <block type="constant_value">
+            <field name="Value">[value]</field>
+        </block>
+        <block type="contract_property">
+            <field name="Visibility">1</field>
+        </block>
+        <block type="contract_constructor">
+            <field name="Visibility">1</field>
+        </block>
+        <block type="event_call"></block>
+        <block type="contract_event">
+            <field name="Name">[event name]</field>
+        </block>
+        <block type="call_returnable_function"></block>
+        <block type="call_void_function"></block>
+        <block type="condition"></block>
+        <block type="operation">
+            <field name="Operator">0</field>
+        </block>
+        <block type="requirement"></block>
+        <block type="variable"></block>
+        <block type="variable_declaration"></block>
+        <block type="contract_loop"></block>
+        <block type="if_statement"></block>
+        <block type="contract_function">
+            <field name="Name">[function name]</field>
+            <field name="Visibility">1</field>
+        </block>
+        <block type="modifier">
+            <field name="Name">[modifier name]</field>
+        </block>
+    </category>
+</xml>
+<button id="GenerateCodeButton">Generate code</button>
+
+<script>
+    var demoWorkspace = Blockly.inject('blocklyDiv',
+        {
+            toolbox: document.getElementById('toolbox'),
+            scrollbars: true
+        });
+
+    $(document).ready(function () {
+        $("#GenerateCodeButton").click(function (e) {
+            e.preventDefault();
+            var blocks = Blockly.Xml.workspaceToDom(demoWorkspace);
+            var blocksXmlCode = new XMLSerializer().serializeToString(blocks);
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetCode", "Blockly")",
+                data: {
+                    code: blocksXmlCode
+                },
+                success: function (result) {
+                    console.log(result);
+                    alert(result);
+                },
+                error: function (result) {
+                    alert('error');
+                }
+            });
+        });
+    });
+</script>

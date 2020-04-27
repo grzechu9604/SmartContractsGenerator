@@ -3,7 +3,7 @@ using SmartContractsGenerator.Interfaces;
 
 namespace SmartContractsGenerator.Model
 {
-    public class Requirement : ICodeGenerator
+    public class Requirement : IInstruction
     {
         public Condition Condition { get; set; }
         public string ErrorMessage { get; set; }

@@ -30,6 +30,7 @@ namespace SmartContractsGenerator.Model
         public List<ContractFunction> Functions { get; set; }
         public List<ContractEvent> Events { get; set; }
         public List<ContractProperty> Properties { get; set; }
+        public List<Modifier> Modifiers { get; set; }
 
         protected override string GetHeader()
         {
@@ -44,21 +45,9 @@ namespace SmartContractsGenerator.Model
         {
             StringBuilder codeBuilder = new StringBuilder();
 
-            bool constructorAdded = false;
-            if (Constructor != null)
-            {
-                codeBuilder.Append($"{Constructor.GenerateCode()}\n");
-                constructorAdded = true;
-            }
-
             bool propertiesAdded = false;
             if (Properties != null && Properties.Any())
             {
-                if (constructorAdded)
-                {
-                    codeBuilder.Append("\n");
-                }
-
                 Properties.ForEach(property => codeBuilder.Append($"{property.GenerateDeclarationCode()};\n"));
                 propertiesAdded = true;
             }
@@ -66,7 +55,7 @@ namespace SmartContractsGenerator.Model
             bool eventsAdded = false;
             if (Events != null && Events.Any())
             {
-                if (constructorAdded || propertiesAdded)
+                if (propertiesAdded)
                 {
                     codeBuilder.Append("\n");
                 }
@@ -75,9 +64,34 @@ namespace SmartContractsGenerator.Model
                 eventsAdded = true;
             }
 
-            if (Functions != null && Functions.Any())
+            bool constructorAdded = false;
+            if (Constructor != null)
+            {
+                if (propertiesAdded || eventsAdded)
+                {
+                    codeBuilder.Append("\n");
+                }
+                codeBuilder.Append($"{Constructor.GenerateCode()}\n");
+                constructorAdded = true;
+            }
+
+            bool modifiersAdded = false;
+            if (Modifiers != null && Modifiers.Any())
             {
                 if (constructorAdded || propertiesAdded || eventsAdded)
+                {
+                    codeBuilder.Append("\n");
+                }
+
+                Modifiers.Take(Modifiers.Count - 1).ToList().ForEach(modifer => codeBuilder.Append($"{modifer.GenerateCode()}\n\n"));
+
+                codeBuilder.Append($"{Modifiers.Last().GenerateCode()}\n");
+                modifiersAdded = true;
+            }
+
+            if (Functions != null && Functions.Any())
+            {
+                if (constructorAdded || propertiesAdded || eventsAdded || modifiersAdded)
                 {
                     codeBuilder.Append("\n");
                 }
