@@ -65,7 +65,7 @@ Blockly.Blocks['contract_event'] = {
             .appendField("Contract event");
         this.appendDummyInput()
             .appendField("Name")
-            .appendField(new Blockly.FieldTextInput("[contract name]"), "Name");
+            .appendField(new Blockly.FieldVariable("[event name]"), "Name");
         this.appendStatementInput("Parameters")
             .setCheck("variable");
         this.setPreviousStatement(true, null);
@@ -263,7 +263,7 @@ Blockly.Blocks['contract_function'] = {
             .appendField("Function");
         this.appendDummyInput()
             .appendField("Name")
-            .appendField(new Blockly.FieldTextInput("[function name]"), "Name");
+            .appendField(new Blockly.FieldVariable("[function name]"), "Name");
         this.appendDummyInput()
             .appendField("Visibility")
             .appendField(new Blockly.FieldDropdown([["External", "0"], ["Public", "1"], ["Private", "3"], ["Internal", "2"]]), "Visibility");

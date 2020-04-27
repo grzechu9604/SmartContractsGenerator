@@ -4,9 +4,6 @@ using SmartContractsGenerator.Model.AbstractPatterns;
 using SmartContractsGenerator.Model.Enums;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
 using System.Xml;
 
 namespace SmartContractsGenerator.Mappers
@@ -124,7 +121,7 @@ namespace SmartContractsGenerator.Mappers
             var functionsRootNode = node.SelectSingleNode($"gxml:statement[@name=\"{FunctionsStatementName}\"]/gxml:block[@type=\"{ContractFunctionBlockType}\"]", nsmgr);
             if (functionsRootNode != null)
             {
-                c.Functions = GetFunctionFromXmlNode(functionsRootNode, nsmgr);
+                c.Functions = GetFunctionsFromXmlNode(functionsRootNode, nsmgr);
             }
 
             var eventsRootNode = node.SelectSingleNode($"gxml:statement[@name=\"{EventsStatementName}\"]/gxml:block[@type=\"{ContractEventBlockType}\"]", nsmgr);
@@ -374,24 +371,31 @@ namespace SmartContractsGenerator.Mappers
             return null;
         }
 
-        public List<ContractFunction> GetFunctionFromXmlNode(XmlNode node, XmlNamespaceManager nsmgr)
+        public List<ContractFunction> GetFunctionsFromXmlNode(XmlNode node, XmlNamespaceManager nsmgr)
         {
             var functions = new List<ContractFunction>();
 
             while (node != null)
             {
-                var f = new ContractFunction()
-                {
-                    Name = GetNameForElementNode(node, nsmgr),
-                    Visibility = GetVisibilityForElementNode(node, nsmgr)
-                };
-
-                functions.Add(f);
-
+                functions.Add(GetFunctionFromXmlNode(node, nsmgr));
                 node = node.SelectSingleNode($"gxml:next/gxml:block[@type=\"{ContractFunctionBlockType}\"]", nsmgr);
             }
 
             return functions;
+        }
+
+        public ContractFunction GetFunctionFromXmlNode(XmlNode node, XmlNamespaceManager nsmgr)
+        {
+            if (node != null)
+            {
+                return new ContractFunction()
+                {
+                    Name = GetNameForElementNode(node, nsmgr),
+                    Visibility = GetVisibilityForElementNode(node, nsmgr)
+                };
+            }
+
+            return null;
         }
 
         public List<ContractEvent> GetContractEventsFromXmlNode(XmlNode node, XmlNamespaceManager nsmgr)
@@ -400,17 +404,24 @@ namespace SmartContractsGenerator.Mappers
 
             while (node != null)
             {
-                var e = new ContractEvent()
-                {
-                    Name = GetNameForElementNode(node, nsmgr)
-                };
-
-                events.Add(e);
-
+                events.Add(GetContractEventFromXmlNode(node, nsmgr));
                 node = node.SelectSingleNode($"gxml:next/gxml:block[@type=\"{ContractEventBlockType}\"]", nsmgr);
             }
 
             return events;
+        }
+
+        public ContractEvent GetContractEventFromXmlNode(XmlNode node, XmlNamespaceManager nsmgr)
+        {
+            if (node != null)
+            {
+                return new ContractEvent()
+                {
+                    Name = GetNameForElementNode(node, nsmgr)
+                };
+            }
+
+            return null;
         }
 
         public List<ContractProperty> GetPropertiesFromXmlNode(XmlNode node, XmlNamespaceManager nsmgr)
@@ -419,21 +430,27 @@ namespace SmartContractsGenerator.Mappers
 
             while (node != null)
             {
-                var variableNode = node.SelectSingleNode($"gxml:value[@name=\"{VariableFieldName}\"]/gxml:block[@type=\"{VariableDeclarationBlockType}\"]", nsmgr);
-                var cp = new ContractProperty()
-                {
-                    Visibility = GetVisibilityForElementNode(node, nsmgr),
-                    Variable = GetVariableFormXmlNode(variableNode, nsmgr)
-                };
-
-                properties.Add(cp);
-
+                properties.Add(GetPropertyFromXmlNode(node, nsmgr));
                 node = node.SelectSingleNode($"gxml:next/gxml:block[@type=\"{ContractPropertyBlockType}\"]", nsmgr);
             }
 
             return properties;
         }
 
+        public ContractProperty GetPropertyFromXmlNode(XmlNode node, XmlNamespaceManager nsmgr)
+        {
+            if (node != null)
+            {
+                var variableNode = node.SelectSingleNode($"gxml:value[@name=\"{VariableFieldName}\"]/gxml:block[@type=\"{VariableDeclarationBlockType}\"]", nsmgr);
+                return new ContractProperty()
+                {
+                    Visibility = GetVisibilityForElementNode(node, nsmgr),
+                    Variable = GetVariableFormXmlNode(variableNode, nsmgr)
+                };
+            }
+
+            return null;
+        }
 
         public string GetNameForElementNode(XmlNode node, XmlNamespaceManager nsmgr)
         {
