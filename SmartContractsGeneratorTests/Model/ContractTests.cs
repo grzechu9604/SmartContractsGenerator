@@ -14,6 +14,7 @@ namespace SmartContractsGenerator.Model.Tests
         private static readonly FunctionMockCreator functionMock = new FunctionMockCreator();
         private static readonly EventMockCreator eventMock = new EventMockCreator();
         private static readonly ContractPropertyMockCreator propertyMock = new ContractPropertyMockCreator();
+        private static readonly ModifierMockCreator modifierMock = new ModifierMockCreator();
 
         [TestCleanup]
         public void Cleanup()
@@ -22,6 +23,7 @@ namespace SmartContractsGenerator.Model.Tests
             functionMock.Dispose();
             eventMock.Dispose();
             propertyMock.Dispose();
+            modifierMock.Dispose();
         }
 
         [TestMethod()]
@@ -65,28 +67,35 @@ namespace SmartContractsGenerator.Model.Tests
             string propertyCode1 = "PROPERTY CODE 1";
             string propertyCode2 = "PROPERTY CODE 2";
             string propertyCode3 = "PROPERTY CODE 3";
+            string modifierCode1 = "MODIFIER CODE 1";
+            string modifierCode2 = "MODIFIER CODE 2";
+            string modifierCode3 = "MODIFIER CODE 3";
 
-            yield return GenerateRow(null, name1, null, null, null, $"contract {name1} {{\n}}");
-            yield return GenerateRow(constructorCode1, name1, null, null, null, $"contract {name1} {{\n{constructorCode1}\n}}");
-            yield return GenerateRow(constructorCode2, name2, null, null, null, $"contract {name2} {{\n{constructorCode2}\n}}");
-            yield return GenerateRow(constructorCode3, name1, null, null, null, $"contract {name1} {{\n{constructorCode3}\n}}");
-            yield return GenerateRow(null, name1, new List<string>() { eventCode1 }, null, null, $"contract {name1} {{\n{eventCode1};\n}}");
-            yield return GenerateRow(null, name1, new List<string>() { eventCode1, eventCode2 }, null, null, $"contract {name1} {{\n{eventCode1};\n{eventCode2};\n}}");
-            yield return GenerateRow(null, name1, new List<string>() { eventCode1, eventCode2, eventCode3 }, null, null, $"contract {name1} {{\n{eventCode1};\n{eventCode2};\n{eventCode3};\n}}");
-            yield return GenerateRow(null, name1, null, new List<string>() { funcCode1 }, null, $"contract {name1} {{\n{funcCode1}\n}}");
-            yield return GenerateRow(null, name1, null, new List<string>() { funcCode1, funcCode2 }, null, $"contract {name1} {{\n{funcCode1}\n\n{funcCode2}\n}}");
-            yield return GenerateRow(null, name1, null, new List<string>() { funcCode1, funcCode2, funcCode3 }, null, $"contract {name1} {{\n{funcCode1}\n\n{funcCode2}\n\n{funcCode3}\n}}");
-            yield return GenerateRow(constructorCode1, name1, null, new List<string>() { funcCode1, funcCode2, funcCode3 }, null, $"contract {name1} {{\n{constructorCode1}\n\n{funcCode1}\n\n{funcCode2}\n\n{funcCode3}\n}}");
-            yield return GenerateRow(constructorCode1, name1, new List<string>() { eventCode1, eventCode2, eventCode3 }, null, null, $"contract {name1} {{\n{constructorCode1}\n\n{eventCode1};\n{eventCode2};\n{eventCode3};\n}}");
-            yield return GenerateRow(constructorCode1, name1, new List<string>() { eventCode1, eventCode2, eventCode3 }, new List<string>() { funcCode1, funcCode2, funcCode3 }, null, $"contract {name1} {{\n{constructorCode1}\n\n{eventCode1};\n{eventCode2};\n{eventCode3};\n\n{funcCode1}\n\n{funcCode2}\n\n{funcCode3}\n}}");
-            yield return GenerateRow(null, name1, null, null, new List<string>() { eventCode1 }, $"contract {name1} {{\n{eventCode1};\n}}");
-            yield return GenerateRow(null, name1, null, null, new List<string>() { propertyCode1 }, $"contract {name1} {{\n{propertyCode1};\n}}");
-            yield return GenerateRow(null, name1, null, null, new List<string>() { propertyCode1, propertyCode2 }, $"contract {name1} {{\n{propertyCode1};\n{propertyCode2};\n}}");
-            yield return GenerateRow(null, name1, null, null, new List<string>() { propertyCode1, propertyCode2, propertyCode3 }, $"contract {name1} {{\n{propertyCode1};\n{propertyCode2};\n{propertyCode3};\n}}");
-            yield return GenerateRow(constructorCode1, name1, new List<string>() { eventCode1, eventCode2, eventCode3 }, new List<string>() { funcCode1, funcCode2, funcCode3 }, new List<string>() { propertyCode1, propertyCode2, propertyCode3 }, $"contract {name1} {{\n{constructorCode1}\n\n{propertyCode1};\n{propertyCode2};\n{propertyCode3};\n\n{eventCode1};\n{eventCode2};\n{eventCode3};\n\n{funcCode1}\n\n{funcCode2}\n\n{funcCode3}\n}}");
+            yield return GenerateRow(null, name1, null, null, null, null, $"contract {name1} {{\n}}");
+            yield return GenerateRow(constructorCode1, name1, null, null, null, null, $"contract {name1} {{\n{constructorCode1}\n}}");
+            yield return GenerateRow(constructorCode2, name2, null, null, null, null, $"contract {name2} {{\n{constructorCode2}\n}}");
+            yield return GenerateRow(constructorCode3, name1, null, null, null, null, $"contract {name1} {{\n{constructorCode3}\n}}");
+            yield return GenerateRow(null, name1, new List<string>() { eventCode1 }, null, null, null, $"contract {name1} {{\n{eventCode1};\n}}");
+            yield return GenerateRow(null, name1, new List<string>() { eventCode1, eventCode2 }, null, null, null, $"contract {name1} {{\n{eventCode1};\n{eventCode2};\n}}");
+            yield return GenerateRow(null, name1, new List<string>() { eventCode1, eventCode2, eventCode3 }, null, null, null, $"contract {name1} {{\n{eventCode1};\n{eventCode2};\n{eventCode3};\n}}");
+            yield return GenerateRow(null, name1, null, new List<string>() { funcCode1 }, null, null, $"contract {name1} {{\n{funcCode1}\n}}");
+            yield return GenerateRow(null, name1, null, new List<string>() { funcCode1, funcCode2 }, null, null, $"contract {name1} {{\n{funcCode1}\n\n{funcCode2}\n}}");
+            yield return GenerateRow(null, name1, null, new List<string>() { funcCode1, funcCode2, funcCode3 }, null, null, $"contract {name1} {{\n{funcCode1}\n\n{funcCode2}\n\n{funcCode3}\n}}");
+            yield return GenerateRow(constructorCode1, name1, null, new List<string>() { funcCode1, funcCode2, funcCode3 }, null, null, $"contract {name1} {{\n{constructorCode1}\n\n{funcCode1}\n\n{funcCode2}\n\n{funcCode3}\n}}");
+            yield return GenerateRow(constructorCode1, name1, new List<string>() { eventCode1, eventCode2, eventCode3 }, null, null, null, $"contract {name1} {{\n{constructorCode1}\n\n{eventCode1};\n{eventCode2};\n{eventCode3};\n}}");
+            yield return GenerateRow(constructorCode1, name1, new List<string>() { eventCode1, eventCode2, eventCode3 }, new List<string>() { funcCode1, funcCode2, funcCode3 }, null, null, $"contract {name1} {{\n{constructorCode1}\n\n{eventCode1};\n{eventCode2};\n{eventCode3};\n\n{funcCode1}\n\n{funcCode2}\n\n{funcCode3}\n}}");
+            yield return GenerateRow(null, name1, null, null, new List<string>() { eventCode1 }, null, $"contract {name1} {{\n{eventCode1};\n}}");
+            yield return GenerateRow(null, name1, null, null, new List<string>() { propertyCode1 }, null, $"contract {name1} {{\n{propertyCode1};\n}}");
+            yield return GenerateRow(null, name1, null, null, new List<string>() { propertyCode1, propertyCode2 }, null, $"contract {name1} {{\n{propertyCode1};\n{propertyCode2};\n}}");
+            yield return GenerateRow(null, name1, null, null, new List<string>() { propertyCode1, propertyCode2, propertyCode3 }, null, $"contract {name1} {{\n{propertyCode1};\n{propertyCode2};\n{propertyCode3};\n}}");
+            yield return GenerateRow(constructorCode1, name1, new List<string>() { eventCode1, eventCode2, eventCode3 }, new List<string>() { funcCode1, funcCode2, funcCode3 }, new List<string>() { propertyCode1, propertyCode2, propertyCode3 }, null, $"contract {name1} {{\n{constructorCode1}\n\n{propertyCode1};\n{propertyCode2};\n{propertyCode3};\n\n{eventCode1};\n{eventCode2};\n{eventCode3};\n\n{funcCode1}\n\n{funcCode2}\n\n{funcCode3}\n}}");
+            yield return GenerateRow(null, name1, null, null, null, new List<string>() { modifierCode1 }, $"contract {name1} {{\n{modifierCode1}\n}}");
+            yield return GenerateRow(null, name1, null, null, null, new List<string>() { modifierCode1, modifierCode2 }, $"contract {name1} {{\n{modifierCode1}\n\n{modifierCode2}\n}}");
+            yield return GenerateRow(null, name1, null, null, null, new List<string>() { modifierCode1, modifierCode2, modifierCode3 }, $"contract {name1} {{\n{modifierCode1}\n\n{modifierCode2}\n\n{modifierCode3}\n}}");
+            yield return GenerateRow(constructorCode1, name1, new List<string>() { eventCode1, eventCode2, eventCode3 }, new List<string>() { funcCode1, funcCode2, funcCode3 }, new List<string>() { propertyCode1, propertyCode2, propertyCode3 }, new List<string>() { modifierCode1, modifierCode2, modifierCode3 }, $"contract {name1} {{\n{constructorCode1}\n\n{propertyCode1};\n{propertyCode2};\n{propertyCode3};\n\n{eventCode1};\n{eventCode2};\n{eventCode3};\n\n{modifierCode1}\n\n{modifierCode2}\n\n{modifierCode3}\n\n{funcCode1}\n\n{funcCode2}\n\n{funcCode3}\n}}");
         }
 
-        static object[] GenerateRow(string constructorCode, string name, List<string> expectedEventsCode, List<string> expectedFunctionsCode, List<string> expectedPropertyCode, string expected)
+        static object[] GenerateRow(string constructorCode, string name, List<string> expectedEventsCode, List<string> expectedFunctionsCode, List<string> expectedPropertyCode, List<string> expectedModifierCode, string expected)
         {
             var c = new Contract()
             {
@@ -111,6 +120,11 @@ namespace SmartContractsGenerator.Model.Tests
             if (expectedFunctionsCode != null)
             {
                 c.Functions = expectedFunctionsCode.Select(code => functionMock.PrepareMock(code, null)).ToList();
+            }
+
+            if (expectedModifierCode != null)
+            {
+                c.Modifiers = expectedModifierCode.Select(code => modifierMock.PrepareMock(code, null)).ToList();
             }
 
             return new object[] { c, expected };
