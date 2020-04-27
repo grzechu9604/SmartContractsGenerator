@@ -23,6 +23,9 @@ namespace SmartContractsGenerator.Mappers
         private const string IfStatementBlockType = "if_statement";
         private const string ContractLoopBlockType = "contract_loop";
         private const string RequirementBlockType = "requirement";
+        private const string EventCallBlockType = "event_call";
+        private const string CallReturnableFunctionBlockType = "call_returnable_function";
+        private const string CallVoidFunctionBlockType = "call_void_function";
 
         private const string PropertiesStatementName = "Properties";
         private const string ConstructorStatementName = "Constructor";
@@ -59,7 +62,8 @@ namespace SmartContractsGenerator.Mappers
             {
                 { ConstantValueBlockType, GetConstantValueFromElementNode },
                 { OperationBlockType, GetOperationFromElementNode },
-                { VariableBlockType, GetVariableFormXmlNode }
+                { VariableBlockType, GetVariableFormXmlNode },
+                { CallReturnableFunctionBlockType, GetFunctionCallFromXmlNode }
             };
 
             ValueContainerMappers = new Dictionary<string, Func<XmlNode, XmlNamespaceManager, IValueContainer>>()
@@ -73,7 +77,9 @@ namespace SmartContractsGenerator.Mappers
                 {AssignmentBlockType, GetAssignmentFromXmlNode },
                 {IfStatementBlockType, GetIfStatementFromXmlNode },
                 {ContractLoopBlockType, GetContractLoopFromXmlNode },
-                {RequirementBlockType, GetRequirementFromXmlNode }
+                {RequirementBlockType, GetRequirementFromXmlNode },
+                {EventCallBlockType, GetEventCallFromXmlNode },
+                {CallVoidFunctionBlockType, GetFunctionCallFromXmlNode }
             };
 
             OneLineInstructionMappers = new Dictionary<string, Func<XmlNode, XmlNamespaceManager, IOneLineInstruction>>()
@@ -388,10 +394,29 @@ namespace SmartContractsGenerator.Mappers
         {
             if (node != null)
             {
+                var instructionNode = node.SelectSingleNode($"gxml:statement[@name=\"{InstructionsStatementName}\"]/gxml:block", nsmgr);
+
                 return new ContractFunction()
                 {
                     Name = GetNameForElementNode(node, nsmgr),
-                    Visibility = GetVisibilityForElementNode(node, nsmgr)
+                    Visibility = GetVisibilityForElementNode(node, nsmgr),
+                    Instructions = GetInstructionsListFromXmlNode(instructionNode, nsmgr)
+                };
+            }
+
+            return null;
+        }
+
+        public FunctionCall GetFunctionCallFromXmlNode(XmlNode node, XmlNamespaceManager nsmgr)
+        {
+            if (node != null)
+            {
+                return new FunctionCall()
+                {
+                    FunctionToCall = new ContractFunction()
+                    {
+                        Name = GetNameForElementNode(node, nsmgr)
+                    }
                 };
             }
 
@@ -418,6 +443,22 @@ namespace SmartContractsGenerator.Mappers
                 return new ContractEvent()
                 {
                     Name = GetNameForElementNode(node, nsmgr)
+                };
+            }
+
+            return null;
+        }
+
+        public EventCall GetEventCallFromXmlNode(XmlNode node, XmlNamespaceManager nsmgr)
+        {
+            if (node != null)
+            {
+                return new EventCall()
+                {
+                    EventToCall = new ContractEvent()
+                    {
+                        Name = GetNameForElementNode(node, nsmgr)
+                    }
                 };
             }
 

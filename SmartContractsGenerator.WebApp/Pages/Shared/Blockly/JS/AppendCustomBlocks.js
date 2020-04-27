@@ -109,9 +109,8 @@ Blockly.Blocks['assignment'] = {
 Blockly.Blocks['event_call'] = {
     init: function () {
         this.appendDummyInput()
-            .appendField("Call event:");
-        this.appendValueInput("event_to_call")
-            .setCheck(null);
+            .appendField("Call event:")
+            .appendField(new Blockly.FieldVariable("[event name]"), "Name");
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
         this.setColour(230);
@@ -123,10 +122,8 @@ Blockly.Blocks['event_call'] = {
 Blockly.Blocks['call_returnable_function'] = {
     init: function () {
         this.appendDummyInput()
-            .appendField("Call function and get value");
-        this.appendValueInput("Name")
-            .setCheck(null)
-            .appendField("Function");
+            .appendField("Call function and get value:")
+            .appendField(new Blockly.FieldVariable("[function name]"), "Name");
         this.setOutput(true, null);
         this.setColour(230);
         this.setTooltip("");
@@ -137,10 +134,8 @@ Blockly.Blocks['call_returnable_function'] = {
 Blockly.Blocks['call_void_function'] = {
     init: function () {
         this.appendDummyInput()
-            .appendField("Call function");
-        this.appendValueInput("Name")
-            .setCheck(null)
-            .appendField("Function");
+            .appendField("Call function:")
+            .appendField(new Blockly.FieldVariable("[function name]"), "Name");
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
         this.setColour(230);
