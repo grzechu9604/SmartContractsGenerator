@@ -17,5 +17,7 @@ namespace SmartContractsGenerator.Model.AbstractPatterns
         {
             return Parameters != null ? string.Join(", ", Parameters.Select(p => p.GenerateCode())) : string.Empty;
         }
+
+        public virtual bool AnyParameter() => Parameters != null && Parameters.Any();
     }
 }

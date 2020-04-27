@@ -67,7 +67,7 @@ namespace SmartContractsGenerator.Model.Tests
 
         static object[] GenerateRow(string parametersListCode, Visibility visibility, string instructionsListCode, string expected)
         {
-            var parametersListMock = parametersListCode != null ? mockHelper.PrepareMock(parametersListCode) : null;
+            var parametersListMock = parametersListCode != null ? mockHelper.PrepareMock(parametersListCode, true) : null;
             var instructionsListMock = instructionsListCode != null ? instructionsListMockHelper.PrepareMock(instructionsListCode, false, !string.IsNullOrWhiteSpace(instructionsListCode)) : null;
 
             var c = new Constructor()
