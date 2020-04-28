@@ -257,11 +257,17 @@ Blockly.Blocks['if_statement'] = {
 
 Blockly.Blocks['contract_function'] = {
     init: function () {
+        var checkbox = new Blockly.FieldCheckbox("FALSE", function (applyModifierChecked) {
+            this.sourceBlock_.updateShape_(applyModifierChecked == "TRUE");
+        });
         this.appendDummyInput()
             .appendField("Function");
         this.appendDummyInput()
             .appendField("Name")
             .appendField(new Blockly.FieldVariable("[function name]"), "Name");
+        this.appendDummyInput()
+            .appendField("Apply modifier")
+            .appendField(checkbox, "ApplyModifier");
         this.appendDummyInput()
             .appendField("Visibility")
             .appendField(new Blockly.FieldDropdown([["External", "0"], ["Public", "1"], ["Private", "3"], ["Internal", "2"]]), "Visibility");
@@ -274,6 +280,19 @@ Blockly.Blocks['contract_function'] = {
         this.setColour(230);
         this.setTooltip("");
         this.setHelpUrl("");
+    },
+
+    updateShape_: function (applyModifierInput) {
+        var inputExists = this.getInput("Modifier");
+        if (applyModifierInput) {
+            if (!inputExists) {
+                this.appendDummyInput("Modifier")
+                    .appendField("Modifier")
+                    .appendField(new Blockly.FieldVariable("[modifier name]"), "Modifier");
+            }
+        } else if (inputExists) {
+            this.removeInput('Modifier');
+        }
     }
 };
 
