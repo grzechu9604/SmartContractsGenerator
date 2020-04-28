@@ -4,6 +4,7 @@ using SmartContractsGenerator.Model.AbstractPatterns;
 using SmartContractsGenerator.Model.Enums;
 using SmartContractsGenerator.Validators;
 using System;
+using System.Text;
 
 namespace SmartContractsGenerator.Model
 {
@@ -27,8 +28,9 @@ namespace SmartContractsGenerator.Model
         private string name;
 
         public Visibility? Visibility { get; set; }
-
         public ParametersList Parameters { get; set; }
+        public ParametersList ModifierParameters { get; set; }
+        public Modifier Modifier { get; set; }
 
         protected override string GetHeader()
         {
@@ -42,7 +44,7 @@ namespace SmartContractsGenerator.Model
                 throw new MissingMandatoryElementException("Name is required for function");
             }
 
-            return $"function {Name}({Parameters?.GenerateCode()}) {Visibility.Value.GenerateCode()} {{\n";
+            return $"function {Name}({Parameters?.GenerateCode()}) {Visibility.Value.GenerateCode()}{GetModifierHeaderPart()} {{\n";
         }
 
         public virtual string GenerateCallCode()
@@ -53,6 +55,26 @@ namespace SmartContractsGenerator.Model
             }
 
             return Name;
+        }
+
+        public string GetModifierHeaderPart()
+        {
+            if (Modifier != null)
+            {
+                var builder = new StringBuilder();
+                builder.Append($" {Modifier.Name}");
+                
+                if (ModifierParameters?.AnyParameter() == true)
+                {
+                    builder.Append($"({ModifierParameters.GenerateCode()})");
+                }
+
+                return builder.ToString();
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }

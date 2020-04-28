@@ -52,6 +52,7 @@ namespace SmartContractsGenerator.Mappers
         private const string NameFieldName = "Name";
         private const string TypeFieldName = "Type";
         private const string ErrorMessageFieldName = "ErrorMessage";
+        private const string ModifierFieldName = "Modifier";
 
         private readonly Dictionary<string, Func<XmlNode, XmlNamespaceManager, IAssignable>> AssignableMappers;
         private readonly Dictionary<string, Func<XmlNode, XmlNamespaceManager, IValueContainer>> ValueContainerMappers;
@@ -430,7 +431,8 @@ namespace SmartContractsGenerator.Mappers
                 {
                     Name = GetNameForElementNode(node, nsmgr),
                     Visibility = GetVisibilityForElementNode(node, nsmgr),
-                    Instructions = GetInstructionsListFromXmlNode(instructionNode, nsmgr)
+                    Instructions = GetInstructionsListFromXmlNode(instructionNode, nsmgr),
+                    Modifier = GetModifierForElementNode(node, nsmgr)
                 };
             }
 
@@ -557,6 +559,23 @@ namespace SmartContractsGenerator.Mappers
             if (node != null)
             {
                 return GetValueFromFieldForElementNode(node, nsmgr, NameFieldName);
+            }
+
+            return null;
+        }
+
+        public Modifier GetModifierForElementNode(XmlNode node, XmlNamespaceManager nsmgr)
+        {
+            if (node != null)
+            {
+                var mName = GetValueFromFieldForElementNode(node, nsmgr, ModifierFieldName);
+                if (!string.IsNullOrWhiteSpace(mName))
+                {
+                    return new Modifier()
+                    {
+                        Name = mName
+                    };
+                }
             }
 
             return null;

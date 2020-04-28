@@ -12,13 +12,17 @@ namespace SmartContractsGeneratorTests.Model.Helpers
             mocksHolder.Dispose();
         }
 
-        public ParametersList PrepareMock(string expected)
+        public ParametersList PrepareMock(string expected, bool hasAnyParameter)
         {
             var mock = mocksHolder.GetMock();
 
             mock.Mock<ParametersList>()
                 .Setup(x => x.GenerateCode())
                 .Returns(expected);
+
+            mock.Mock<ParametersList>()
+                .Setup(x => x.AnyParameter())
+                .Returns(hasAnyParameter);
 
             var preparedMock = mock.Create<ParametersList>();
 

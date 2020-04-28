@@ -84,7 +84,7 @@ namespace SmartContractsGenerator.Model.Tests
 
         static object[] GenerateRow(string parametersListCode, string name, string expected)
         {
-            var parametersListMock = parametersListCode != null ? mockHelper.PrepareMock(parametersListCode) : null;
+            var parametersListMock = parametersListCode != null ? mockHelper.PrepareMock(parametersListCode, true) : null;
 
             var e = new ContractEvent()
             {
