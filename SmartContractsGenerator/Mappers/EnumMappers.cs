@@ -9,7 +9,7 @@ namespace SmartContractsGenerator.Mappers
         private const int MinVisibilityValue = 0;
         private const int MaxVisibilityValue = 3;
         private const int MinOperationOperatorValue = 0;
-        private const int MaxVOperationOperatorValue = 10;
+        private const int MaxOperationOperatorValue = 10;
         public static Visibility? MapBlocklyCodeToVisibility(string code)
         {
             if (!string.IsNullOrEmpty(code) && code.Length == 1 && char.IsDigit(code.First()))
@@ -29,13 +29,13 @@ namespace SmartContractsGenerator.Mappers
             if (!string.IsNullOrEmpty(code) && (code.Length == 1 || code.Length == 2) && code.All(c => char.IsDigit(c)))
             {
                 var value = Convert.ToInt16(code);
-                if (value >= MinOperationOperatorValue && value < MaxVOperationOperatorValue)
+                if (value >= MinOperationOperatorValue && value <= MaxOperationOperatorValue)
                 {
                     return (OperationOperator)value;
                 }
             }
 
-            throw new InvalidOperationException($"Value {code} is invalid option for visibility code!");
+            throw new InvalidOperationException($"Value {code} is invalid option for operator code!");
         }
     }
 }
