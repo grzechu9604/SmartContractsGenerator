@@ -4,7 +4,7 @@
             .appendField("Contract");
         this.appendDummyInput()
             .appendField("Name")
-            .appendField(new Blockly.FieldTextInput("[insert contract name]"), "Name");
+            .appendField(new Blockly.FieldTextInput("[insert contract name]"), "NAME");
         this.appendStatementInput("Properties")
             .setCheck("contract_property")
             .appendField("Properties");
@@ -68,7 +68,7 @@ Blockly.Blocks['contract_event'] = {
             .appendField("Contract event");
         this.appendDummyInput()
             .appendField("Name")
-            .appendField(new Blockly.FieldVariable("[event name]"), "Name");
+            .appendField(new Blockly.FieldVariable("[event name]"), "NAME");
         this.appendStatementInput("Parameters")
             .setCheck("variable");
         this.setPreviousStatement(true, null);
@@ -113,7 +113,7 @@ Blockly.Blocks['event_call'] = {
     init: function () {
         this.appendDummyInput()
             .appendField("Call event:")
-            .appendField(new Blockly.FieldVariable("[event name]"), "Name");
+            .appendField(new Blockly.FieldVariable("[event name]"), "NAME");
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
         this.setColour(230);
@@ -126,7 +126,7 @@ Blockly.Blocks['call_returnable_function'] = {
     init: function () {
         this.appendDummyInput()
             .appendField("Call function and get value:")
-            .appendField(new Blockly.FieldVariable("[function name]"), "Name");
+            .appendField(new Blockly.FieldVariable("[function name]"), "NAME");
         this.setOutput(true, null);
         this.setColour(230);
         this.setTooltip("");
@@ -138,7 +138,7 @@ Blockly.Blocks['call_void_function'] = {
     init: function () {
         this.appendDummyInput()
             .appendField("Call function:")
-            .appendField(new Blockly.FieldVariable("[function name]"), "Name");
+            .appendField(new Blockly.FieldVariable("[function name]"), "NAME");
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
         this.setColour(230);
@@ -202,7 +202,7 @@ Blockly.Blocks['variable'] = {
     init: function () {
         this.appendDummyInput()
             .appendField("Variable")
-            .appendField(new Blockly.FieldVariable("item"), "Name");
+            .appendField(new Blockly.FieldVariable("item"), "NAME");
         this.setOutput(true, "variable");
         this.setColour(230);
         this.setTooltip("");
@@ -262,9 +262,14 @@ Blockly.Blocks['contract_function'] = {
         });
         this.appendDummyInput()
             .appendField("Function");
+        var nameField = new Blockly.FieldTextInput('',
+            Blockly.Procedures.rename);
+        nameField.setSpellcheck(false);
         this.appendDummyInput()
-            .appendField("Name")
-            .appendField(new Blockly.FieldVariable("[function name]"), "Name");
+            .appendField(Blockly.Msg['PROCEDURES_DEFRETURN_TITLE'])
+            .appendField(nameField, 'NAME')
+            .appendField('', 'PARAMS');
+        this.setMutator(new Blockly.Mutator(['procedures_mutatorarg']));
         this.appendDummyInput()
             .appendField("Apply modifier")
             .appendField(checkbox, "ApplyModifier");
@@ -280,6 +285,10 @@ Blockly.Blocks['contract_function'] = {
         this.setColour(230);
         this.setTooltip("");
         this.setHelpUrl("");
+        this.arguments_ = [];
+        this.argumentVarModels_ = [];
+        this.setStatements_(true);
+        this.statementConnection_ = null;
     },
 
     updateShape_: function (applyModifierInput) {
@@ -293,7 +302,24 @@ Blockly.Blocks['contract_function'] = {
         } else if (inputExists) {
             this.removeInput('Modifier');
         }
-    }
+    },
+
+    setStatements_: Blockly.Blocks['procedures_defnoreturn'].setStatements_,
+    updateParams_: Blockly.Blocks['procedures_defnoreturn'].updateParams_,
+    mutationToDom: Blockly.Blocks['procedures_defnoreturn'].mutationToDom,
+    domToMutation: Blockly.Blocks['procedures_defnoreturn'].domToMutation,
+    decompose: Blockly.Blocks['procedures_defnoreturn'].decompose,
+    compose: Blockly.Blocks['procedures_defnoreturn'].compose,
+    getProcedureDef: function () {
+        return [this.getFieldValue('NAME'), this.arguments_, true];
+    },
+    getVars: Blockly.Blocks['procedures_defnoreturn'].getVars,
+    getVarModels: Blockly.Blocks['procedures_defnoreturn'].getVarModels,
+    renameVarById: Blockly.Blocks['procedures_defnoreturn'].renameVarById,
+    updateVarName: Blockly.Blocks['procedures_defnoreturn'].updateVarName,
+    displayRenamedVar_: Blockly.Blocks['procedures_defnoreturn'].displayRenamedVar_,
+    customContextMenu: Blockly.Blocks['procedures_defnoreturn'].customContextMenu,
+    callType_: 'procedures_callreturn'
 };
 
 Blockly.Blocks['modifier'] = {
@@ -302,7 +328,7 @@ Blockly.Blocks['modifier'] = {
             .appendField("Modifier");
         this.appendDummyInput()
             .appendField("Name")
-            .appendField(new Blockly.FieldVariable("[modifier name]"), "Name");
+            .appendField(new Blockly.FieldVariable("[modifier name]"), "NAME");
         this.appendDummyInput()
             .appendField("Instructions");
         this.appendStatementInput("Instructions")
@@ -321,7 +347,7 @@ Blockly.Blocks['variable_declaration'] = {
             .appendField("Variable declaration");
         this.appendDummyInput()
             .appendField("Name")
-            .appendField(new Blockly.FieldVariable("item"), "Name");
+            .appendField(new Blockly.FieldVariable("item"), "NAME");
         this.appendDummyInput()
             .appendField("Type")
             .appendField(new Blockly.FieldDropdown([["int256", "int256"], ["uint256", "uint256"], ["bool", "bool"]]), "Type");

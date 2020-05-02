@@ -49,7 +49,7 @@ namespace SmartContractsGenerator.Mappers
         private const string VisibilityFieldName = "Visibility";
         private const string OperatorFieldName = "Operator";
         private const string VariableFieldName = "Variable";
-        private const string NameFieldName = "Name";
+        private const string NameFieldName = "NAME";
         private const string TypeFieldName = "Type";
         private const string ErrorMessageFieldName = "ErrorMessage";
         private const string ModifierFieldName = "Modifier";
