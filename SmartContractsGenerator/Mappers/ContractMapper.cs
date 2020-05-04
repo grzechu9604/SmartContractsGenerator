@@ -53,6 +53,8 @@ namespace SmartContractsGenerator.Mappers
         private const string TypeFieldName = "Type";
         private const string ErrorMessageFieldName = "ErrorMessage";
         private const string ModifierFieldName = "Modifier";
+        private const string LCNameFieldName = "name";
+        private const string LCTypeFieldName = "type";
 
         private readonly Dictionary<string, Func<XmlNode, XmlNamespaceManager, IAssignable>> AssignableMappers;
         private readonly Dictionary<string, Func<XmlNode, XmlNamespaceManager, IValueContainer>> ValueContainerMappers;
@@ -426,13 +428,48 @@ namespace SmartContractsGenerator.Mappers
             if (node != null)
             {
                 var instructionNode = node.SelectSingleNode($"gxml:statement[@name=\"{InstructionsStatementName}\"]/gxml:block", nsmgr);
+                var parametersNode = node.SelectSingleNode($"gxml:mutation", nsmgr);
 
                 return new ContractFunction()
                 {
                     Name = GetNameForElementNode(node, nsmgr),
                     Visibility = GetVisibilityForElementNode(node, nsmgr),
                     Instructions = GetInstructionsListFromXmlNode(instructionNode, nsmgr),
-                    Modifier = GetModifierForElementNode(node, nsmgr)
+                    Modifier = GetModifierForElementNode(node, nsmgr),
+                    Parameters = GetParametersListFromXmlNode(parametersNode, nsmgr)
+                };
+            }
+
+            return null;
+        }
+
+        public ParametersList GetParametersListFromXmlNode(XmlNode node, XmlNamespaceManager nsmgr)
+        {
+            if (node != null)
+            {
+                var pList = new List<Variable>();
+                foreach(XmlNode argNode in node.SelectNodes($"gxml:arg", nsmgr))
+                {
+                    pList.Add(GetVariableFromArgumentNode(argNode, nsmgr));
+                }
+                
+                return new ParametersList()
+                {
+                    Parameters = pList
+                };
+            }
+
+            return null;
+        }
+
+        public Variable GetVariableFromArgumentNode(XmlNode node, XmlNamespaceManager nsmgr)
+        {
+            if (node != null)
+            {
+                return new Variable()
+                {
+                    Name = node.Attributes[LCNameFieldName].Value,
+                    Type = node.Attributes[LCTypeFieldName].Value
                 };
             }
 
