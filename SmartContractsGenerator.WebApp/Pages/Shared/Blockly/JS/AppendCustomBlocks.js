@@ -562,3 +562,9 @@ Blockly.Blocks['my_procedures_mutatorcontainer'] = {
         this.contextMenu = false;
     },
 };
+
+myFunctionCategoryCallback = function (workspace) {
+    var xmlList = [];
+    console.log("TEST");
+    return xmlList;
+};
