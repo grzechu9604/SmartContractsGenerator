@@ -137,8 +137,8 @@ Blockly.Blocks['call_returnable_function'] = {
 Blockly.Blocks['call_void_function'] = {
     init: function () {
         this.appendDummyInput()
-            .appendField("Call function:")
-            .appendField(new Blockly.FieldVariable("[function name]"), "NAME");
+            .appendField("Name")
+            .appendField(new Blockly.FieldTextInput("[insert contract name]"), "NAME");
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
         this.setColour(230);
@@ -563,8 +563,43 @@ Blockly.Blocks['my_procedures_mutatorcontainer'] = {
     },
 };
 
+Blockly.MyProcedures = {
+    allProcedures: function (root) {
+        var blocks = root.getAllBlocks(false);
+        var procedures = [];
+        for (var i = 0; i < blocks.length; i++) {
+            if (blocks[i].getProcedureDef) {
+                procedures.push(blocks[i].getProcedureDef());
+            }
+        }
+        return procedures;
+    }
+};
+
 myFunctionCategoryCallback = function (workspace) {
     var xmlList = [];
-    console.log("TEST");
+
+    function populateProcedures(procedureList) {
+        for (var i = 0; i < procedureList.length; i++) {
+            var name = procedureList[i][0];
+            var args = procedureList[i][1];
+            var block = Blockly.utils.xml.createElement('block');
+            block.setAttribute('type', 'call_void_function');
+            block.setAttribute('gap', 16);
+            var mutation = Blockly.utils.xml.createElement('mutation');
+            mutation.setAttribute('name', name);
+            block.appendChild(mutation);
+            for (var j = 0; j < args.length; j++) {
+                var arg = Blockly.utils.xml.createElement('arg');
+                arg.setAttribute('name', args[j]);
+                mutation.appendChild(arg);
+            }
+            xmlList.push(block);
+        }
+    }
+
+    var tuples = Blockly.MyProcedures.allProcedures(workspace);
+    populateProcedures(tuples);
+
     return xmlList;
 };
