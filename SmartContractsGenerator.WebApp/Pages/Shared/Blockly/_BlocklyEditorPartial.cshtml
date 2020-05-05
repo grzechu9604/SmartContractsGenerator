@@ -61,7 +61,6 @@
     </category>
     <category name="Function elements">
         <block type="assignment"></block>
-        <block type="event_call"></block>
         <block type="requirement"></block>
         <block type="contract_loop"></block>
         <block type="if_statement"></block>
@@ -80,7 +79,6 @@
         <block type="contract_constructor">
             <field name="Visibility">1</field>
         </block>
-        <block type="event_call"></block>
         <block type="contract_event">
             <field name="Name">[event name]</field>
         </block>
@@ -103,7 +101,8 @@
             <field name="Name">[modifier name]</field>
         </block>
     </category>
-    <category name="MyFunctions" colour="290" custom="MY_PROCEDURE"></category>
+    <category name="Functions calls" colour="290" custom="MY_PROCEDURE"></category>
+    <category name="Events calls" colour="290" custom="MY_EVENTS"></category>
 </xml>
 <button id="GenerateCodeButton">Generate code</button>
 
@@ -116,6 +115,8 @@
 
     demoWorkspace.registerToolboxCategoryCallback(
         'MY_PROCEDURE', myFunctionCategoryCallback);
+    demoWorkspace.registerToolboxCategoryCallback(
+        'MY_EVENTS', myEventsCategoryCallback);
 
     $(document).ready(function () {
         $("#GenerateCodeButton").click(function (e) {

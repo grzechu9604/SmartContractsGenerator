@@ -509,32 +509,17 @@ namespace SmartContractsGenerator.Mappers
         {
             if (node != null)
             {
-                var mutationNode = node.SelectSingleNode($"gxml:mutation", nsmgr);
-                if (mutationNode != null && mutationNode.Attributes != null && mutationNode.Attributes["name"] != null && !string.IsNullOrWhiteSpace(mutationNode.Attributes["name"].Value))
+                var name = GetNameForCallFromXmlNode(node, nsmgr);
+                if (!string.IsNullOrWhiteSpace(name))
                 {
-                    var parametersCount = node.SelectNodes("gxml:mutation/gxml:arg", nsmgr).Count;
-                    
-                    var cpl = new List<IAssignable>();
-                    for (int i=0; i < parametersCount; i++)
-                    {
-                        IAssignable toAdd = null;
-
-                        var currentArgBlock = node.SelectSingleNode($"gxml:value[@name=\"ARG{i}\"]/gxml:block", nsmgr);
-                        if (currentArgBlock != null)
-                        {
-                            toAdd = GetAssignableFromXmlNode(currentArgBlock, nsmgr);
-                        }
-
-                        cpl.Add(toAdd ?? new ConstantValue() { Value = string.Empty });
-                    }
-
+                    var paramList = GetParametersForCallFromXmlNode(node, nsmgr);
                     return new FunctionCall()
                     {
                         FunctionToCall = new ContractFunction()
                         {
-                            Name = mutationNode.Attributes["name"].Value,
+                            Name = name
                         },
-                        Parameters = new CallingParametersList() { Parameters = cpl }
+                        Parameters = paramList
                     };
                 }
             }
@@ -559,9 +544,12 @@ namespace SmartContractsGenerator.Mappers
         {
             if (node != null)
             {
+                var parametersNode = node.SelectSingleNode($"gxml:mutation", nsmgr);
+
                 return new ContractEvent()
                 {
-                    Name = GetNameForElementNode(node, nsmgr)
+                    Name = GetNameForElementNode(node, nsmgr),
+                    Parameters = GetParametersListFromXmlNode(parametersNode, nsmgr)
                 };
             }
 
@@ -572,13 +560,19 @@ namespace SmartContractsGenerator.Mappers
         {
             if (node != null)
             {
-                return new EventCall()
+                var name = GetNameForCallFromXmlNode(node, nsmgr);
+                if (!string.IsNullOrWhiteSpace(name))
                 {
-                    EventToCall = new ContractEvent()
+                    var paramList = GetParametersForCallFromXmlNode(node, nsmgr);
+                    return new EventCall()
                     {
-                        Name = GetNameForElementNode(node, nsmgr)
-                    }
-                };
+                        EventToCall = new ContractEvent()
+                        {
+                            Name = name
+                        },
+                        Parameters = paramList
+                    };
+                }
             }
 
             return null;
@@ -675,6 +669,45 @@ namespace SmartContractsGenerator.Mappers
             }
             
             return string.Empty;
+        }
+
+        public string GetNameForCallFromXmlNode(XmlNode node, XmlNamespaceManager nsmgr)
+        {
+            if (node != null)
+            {
+                var mutationNode = node.SelectSingleNode($"gxml:mutation", nsmgr);
+                if (mutationNode != null && mutationNode.Attributes != null && mutationNode.Attributes["name"] != null)
+                {
+                    return mutationNode.Attributes["name"].Value;
+                }
+            }
+
+            return null;
+        }
+
+        public CallingParametersList GetParametersForCallFromXmlNode(XmlNode node, XmlNamespaceManager nsmgr)
+        {
+            var cpl = new List<IAssignable>();
+
+            if (node != null)
+            {
+                var parametersCount = node.SelectNodes("gxml:mutation/gxml:arg", nsmgr).Count;
+
+                for (int i = 0; i < parametersCount; i++)
+                {
+                    IAssignable toAdd = null;
+
+                    var currentArgBlock = node.SelectSingleNode($"gxml:value[@name=\"ARG{i}\"]/gxml:block", nsmgr);
+                    if (currentArgBlock != null)
+                    {
+                        toAdd = GetAssignableFromXmlNode(currentArgBlock, nsmgr);
+                    }
+
+                    cpl.Add(toAdd ?? new ConstantValue() { Value = string.Empty });
+                }
+            }
+
+            return new CallingParametersList() { Parameters = cpl };
         }
     }
 }

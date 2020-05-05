@@ -1,14 +1,21 @@
 ﻿
 Blockly.MyDynamicInputs = {
-    allProcedures: function (root) {
+    allDefinitionsOfType_: function (root, type) {
         var blocks = root.getAllBlocks(false);
-        var procedures = [];
+        var elements = [];
         for (var i = 0; i < blocks.length; i++) {
-            if (blocks[i].getProcedureDef) {
-                procedures.push(blocks[i].getProcedureDef());
+            if (blocks[i].type && blocks[i].type == type) {
+                elements.push(blocks[i].getProcedureDef());
             }
         }
-        return procedures;
+        return elements;
+    },
+
+    allProcedures: function (root) {
+        return Blockly.MyDynamicInputs.allDefinitionsOfType_(root, "contract_function");
+    },
+    allEvents: function (root) {
+        return Blockly.MyDynamicInputs.allDefinitionsOfType_(root, "contract_event");
     },
     mutationToDom: function (opt_paramIds) {
         var container = Blockly.utils.xml.createElement('mutation');
@@ -105,6 +112,26 @@ Blockly.MyDynamicInputs = {
         }
         this.updateParams_();
         Blockly.Procedures.mutateCallers(this);
+    },
+    populateElements(elementsList, blockType) {
+        var xmlList = [];
+        for (var i = 0; i < elementsList.length; i++) {
+            var name = elementsList[i][0];
+            var args = elementsList[i][1];
+            var block = Blockly.utils.xml.createElement('block');
+            block.setAttribute('type', blockType);
+            block.setAttribute('gap', 16);
+            var mutation = Blockly.utils.xml.createElement('mutation');
+            mutation.setAttribute('name', name);
+            block.appendChild(mutation);
+            for (var j = 0; j < args.length; j++) {
+                var arg = Blockly.utils.xml.createElement('arg');
+                arg.setAttribute('name', args[j]);
+                mutation.appendChild(arg);
+            }
+            xmlList.push(block);
+        }
+        return xmlList;
     }
 };
 
@@ -175,19 +202,35 @@ Blockly.Blocks['contract_property'] = {
 
 Blockly.Blocks['contract_event'] = {
     init: function () {
+        var nameField = new Blockly.FieldTextInput('',
+            Blockly.Procedures.rename);
+        nameField.setSpellcheck(false);
         this.appendDummyInput()
-            .appendField("Contract event");
-        this.appendDummyInput()
-            .appendField("Name")
-            .appendField(new Blockly.FieldVariable("[event name]"), "NAME");
-        this.appendStatementInput("Parameters")
-            .setCheck("variable");
+            .appendField("Contract event")
+            .appendField(nameField, 'NAME')
+            .appendField('', 'PARAMS');
+        this.setMutator(new Blockly.Mutator(['my_procedures_mutatorarg']));
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
         this.setColour(230);
         this.setTooltip("");
         this.setHelpUrl("");
-    }
+        this.arguments_ = [];
+        this.argumentVarModels_ = [];
+    },
+
+    updateParams_: Blockly.Blocks['procedures_defnoreturn'].updateParams_,
+    mutationToDom: Blockly.MyDynamicInputs.mutationToDom,
+    domToMutation: Blockly.MyDynamicInputs.domToMutation,
+    decompose: Blockly.MyDynamicInputs.decompose,
+    compose: Blockly.MyDynamicInputs.compose,
+    getProcedureDef: Blockly.Blocks['procedures_defnoreturn'].getProcedureDef,
+    getVars: Blockly.Blocks['procedures_defnoreturn'].getVars,
+    getVarModels: Blockly.Blocks['procedures_defnoreturn'].getVarModels,
+    renameVarById: Blockly.Blocks['procedures_defnoreturn'].renameVarById,
+    updateVarName: Blockly.Blocks['procedures_defnoreturn'].updateVarName,
+    displayRenamedVar_: Blockly.Blocks['procedures_defnoreturn'].displayRenamedVar_,
+    customContextMenu: Blockly.Blocks['procedures_defnoreturn'].customContextMenu
 };
 
 Blockly.Blocks['constant_value'] = {
@@ -222,15 +265,31 @@ Blockly.Blocks['assignment'] = {
 
 Blockly.Blocks['event_call'] = {
     init: function () {
-        this.appendDummyInput()
-            .appendField("Call event:")
-            .appendField(new Blockly.FieldVariable("[event name]"), "NAME");
-        this.setPreviousStatement(true, null);
-        this.setNextStatement(true, null);
-        this.setColour(230);
-        this.setTooltip("");
-        this.setHelpUrl("");
-    }
+        this.appendDummyInput('TOPROW')
+            .appendField("Emit")
+            .appendField(this.id, 'NAME');
+        this.setPreviousStatement(true);
+        this.setNextStatement(true);
+        this.setStyle('procedure_blocks');
+        this.arguments_ = [];
+        this.argumentVarModels_ = [];
+        this.quarkConnections_ = {};
+        this.quarkIds_ = null;
+        this.previousEnabledState_ = true;
+    },
+
+    getProcedureCall: Blockly.Blocks['procedures_callnoreturn'].getProcedureCall,
+    renameProcedure: Blockly.Blocks['procedures_callnoreturn'].renameProcedure,
+    setProcedureParameters_:
+        Blockly.Blocks['procedures_callnoreturn'].setProcedureParameters_,
+    updateShape_: Blockly.Blocks['procedures_callnoreturn'].updateShape_,
+    mutationToDom: Blockly.Blocks['procedures_callnoreturn'].mutationToDom,
+    domToMutation: Blockly.Blocks['procedures_callnoreturn'].domToMutation,
+    getVarModels: Blockly.Blocks['procedures_callnoreturn'].getVarModels,
+    //onchange: Blockly.Blocks['procedures_callnoreturn'].onchange,
+    customContextMenu:
+        Blockly.Blocks['procedures_callnoreturn'].customContextMenu,
+    defType_: 'call_void_function'
 };
 
 Blockly.Blocks['call_returnable_function'] = {
@@ -248,6 +307,7 @@ Blockly.Blocks['call_returnable_function'] = {
 Blockly.Blocks['call_void_function'] = {
     init: function () {
         this.appendDummyInput('TOPROW')
+            .appendField("Execute")
             .appendField(this.id, 'NAME');
         this.setPreviousStatement(true);
         this.setNextStatement(true);
@@ -598,29 +658,11 @@ Blockly.Blocks['my_procedures_mutatorcontainer'] = {
 };
 
 myFunctionCategoryCallback = function (workspace) {
-    var xmlList = [];
-
-    function populateProcedures(procedureList) {
-        for (var i = 0; i < procedureList.length; i++) {
-            var name = procedureList[i][0];
-            var args = procedureList[i][1];
-            var block = Blockly.utils.xml.createElement('block');
-            block.setAttribute('type', 'call_void_function');
-            block.setAttribute('gap', 16);
-            var mutation = Blockly.utils.xml.createElement('mutation');
-            mutation.setAttribute('name', name);
-            block.appendChild(mutation);
-            for (var j = 0; j < args.length; j++) {
-                var arg = Blockly.utils.xml.createElement('arg');
-                arg.setAttribute('name', args[j]);
-                mutation.appendChild(arg);
-            }
-            xmlList.push(block);
-        }
-    }
-
     var tuples = Blockly.MyDynamicInputs.allProcedures(workspace);
-    populateProcedures(tuples);
+    return Blockly.MyDynamicInputs.populateElements(tuples, 'call_void_function');
+};
 
-    return xmlList;
+myEventsCategoryCallback = function (workspace) {
+    var tuples = Blockly.MyDynamicInputs.allEvents(workspace);
+    return Blockly.MyDynamicInputs.populateElements(tuples, 'event_call');
 };
