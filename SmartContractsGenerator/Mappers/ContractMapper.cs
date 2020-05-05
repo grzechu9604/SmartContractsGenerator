@@ -160,10 +160,13 @@ namespace SmartContractsGenerator.Mappers
             if (node != null)
             {
                 var instructionNode = node.SelectSingleNode($"gxml:statement[@name=\"{InstructionsStatementName}\"]/gxml:block", nsmgr);
+                var parametersNode = node.SelectSingleNode($"gxml:mutation", nsmgr);
+
                 Constructor c = new Constructor()
                 {
                     Visibility = GetVisibilityForElementNode(node, nsmgr),
-                    Instructions = GetInstructionsListFromXmlNode(instructionNode, nsmgr)
+                    Instructions = GetInstructionsListFromXmlNode(instructionNode, nsmgr),
+                    Parameters = GetParametersListFromXmlNode(parametersNode, nsmgr)
                 };
 
                 return c;

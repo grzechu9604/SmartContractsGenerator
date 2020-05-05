@@ -167,7 +167,9 @@ Blockly.Blocks['contract'] = {
 Blockly.Blocks['contract_constructor'] = {
     init: function () {
         this.appendDummyInput()
-            .appendField("Constructor");
+            .appendField("Constructor")
+            .appendField('', 'PARAMS');
+        this.setMutator(new Blockly.Mutator(['my_procedures_mutatorarg']));
         this.appendDummyInput()
             .appendField("Visibility")
             .appendField(new Blockly.FieldDropdown([["Public", "1"], ["Internal", "2"]]), "Visibility");
@@ -179,7 +181,22 @@ Blockly.Blocks['contract_constructor'] = {
         this.setColour(230);
         this.setTooltip("");
         this.setHelpUrl("");
-    }
+        this.arguments_ = [];
+        this.argumentVarModels_ = [];
+    },
+
+    updateParams_: Blockly.Blocks['procedures_defnoreturn'].updateParams_,
+    mutationToDom: Blockly.MyDynamicInputs.mutationToDom,
+    domToMutation: Blockly.MyDynamicInputs.domToMutation,
+    decompose: Blockly.MyDynamicInputs.decompose,
+    compose: Blockly.MyDynamicInputs.compose,
+    getProcedureDef: Blockly.Blocks['procedures_defnoreturn'].getProcedureDef,
+    getVars: Blockly.Blocks['procedures_defnoreturn'].getVars,
+    getVarModels: Blockly.Blocks['procedures_defnoreturn'].getVarModels,
+    renameVarById: Blockly.Blocks['procedures_defnoreturn'].renameVarById,
+    updateVarName: Blockly.Blocks['procedures_defnoreturn'].updateVarName,
+    displayRenamedVar_: Blockly.Blocks['procedures_defnoreturn'].displayRenamedVar_,
+    customContextMenu: Blockly.Blocks['procedures_defnoreturn'].customContextMenu
 };
 
 Blockly.Blocks['contract_property'] = {
