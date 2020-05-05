@@ -50,7 +50,7 @@ namespace SmartContractsGenerator.Mappers
         private const string OperatorFieldName = "Operator";
         private const string VariableFieldName = "Variable";
         private const string NameFieldName = "NAME";
-        private const string TypeFieldName = "Type";
+        private const string TypeFieldName = "TYPE";
         private const string ErrorMessageFieldName = "ErrorMessage";
         private const string ModifierFieldName = "Modifier";
         private const string LCNameFieldName = "name";
@@ -509,13 +509,34 @@ namespace SmartContractsGenerator.Mappers
         {
             if (node != null)
             {
-                return new FunctionCall()
+                var mutationNode = node.SelectSingleNode($"gxml:mutation", nsmgr);
+                if (mutationNode != null && mutationNode.Attributes != null && mutationNode.Attributes["name"] != null && !string.IsNullOrWhiteSpace(mutationNode.Attributes["name"].Value))
                 {
-                    FunctionToCall = new ContractFunction()
+                    var parametersCount = node.SelectNodes("gxml:mutation/gxml:arg", nsmgr).Count;
+                    
+                    var cpl = new List<IAssignable>();
+                    for (int i=0; i < parametersCount; i++)
                     {
-                        Name = GetNameForElementNode(node, nsmgr)
+                        IAssignable toAdd = null;
+
+                        var currentArgBlock = node.SelectSingleNode($"gxml:value[@name=\"ARG{i}\"]/gxml:block", nsmgr);
+                        if (currentArgBlock != null)
+                        {
+                            toAdd = GetAssignableFromXmlNode(currentArgBlock, nsmgr);
+                        }
+
+                        cpl.Add(toAdd ?? new ConstantValue() { Value = string.Empty });
                     }
-                };
+
+                    return new FunctionCall()
+                    {
+                        FunctionToCall = new ContractFunction()
+                        {
+                            Name = mutationNode.Attributes["name"].Value,
+                        },
+                        Parameters = new CallingParametersList() { Parameters = cpl }
+                    };
+                }
             }
 
             return null;

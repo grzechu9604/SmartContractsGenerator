@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using SmartContractsGenerator.Interfaces;
 using SmartContractsGenerator.Model.AbstractPatterns;
 using System.Collections.Generic;
 
@@ -39,8 +40,8 @@ namespace SmartContractsGenerator.Model.Tests
             };
             yield return new object[] { eventCall, $"emit {eventName}()" };
 
-            var variables = new List<Variable>();
-            var parameters = new ParametersList()
+            var variables = new List<IAssignable>();
+            var parameters = new CallingParametersList()
             {
                 Parameters = variables
             };

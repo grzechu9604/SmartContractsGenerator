@@ -131,20 +131,35 @@ Blockly.Blocks['call_returnable_function'] = {
         this.setColour(230);
         this.setTooltip("");
         this.setHelpUrl("");
-    }
+    }, 
 };
 
 Blockly.Blocks['call_void_function'] = {
     init: function () {
-        this.appendDummyInput()
-            .appendField("Name")
-            .appendField(new Blockly.FieldTextInput("[insert contract name]"), "NAME");
-        this.setPreviousStatement(true, null);
-        this.setNextStatement(true, null);
-        this.setColour(230);
-        this.setTooltip("");
-        this.setHelpUrl("");
-    }
+        this.appendDummyInput('TOPROW')
+            .appendField(this.id, 'NAME');
+        this.setPreviousStatement(true);
+        this.setNextStatement(true);
+        this.setStyle('procedure_blocks');
+        this.arguments_ = [];
+        this.argumentVarModels_ = [];
+        this.quarkConnections_ = {};
+        this.quarkIds_ = null;
+        this.previousEnabledState_ = true;
+    },
+
+    getProcedureCall: Blockly.Blocks['procedures_callnoreturn'].getProcedureCall,
+    renameProcedure: Blockly.Blocks['procedures_callnoreturn'].renameProcedure,
+    setProcedureParameters_:
+        Blockly.Blocks['procedures_callnoreturn'].setProcedureParameters_,
+    updateShape_: Blockly.Blocks['procedures_callnoreturn'].updateShape_,
+    mutationToDom: Blockly.Blocks['procedures_callnoreturn'].mutationToDom,
+    domToMutation: Blockly.Blocks['procedures_callnoreturn'].domToMutation,
+    getVarModels: Blockly.Blocks['procedures_callnoreturn'].getVarModels,
+    //onchange: Blockly.Blocks['procedures_callnoreturn'].onchange,
+    customContextMenu:
+        Blockly.Blocks['procedures_callnoreturn'].customContextMenu,
+    defType_: 'call_void_function'
 };
 
 Blockly.Blocks['condition'] = {
