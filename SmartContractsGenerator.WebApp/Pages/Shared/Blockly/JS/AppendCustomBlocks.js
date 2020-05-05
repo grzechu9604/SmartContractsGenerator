@@ -131,7 +131,7 @@ Blockly.Blocks['call_returnable_function'] = {
         this.setColour(230);
         this.setTooltip("");
         this.setHelpUrl("");
-    }, 
+    } 
 };
 
 Blockly.Blocks['call_void_function'] = {
