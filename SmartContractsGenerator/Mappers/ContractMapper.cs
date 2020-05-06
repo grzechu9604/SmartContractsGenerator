@@ -439,7 +439,8 @@ namespace SmartContractsGenerator.Mappers
                     Visibility = GetVisibilityForElementNode(node, nsmgr),
                     Instructions = GetInstructionsListFromXmlNode(instructionNode, nsmgr),
                     Modifier = GetModifierForElementNode(node, nsmgr),
-                    Parameters = GetParametersListFromXmlNode(parametersNode, nsmgr)
+                    Parameters = GetParametersListFromXmlNode(parametersNode, nsmgr),
+                    ReturningType = GeTypeForElementNode(node, nsmgr)
                 };
             }
 
