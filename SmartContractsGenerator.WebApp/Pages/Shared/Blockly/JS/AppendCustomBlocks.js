@@ -460,8 +460,11 @@ Blockly.Blocks['if_statement'] = {
 
 Blockly.Blocks['contract_function'] = {
     init: function () {
-        var checkbox = new Blockly.FieldCheckbox("FALSE", function (applyModifierChecked) {
-            this.sourceBlock_.updateShape_(applyModifierChecked == "TRUE");
+        var modifierCheckbox = new Blockly.FieldCheckbox("FALSE", function (applyModifierChecked) {
+            this.sourceBlock_.updateModifierInput_(applyModifierChecked == "TRUE");
+        });
+        var returnsCheckbox = new Blockly.FieldCheckbox("FALSE", function (applyReturnsChecked) {
+            this.sourceBlock_.updateReturnsInput_(applyReturnsChecked == "TRUE");
         });
         this.appendDummyInput()
             .appendField("Function");
@@ -475,11 +478,14 @@ Blockly.Blocks['contract_function'] = {
         this.setMutator(new Blockly.Mutator(['my_procedures_mutatorarg']));
         this.appendDummyInput()
             .appendField("Apply modifier")
-            .appendField(checkbox, "ApplyModifier");
+            .appendField(modifierCheckbox, "ApplyModifier");
         this.appendDummyInput("Visibility")
             .appendField("Visibility")
             .appendField(new Blockly.FieldDropdown([["External", "0"], ["Public", "1"], ["Private", "3"], ["Internal", "2"]]), "Visibility");
         this.appendDummyInput()
+            .appendField("Return value")
+            .appendField(returnsCheckbox, "ApplyReturns");
+        this.appendDummyInput("InstructionsLabel")
             .appendField("Instructions");
         this.appendStatementInput("Instructions")
             .setCheck(null);
@@ -493,7 +499,7 @@ Blockly.Blocks['contract_function'] = {
         this.statementConnection_ = null;
     },
 
-    updateShape_: function (applyModifierInput) {
+    updateModifierInput_: function (applyModifierInput) {
         var inputExists = this.getInput("Modifier");
         if (applyModifierInput) {
             if (!inputExists) {
@@ -504,6 +510,20 @@ Blockly.Blocks['contract_function'] = {
             }
         } else if (inputExists) {
             this.removeInput('Modifier');
+        }
+    },
+
+    updateReturnsInput_: function (applyReturnsInput) {
+        var inputExists = this.getInput("ReturningType");
+        if (applyReturnsInput) {
+            if (!inputExists) {
+                this.appendDummyInput("ReturningType")
+                    .appendField("Returning type")
+                    .appendField(new Blockly.FieldDropdown([["int256", "int256"], ["uint256", "uint256"], ["bool", "bool"]]), "TYPE");
+                this.moveInputBefore('ReturningType', 'InstructionsLabel');
+            }
+        } else if (inputExists) {
+            this.removeInput('ReturningType');
         }
     },
 
