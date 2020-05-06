@@ -3,9 +3,9 @@ using SmartContractsGenerator.Interfaces;
 
 namespace SmartContractsGenerator.Model
 {
-    public class ReturnStatement : IInstruction
+    public class ReturnStatement : IOneLineInstruction
     {
-        public IValueContainer ToReturn { get; set; }
+        public IAssignable ToReturn { get; set; }
 
         public string GenerateCode()
         {

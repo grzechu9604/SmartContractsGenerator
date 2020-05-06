@@ -27,6 +27,7 @@ namespace SmartContractsGenerator.Mappers
         private const string CallReturnableFunctionBlockType = "call_returnable_function";
         private const string CallVoidFunctionBlockType = "call_void_function";
         private const string ModifierBlockType = "modifier";
+        private const string ReturnBlockType = "return";
 
         private const string PropertiesStatementName = "Properties";
         private const string ConstructorStatementName = "Constructor";
@@ -84,7 +85,8 @@ namespace SmartContractsGenerator.Mappers
                 { ContractLoopBlockType, GetContractLoopFromXmlNode },
                 { RequirementBlockType, GetRequirementFromXmlNode },
                 { EventCallBlockType, GetEventCallFromXmlNode },
-                { CallVoidFunctionBlockType, GetFunctionCallFromXmlNode }
+                { CallVoidFunctionBlockType, GetFunctionCallFromXmlNode },
+                { ReturnBlockType, GetReturnStatementFromXmlNode }
             };
 
             OneLineInstructionMappers = new Dictionary<string, Func<XmlNode, XmlNamespaceManager, IOneLineInstruction>>()
@@ -528,6 +530,20 @@ namespace SmartContractsGenerator.Mappers
                 }
             }
 
+            return null;
+        }
+
+        public ReturnStatement GetReturnStatementFromXmlNode(XmlNode node, XmlNamespaceManager nsmgr)
+        {
+            if (node != null)
+            {
+                var objectToReturnNode = node.SelectSingleNode($"gxml:value[@name=\"Return\"]/gxml:block", nsmgr);
+
+                return new ReturnStatement()
+                {
+                    ToReturn = GetAssignableFromXmlNode(objectToReturnNode, nsmgr)
+                };
+            }
             return null;
         }
 
