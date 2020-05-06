@@ -579,6 +579,18 @@ Blockly.Blocks['variable_declaration'] = {
     }
 };
 
+Blockly.Blocks['return'] = {
+    init: function () {
+        this.appendValueInput("Return")
+            .appendField("Return: ")
+            .setCheck(["variable", "operation", "constant_value"]);
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(false, null);
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+    }
+};
 
 Blockly.Blocks['my_procedures_mutatorarg'] = {
     init: function () {
