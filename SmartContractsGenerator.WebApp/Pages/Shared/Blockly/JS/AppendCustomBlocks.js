@@ -5,7 +5,12 @@ Blockly.MyDynamicInputs = {
         var elements = [];
         for (var i = 0; i < blocks.length; i++) {
             if (blocks[i].type && blocks[i].type == type) {
-                elements.push(blocks[i].getProcedureDef());
+                if (blocks[i].type == "contract_function") {
+                    elements.push([blocks[i].getProcedureDef(), blocks[i].getFieldValue("ApplyReturns") == "TRUE"]);
+                }
+                else {
+                    elements.push(blocks[i].getProcedureDef());
+                }
             }
         }
         return elements;
@@ -311,14 +316,30 @@ Blockly.Blocks['event_call'] = {
 
 Blockly.Blocks['call_returnable_function'] = {
     init: function () {
-        this.appendDummyInput()
-            .appendField("Call function and get value:")
-            .appendField(new Blockly.FieldVariable("[function name]"), "NAME");
+        this.appendDummyInput('TOPROW')
+            .appendField("Execute")
+            .appendField(this.id, 'NAME');
         this.setOutput(true, null);
-        this.setColour(230);
-        this.setTooltip("");
-        this.setHelpUrl("");
-    } 
+        this.setStyle('procedure_blocks');
+        this.arguments_ = [];
+        this.argumentVarModels_ = [];
+        this.quarkConnections_ = {};
+        this.quarkIds_ = null;
+        this.previousEnabledState_ = true;
+    },
+
+    getProcedureCall: Blockly.Blocks['procedures_callnoreturn'].getProcedureCall,
+    renameProcedure: Blockly.Blocks['procedures_callnoreturn'].renameProcedure,
+    setProcedureParameters_:
+        Blockly.Blocks['procedures_callnoreturn'].setProcedureParameters_,
+    updateShape_: Blockly.Blocks['procedures_callnoreturn'].updateShape_,
+    mutationToDom: Blockly.Blocks['procedures_callnoreturn'].mutationToDom,
+    domToMutation: Blockly.Blocks['procedures_callnoreturn'].domToMutation,
+    getVarModels: Blockly.Blocks['procedures_callnoreturn'].getVarModels,
+    //onchange: Blockly.Blocks['procedures_callnoreturn'].onchange,
+    customContextMenu:
+        Blockly.Blocks['procedures_callnoreturn'].customContextMenu,
+    defType_: 'call_void_function'
 };
 
 Blockly.Blocks['call_void_function'] = {
@@ -708,7 +729,20 @@ Blockly.Blocks['my_procedures_mutatorcontainer'] = {
 
 myFunctionCategoryCallback = function (workspace) {
     var tuples = Blockly.MyDynamicInputs.allProcedures(workspace);
-    return Blockly.MyDynamicInputs.populateElements(tuples, 'call_void_function');
+    var allFunctions = [];
+    var returnableFunctions = [];
+    for (var i = 0; i < tuples.length; i++)
+    {
+        allFunctions.push(tuples[i][0]);
+        if (tuples[i][1]) {
+            returnableFunctions.push(tuples[i][0]);
+        }
+    }
+
+    var voidElements = Blockly.MyDynamicInputs.populateElements(allFunctions, 'call_void_function');
+    var returnableElements = Blockly.MyDynamicInputs.populateElements(returnableFunctions, 'call_returnable_function');
+
+    return [].concat(voidElements).concat(returnableElements)
 };
 
 myEventsCategoryCallback = function (workspace) {
