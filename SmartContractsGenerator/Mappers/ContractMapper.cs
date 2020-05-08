@@ -54,6 +54,7 @@ namespace SmartContractsGenerator.Mappers
         private const string TypeFieldName = "TYPE";
         private const string ErrorMessageFieldName = "ErrorMessage";
         private const string ModifierFieldName = "Modifier";
+        private const string StateModificationFieldName = "StateModification";
         private const string LCNameFieldName = "name";
         private const string LCTypeFieldName = "type";
 
@@ -442,7 +443,8 @@ namespace SmartContractsGenerator.Mappers
                     Instructions = GetInstructionsListFromXmlNode(instructionNode, nsmgr),
                     Modifier = GetModifierForElementNode(node, nsmgr),
                     Parameters = GetParametersListFromXmlNode(parametersNode, nsmgr),
-                    ReturningType = GeTypeForElementNode(node, nsmgr)
+                    ReturningType = GeTypeForElementNode(node, nsmgr),
+                    ModificationType = GetModificationTypeForElementNode(node, nsmgr)
                 };
             }
 
@@ -651,6 +653,17 @@ namespace SmartContractsGenerator.Mappers
             }
 
             return null;
+        }
+
+        public ModificationType GetModificationTypeForElementNode(XmlNode node, XmlNamespaceManager nsmgr)
+        {
+            if (node != null)
+            {
+                var mName = GetValueFromFieldForElementNode(node, nsmgr, StateModificationFieldName);
+                return EnumMappers.MapBlocklyCodeToModificationType(mName);
+            }
+
+            return ModificationType.None;
         }
 
         public string GeTypeForElementNode(XmlNode node, XmlNamespaceManager nsmgr)

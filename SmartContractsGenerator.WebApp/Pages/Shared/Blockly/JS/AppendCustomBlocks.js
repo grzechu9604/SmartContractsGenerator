@@ -503,6 +503,9 @@ Blockly.Blocks['contract_function'] = {
         this.appendDummyInput("Visibility")
             .appendField("Visibility")
             .appendField(new Blockly.FieldDropdown([["External", "0"], ["Public", "1"], ["Private", "3"], ["Internal", "2"]]), "Visibility");
+        this.appendDummyInput("StateModification")
+            .appendField("State modification type")
+            .appendField(new Blockly.FieldDropdown([["ReadWrite", "0"], ["ReadOnly", "1"], ["Calculation only", "2"]]), "StateModification");
         this.appendDummyInput()
             .appendField("Return value")
             .appendField(returnsCheckbox, "ApplyReturns");

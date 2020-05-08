@@ -10,6 +10,8 @@ namespace SmartContractsGenerator.Mappers
         private const int MaxVisibilityValue = 3;
         private const int MinOperationOperatorValue = 0;
         private const int MaxOperationOperatorValue = 10;
+        private const int MinModificationTypeValue = 0;
+        private const int MaxModificationTypeValue = 2;
         public static Visibility? MapBlocklyCodeToVisibility(string code)
         {
             if (!string.IsNullOrEmpty(code) && code.Length == 1 && char.IsDigit(code.First()))
@@ -36,6 +38,20 @@ namespace SmartContractsGenerator.Mappers
             }
 
             throw new InvalidOperationException($"Value {code} is invalid option for operator code!");
+        }
+
+        public static ModificationType MapBlocklyCodeToModificationType(string code)
+        {
+            if (!string.IsNullOrEmpty(code) && code.Length == 1 && code.All(c => char.IsDigit(c)))
+            {
+                var value = Convert.ToInt16(code);
+                if (value >= MinModificationTypeValue && value <= MaxModificationTypeValue)
+                {
+                    return (ModificationType)value;
+                }
+            }
+
+            throw new InvalidOperationException($"Value {code} is invalid option for ModificationType code!");
         }
     }
 }
