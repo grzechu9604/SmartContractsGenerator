@@ -34,6 +34,8 @@ namespace SmartContractsGenerator.Model
 
         public string ReturningType { get; set; }
 
+        public ModificationType ModificationType { get; set; }
+
         protected override string GetHeader()
         {
             if (!Visibility.HasValue)
@@ -46,7 +48,7 @@ namespace SmartContractsGenerator.Model
                 throw new MissingMandatoryElementException("Name is required for function");
             }
 
-            return $"function {Name}({Parameters?.GenerateCode()}) {Visibility.Value.GenerateCode()}{GetModifierHeaderPart()}{GetReturnsHeaderPart()} {{\n";
+            return $"function {Name}({Parameters?.GenerateCode()}) {Visibility.Value.GenerateCode()}{GetModifierHeaderPart()}{GetModificationTypeHeaderPart()}{GetReturnsHeaderPart()} {{\n";
         }
 
         public virtual string GenerateCallCode()
@@ -80,5 +82,11 @@ namespace SmartContractsGenerator.Model
         }
 
         public string GetReturnsHeaderPart() => !string.IsNullOrWhiteSpace(ReturningType) ? $" returns ({ReturningType})" : null;
+
+        public string GetModificationTypeHeaderPart()
+        {
+            var code = ModificationType.GenerateCode();
+            return !string.IsNullOrWhiteSpace(code) ? $" {code}" : null;
+        }
     }
 }
