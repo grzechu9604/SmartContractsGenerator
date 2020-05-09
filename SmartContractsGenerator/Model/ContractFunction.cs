@@ -30,7 +30,7 @@ namespace SmartContractsGenerator.Model
         public Visibility? Visibility { get; set; }
         public ParametersList Parameters { get; set; }
         public ParametersList ModifierParameters { get; set; }
-        public Modifier Modifier { get; set; }
+        public ModifierAppliance Modifier { get; set; }
 
         public string ReturningType { get; set; }
 
@@ -65,15 +65,7 @@ namespace SmartContractsGenerator.Model
         {
             if (Modifier != null)
             {
-                var builder = new StringBuilder();
-                builder.Append($" {Modifier.Name}");
-                
-                if (ModifierParameters?.AnyParameter() == true)
-                {
-                    builder.Append($"({ModifierParameters.GenerateCode()})");
-                }
-
-                return builder.ToString();
+                return $" {Modifier.GenerateCode()}";
             }
             else
             {

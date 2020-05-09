@@ -28,6 +28,7 @@ namespace SmartContractsGenerator.Mappers
         private const string CallVoidFunctionBlockType = "call_void_function";
         private const string ModifierBlockType = "modifier";
         private const string ReturnBlockType = "return";
+        private const string ModifierApplianceBlockType = "moddifier_appliance";
 
         private const string PropertiesStatementName = "Properties";
         private const string ConstructorStatementName = "Constructor";
@@ -441,7 +442,7 @@ namespace SmartContractsGenerator.Mappers
                     Name = GetNameForElementNode(node, nsmgr),
                     Visibility = GetVisibilityForElementNode(node, nsmgr),
                     Instructions = GetInstructionsListFromXmlNode(instructionNode, nsmgr),
-                    Modifier = GetModifierForElementNode(node, nsmgr),
+                    Modifier = GetModifierApplianceFromXmlNode(node, nsmgr),
                     Parameters = GetParametersListFromXmlNode(parametersNode, nsmgr),
                     ReturningType = GeTypeForElementNode(node, nsmgr),
                     ModificationType = GetModificationTypeForElementNode(node, nsmgr)
@@ -510,6 +511,11 @@ namespace SmartContractsGenerator.Mappers
                 };
             }
 
+            return null;
+        }
+
+        public ModifierAppliance GetModifierApplianceFromXmlNode(XmlNode node, XmlNamespaceManager nsmgr)
+        {
             return null;
         }
 
