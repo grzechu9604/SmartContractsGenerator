@@ -47,6 +47,7 @@ namespace SmartContractsGenerator.Mappers
         private const string InitialAssignmentValueName = "Initial_assignment";
         private const string BreakConditionValueName = "break_condition";
         private const string StepInstructionValueName = "step_instruction";
+        private const string ModifierValueName = "Modifier";
 
         private const string VisibilityFieldName = "Visibility";
         private const string OperatorFieldName = "Operator";
@@ -436,13 +437,14 @@ namespace SmartContractsGenerator.Mappers
             {
                 var instructionNode = node.SelectSingleNode($"gxml:statement[@name=\"{InstructionsStatementName}\"]/gxml:block", nsmgr);
                 var parametersNode = node.SelectSingleNode($"gxml:mutation", nsmgr);
+                var modifierApplianceNode = node.SelectSingleNode($"gxml:value[@name=\"{ModifierValueName}\"]/gxml:block[@type=\"{ModifierApplianceBlockType}\"]", nsmgr);
 
                 return new ContractFunction()
                 {
                     Name = GetNameForElementNode(node, nsmgr),
                     Visibility = GetVisibilityForElementNode(node, nsmgr),
                     Instructions = GetInstructionsListFromXmlNode(instructionNode, nsmgr),
-                    Modifier = GetModifierApplianceFromXmlNode(node, nsmgr),
+                    Modifier = GetModifierApplianceFromXmlNode(modifierApplianceNode, nsmgr),
                     Parameters = GetParametersListFromXmlNode(parametersNode, nsmgr),
                     ReturningType = GeTypeForElementNode(node, nsmgr),
                     ModificationType = GetModificationTypeForElementNode(node, nsmgr)
@@ -503,11 +505,13 @@ namespace SmartContractsGenerator.Mappers
             if (node != null)
             {
                 var instructionNode = node.SelectSingleNode($"gxml:statement[@name=\"{InstructionsStatementName}\"]/gxml:block", nsmgr);
+                var parametersNode = node.SelectSingleNode($"gxml:mutation", nsmgr);
 
                 return new Modifier()
                 {
                     Name = GetNameForElementNode(node, nsmgr),
-                    Instructions = GetInstructionsListFromXmlNode(instructionNode, nsmgr)
+                    Instructions = GetInstructionsListFromXmlNode(instructionNode, nsmgr),
+                    Parameters = GetParametersListFromXmlNode(parametersNode, nsmgr)
                 };
             }
 
@@ -516,6 +520,23 @@ namespace SmartContractsGenerator.Mappers
 
         public ModifierAppliance GetModifierApplianceFromXmlNode(XmlNode node, XmlNamespaceManager nsmgr)
         {
+            if (node != null)
+            {
+                var name = GetNameForCallFromXmlNode(node, nsmgr);
+                if (!string.IsNullOrWhiteSpace(name))
+                {
+                    var paramList = GetParametersForCallFromXmlNode(node, nsmgr);
+                    return new ModifierAppliance()
+                    {
+                        ModifierToApply = new Modifier()
+                        {
+                            Name = name
+                        },
+                        Parameters = paramList
+                    };
+                }
+            }
+
             return null;
         }
 
