@@ -40,6 +40,17 @@ namespace SmartContractsGenerator.Model.Tests
             };
             yield return new object[] { eventCall, $"emit {eventName}()" };
 
+            string modifierName = "modifierName";
+            var modifier = new Modifier()
+            {
+                Name = modifierName
+            };
+            var modifierAppliance = new ModifierAppliance()
+            {
+                ModifierToApply = modifier
+            };
+            yield return new object[] { modifierAppliance, $"{modifierName}()" };
+
             var variables = new List<IAssignable>();
             var parameters = new CallingParametersList()
             {
@@ -52,6 +63,9 @@ namespace SmartContractsGenerator.Model.Tests
             eventCall.Parameters = parameters;
             yield return new object[] { eventCall, $"emit {eventName}()" };
 
+            modifierAppliance.Parameters = parameters;
+            yield return new object[] { modifierAppliance, $"{modifierName}()" };
+
             var vName1 = "vName";
             var v1 = new Variable()
             {
@@ -62,6 +76,7 @@ namespace SmartContractsGenerator.Model.Tests
             parameters.Parameters.Add(v1);
             yield return new object[] { eventCall, $"emit {eventName}({vName1})" };
             yield return new object[] { functionCall, $"{funcName}({vName1})" };
+            yield return new object[] { modifierAppliance, $"{modifierName}({vName1})" };
 
             var vName2 = "vName2";
             var v2 = new Variable()
@@ -73,6 +88,7 @@ namespace SmartContractsGenerator.Model.Tests
             parameters.Parameters.Add(v2);
             yield return new object[] { eventCall, $"emit {eventName}({vName1}, {vName2})" };
             yield return new object[] { functionCall, $"{funcName}({vName1}, {vName2})" };
+            yield return new object[] { modifierAppliance, $"{modifierName}({vName1}, {vName2})" };
         }
     }
 }
