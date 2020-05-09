@@ -2,9 +2,19 @@
 {
     public class Indentation
     {
-        private int IndentationLevel = 0;
+        public Indentation()
+        {
+            IndentationLevel = 0;
+        }
 
-        public void IncrementIndentationLevel() => IndentationLevel++;
+        private Indentation(int indentationLevel)
+        {
+            IndentationLevel = indentationLevel;
+        }
+
+        private readonly int IndentationLevel;
+
+        public Indentation GetIndentationWithIncrementedLevel() => new Indentation(IndentationLevel + 1);
 
         public string GenerateCode()
         {

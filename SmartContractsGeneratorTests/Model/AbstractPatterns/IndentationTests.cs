@@ -18,11 +18,16 @@ namespace SmartContractsGenerator.Model.AbstractPatterns.Tests
             var indentation = new Indentation();
             yield return new object[] { indentation, string.Empty };
 
+            var previous = indentation;
+
             for (int i = 1; i < 10; i++)
             {
-                indentation.IncrementIndentationLevel();
-                yield return new object[] { indentation, new string('\t', i) };
+                var newIndentation = previous.GetIndentationWithIncrementedLevel();
+                yield return new object[] { newIndentation, new string('\t', i) };
+                previous = newIndentation;
             }
+
+            yield return new object[] { indentation, string.Empty };
         }
     }
 }
