@@ -104,6 +104,7 @@
     </category>
     <category name="Functions calls" colour="290" custom="MY_PROCEDURE"></category>
     <category name="Events calls" colour="290" custom="MY_EVENTS"></category>
+    <category name="Modifiers calls" colour="290" custom="MY_MODIFIERS"></category>
 </xml>
 <button id="GenerateCodeButton">Generate code</button>
 
@@ -118,6 +119,8 @@
         'MY_PROCEDURE', myFunctionCategoryCallback);
     demoWorkspace.registerToolboxCategoryCallback(
         'MY_EVENTS', myEventsCategoryCallback);
+    demoWorkspace.registerToolboxCategoryCallback(
+        'MY_MODIFIERS', myModifiersCategoryCallback);
 
     $(document).ready(function () {
         $("#GenerateCodeButton").click(function (e) {

@@ -22,6 +22,9 @@ Blockly.MyDynamicInputs = {
     allEvents: function (root) {
         return Blockly.MyDynamicInputs.allDefinitionsOfType_(root, "contract_event");
     },
+    allModifiers: function (root) {
+        return Blockly.MyDynamicInputs.allDefinitionsOfType_(root, "modifier");
+    },
     mutationToDom: function (opt_paramIds) {
         var container = Blockly.utils.xml.createElement('mutation');
         if (opt_paramIds) {
@@ -139,7 +142,6 @@ Blockly.MyDynamicInputs = {
         return xmlList;
     }
 };
-
 
 Blockly.Blocks['contract'] = {
     init: function () {
@@ -527,9 +529,9 @@ Blockly.Blocks['contract_function'] = {
         var inputExists = this.getInput("Modifier");
         if (applyModifierInput) {
             if (!inputExists) {
-                this.appendDummyInput("Modifier")
-                    .appendField("Modifier")
-                    .appendField(new Blockly.FieldVariable("[modifier name]"), "Modifier");
+                this.appendValueInput("Modifier")
+                    .appendField("Modifier: ")
+                    .setCheck(["modifier_appliance"]);
                 this.moveInputBefore('Modifier', 'Visibility');
             }
         } else if (inputExists) {
@@ -568,11 +570,15 @@ Blockly.Blocks['contract_function'] = {
 
 Blockly.Blocks['modifier'] = {
     init: function () {
+        var nameField = new Blockly.FieldTextInput('',
+            Blockly.Procedures.rename);
+        nameField.setSpellcheck(false);
         this.appendDummyInput()
             .appendField("Modifier");
         this.appendDummyInput()
-            .appendField("Name")
-            .appendField(new Blockly.FieldVariable("[modifier name]"), "NAME");
+            .appendField(nameField, 'NAME')
+            .appendField('', 'PARAMS');
+        this.setMutator(new Blockly.Mutator(['my_procedures_mutatorarg']));
         this.appendDummyInput()
             .appendField("Instructions");
         this.appendStatementInput("Instructions")
@@ -582,7 +588,50 @@ Blockly.Blocks['modifier'] = {
         this.setColour(230);
         this.setTooltip("");
         this.setHelpUrl("");
-    }
+        this.arguments_ = [];
+        this.argumentVarModels_ = [];
+    },
+
+    updateParams_: Blockly.Blocks['procedures_defnoreturn'].updateParams_,
+    mutationToDom: Blockly.MyDynamicInputs.mutationToDom,
+    domToMutation: Blockly.MyDynamicInputs.domToMutation,
+    decompose: Blockly.MyDynamicInputs.decompose,
+    compose: Blockly.MyDynamicInputs.compose,
+    getProcedureDef: Blockly.Blocks['procedures_defnoreturn'].getProcedureDef,
+    getVars: Blockly.Blocks['procedures_defnoreturn'].getVars,
+    getVarModels: Blockly.Blocks['procedures_defnoreturn'].getVarModels,
+    renameVarById: Blockly.Blocks['procedures_defnoreturn'].renameVarById,
+    updateVarName: Blockly.Blocks['procedures_defnoreturn'].updateVarName,
+    displayRenamedVar_: Blockly.Blocks['procedures_defnoreturn'].displayRenamedVar_,
+    customContextMenu: Blockly.Blocks['procedures_defnoreturn'].customContextMenu
+};
+
+Blockly.Blocks['moddifier_appliance'] = {
+    init: function () {
+        this.appendDummyInput('TOPROW')
+            .appendField("Use modifier")
+            .appendField(this.id, 'NAME');
+        this.setOutput(true, null);
+        this.setStyle('procedure_blocks');
+        this.arguments_ = [];
+        this.argumentVarModels_ = [];
+        this.quarkConnections_ = {};
+        this.quarkIds_ = null;
+        this.previousEnabledState_ = true;
+    },
+
+    getProcedureCall: Blockly.Blocks['procedures_callnoreturn'].getProcedureCall,
+    renameProcedure: Blockly.Blocks['procedures_callnoreturn'].renameProcedure,
+    setProcedureParameters_:
+        Blockly.Blocks['procedures_callnoreturn'].setProcedureParameters_,
+    updateShape_: Blockly.Blocks['procedures_callnoreturn'].updateShape_,
+    mutationToDom: Blockly.Blocks['procedures_callnoreturn'].mutationToDom,
+    domToMutation: Blockly.Blocks['procedures_callnoreturn'].domToMutation,
+    getVarModels: Blockly.Blocks['procedures_callnoreturn'].getVarModels,
+    //onchange: Blockly.Blocks['procedures_callnoreturn'].onchange,
+    customContextMenu:
+        Blockly.Blocks['procedures_callnoreturn'].customContextMenu,
+    defType_: 'moddifier_appliance'
 };
 
 Blockly.Blocks['variable_declaration'] = {
@@ -751,4 +800,9 @@ myFunctionCategoryCallback = function (workspace) {
 myEventsCategoryCallback = function (workspace) {
     var tuples = Blockly.MyDynamicInputs.allEvents(workspace);
     return Blockly.MyDynamicInputs.populateElements(tuples, 'event_call');
+};
+
+myModifiersCategoryCallback = function (workspace) {
+    var tuples = Blockly.MyDynamicInputs.allModifiers(workspace);
+    return Blockly.MyDynamicInputs.populateElements(tuples, 'moddifier_appliance');
 };
