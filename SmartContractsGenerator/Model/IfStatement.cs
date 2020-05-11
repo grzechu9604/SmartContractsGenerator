@@ -5,13 +5,13 @@ using System.Text;
 
 namespace SmartContractsGenerator.Model
 {
-    public class IfStatement : IInstruction
+    public class IfStatement : IInstruction, ICodeGeneratorWithIndentation
     {
         public InstructionsList TrueInstructions { get; set; }
         public InstructionsList FalseInstructions { get; set; }
         public Condition Condition { get; set; }
 
-        public virtual string GenerateCode()
+        public virtual string GenerateCode(Indentation indentation)
         {
             if (Condition == null)
             {
@@ -24,22 +24,23 @@ namespace SmartContractsGenerator.Model
 
             if (TrueInstructions != null)
             {
-                codeBuilder.Append($"\n{TrueInstructions.GenerateCode()}");
+                codeBuilder.Append($"\n{TrueInstructions.GenerateCode(indentation?.GetIndentationWithIncrementedLevel())}");
             }
 
-            codeBuilder.Append("\n}");
+            codeBuilder.Append($"\n{indentation?.GenerateCode()}}}");
 
 
             if (FalseInstructions != null && FalseInstructions.Any())
             {
                 if (FalseInstructions.ContainsOnlyIf())
                 {
-                    codeBuilder.Append($" else {FalseInstructions.GenerateCode()}");
+                    var elseIf = FalseInstructions.GetFirstInstruction() as IfStatement;
+                     codeBuilder.Append($" else {elseIf.GenerateCode(indentation)}");
                 }
                 else
                 {
                     codeBuilder.Append($" else {{\n");
-                    codeBuilder.Append($"{FalseInstructions.GenerateCode()}\n}}");
+                    codeBuilder.Append($"{FalseInstructions.GenerateCode(indentation?.GetIndentationWithIncrementedLevel())}\n{indentation?.GenerateCode()}}}");
                 }
             }
 

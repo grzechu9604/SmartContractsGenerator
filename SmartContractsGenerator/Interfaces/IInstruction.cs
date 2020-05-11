@@ -1,6 +1,6 @@
 ﻿namespace SmartContractsGenerator.Interfaces
 {
-    public interface IInstruction : ICodeGenerator
+    public interface IInstruction
     {
     }
 }

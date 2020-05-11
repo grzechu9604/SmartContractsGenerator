@@ -1,4 +1,5 @@
 ﻿using SmartContractsGenerator.Model;
+using SmartContractsGenerator.Model.AbstractPatterns;
 using System;
 
 namespace SmartContractsGeneratorTests.Model.Helpers
@@ -12,12 +13,12 @@ namespace SmartContractsGeneratorTests.Model.Helpers
             mocksHolder.Dispose();
         }
 
-        public Constructor PrepareMock(string expectedCode)
+        public Constructor PrepareMock(string expectedCode, Indentation indentation)
         {
             var mock = mocksHolder.GetMock();
 
             mock.Mock<Constructor>()
-                .Setup(x => x.GenerateCode())
+                .Setup(x => x.GenerateCode(indentation))
                 .Returns(expectedCode);
 
             var preparedMock = mock.Create<Constructor>();

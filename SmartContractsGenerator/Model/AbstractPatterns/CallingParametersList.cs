@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace SmartContractsGenerator.Model.AbstractPatterns
 {
-    public class CallingParametersList
+    public class CallingParametersList : ICodeGenerator
     {
         public List<IAssignable> Parameters { get; set; }
 

@@ -339,7 +339,7 @@ namespace SmartContractGeneratorManualTests
                 Properties = properties
             };
 
-            Console.WriteLine(contract.GenerateCode());
+            Console.WriteLine(contract.GenerateCode(new Indentation()));
         }
 
         private static Variable PrepareVariable(string name, string type)

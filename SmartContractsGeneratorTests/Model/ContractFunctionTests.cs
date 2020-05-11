@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SmartContractsGenerator.Exceptions;
+using SmartContractsGenerator.Model.AbstractPatterns;
 using SmartContractsGenerator.Model.Enums;
 using SmartContractsGeneratorTests.Model.Helpers;
 using System;
@@ -30,7 +31,7 @@ namespace SmartContractsGenerator.Model.Tests
             {
                 Name = "123"
             };
-            function.GenerateCode();
+            function.GenerateCode(new Indentation());
         }
 
         [TestMethod()]
@@ -38,7 +39,7 @@ namespace SmartContractsGenerator.Model.Tests
         public void EmptyContractNameTest()
         {
             var function = new ContractFunction();
-            function.GenerateCode();
+            function.GenerateCode(new Indentation());
         }
 
         [TestMethod()]
@@ -49,15 +50,15 @@ namespace SmartContractsGenerator.Model.Tests
             {
                 Name = "Test"
             };
-            function.GenerateCode();
+            function.GenerateCode(new Indentation());
         }
 
         [TestMethod]
         [DynamicData(nameof(GenerateTestData), DynamicDataSourceType.Method)]
-        public void GenerateCodeTest(ContractFunction function, string expected)
+        public void GenerateCodeTest(ContractFunction function, Indentation indentation, string expected)
         {
             System.Diagnostics.Contracts.Contract.Requires(function != null);
-            Assert.AreEqual(expected, function.GenerateCode());
+            Assert.AreEqual(expected, function.GenerateCode(indentation));
         }
 
         static IEnumerable<object[]> GenerateTestData()
@@ -85,8 +86,8 @@ namespace SmartContractsGenerator.Model.Tests
             var visibility3 = Visibility.Private;
             var visibility4 = Visibility.Public;
 
-            var instructionCode1 = "INSTRUCTION CODE 1";
-            var instructionCode2 = "INSTRUCTION CODE 2";
+            var instructionCode1 = "\tINSTRUCTION CODE 1";
+            var instructionCode2 = "\tINSTRUCTION CODE 2";
 
             var parametersCode1 = "PARAMETERS CODE 1";
             var parametersCode2 = "PARAMETERS CODE 2";
@@ -153,8 +154,9 @@ namespace SmartContractsGenerator.Model.Tests
 
         static object[] GenerateRow(string parametersListCode, string name, string instructionsListCode, Visibility? visibility, Modifier m, string modifierParametersListCode, bool anyModifierParameter, string returningType, ModificationType modificationType, string expected)
         {
+            var indentation = new Indentation();
             var parametersListMock = parametersListCode != null ? mockHelper.PrepareMock(parametersListCode, true) : null;
-            var instructionsListMock = instructionsListCode != null ? instructionsListMockHelper.PrepareMock(instructionsListCode, false, !string.IsNullOrWhiteSpace(instructionsListCode)) : null;
+            var instructionsListMock = instructionsListCode != null ? instructionsListMockHelper.PrepareMock(instructionsListCode, false, !string.IsNullOrWhiteSpace(instructionsListCode), indentation.GetIndentationWithIncrementedLevel()) : null;
 
             var ma = m != null ? new ModifierAppliance()
             {
@@ -172,7 +174,7 @@ namespace SmartContractsGenerator.Model.Tests
                 ReturningType = returningType,
                 ModificationType = modificationType
             };
-            return new object[] { f, expected };
+            return new object[] { f, indentation, expected };
         }
 
         [TestMethod]

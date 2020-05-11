@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using Microsoft.AspNetCore.Mvc;
 using SmartContractsGenerator.Mappers;
+using SmartContractsGenerator.Model.AbstractPatterns;
 
 namespace SmartContractsGenerator.WebApp.Controllers
 {
@@ -17,7 +18,7 @@ namespace SmartContractsGenerator.WebApp.Controllers
             xmlDocument.LoadXml(Request.Form["code"]);
             var mapper = new ContractMapper();
             var c = mapper.MapXmlDocumentToContract(xmlDocument);
-            return c.GenerateCode();
+            return c.GenerateCode(new Indentation());
         }
     }
 }

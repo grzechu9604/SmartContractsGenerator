@@ -3,7 +3,7 @@ using SmartContractsGenerator.Interfaces;
 
 namespace SmartContractsGenerator.Model
 {
-    public class Declaration : IValueContainer
+    public class Declaration : IValueContainer, IOneLineInstruction
     {
         public Variable Variable { get; set; }
         public virtual string GenerateCode()

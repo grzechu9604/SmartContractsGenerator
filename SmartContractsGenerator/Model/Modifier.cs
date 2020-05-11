@@ -26,7 +26,7 @@ namespace SmartContractsGenerator.Model
         }
         private string name;
 
-        protected override string GetFooter() => "_;\n}";
+        protected override string GetFooterPrefix() => "_;";
 
         protected override string GetHeader()
         {

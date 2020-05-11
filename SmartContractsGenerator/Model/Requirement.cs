@@ -3,7 +3,7 @@ using SmartContractsGenerator.Interfaces;
 
 namespace SmartContractsGenerator.Model
 {
-    public class Requirement : IInstruction
+    public class Requirement : IInstruction, IOneLineInstruction
     {
         public Condition Condition { get; set; }
         public string ErrorMessage { get; set; }
@@ -17,11 +17,11 @@ namespace SmartContractsGenerator.Model
 
             if (!string.IsNullOrWhiteSpace(ErrorMessage))
             {
-                return $"require({Condition.GenerateCode()}, {ErrorMessage});\n";
+                return $"require({Condition.GenerateCode()}, {ErrorMessage})";
             }
             else
             {
-                return $"require({Condition.GenerateCode()});\n";
+                return $"require({Condition.GenerateCode()})";
             }
         }
     }
