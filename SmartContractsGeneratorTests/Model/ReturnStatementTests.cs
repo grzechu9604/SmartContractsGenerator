@@ -1,5 +1,4 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SmartContractsGenerator.Exceptions;
 using SmartContractsGeneratorTests.Model.Helpers;
 using System.Collections.Generic;
 
@@ -17,10 +16,9 @@ namespace SmartContractsGenerator.Model.Tests
         }
 
         [TestMethod()]
-        [ExpectedException(typeof(MissingMandatoryElementException))]
         public void EmptyAssignmentTest()
         {
-            new ReturnStatement().GenerateCode();
+            Assert.AreEqual("return", new ReturnStatement().GenerateCode());
         }
 
         [TestMethod]

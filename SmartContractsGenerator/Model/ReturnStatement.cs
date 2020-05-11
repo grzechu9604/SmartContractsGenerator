@@ -1,5 +1,4 @@
-﻿using SmartContractsGenerator.Exceptions;
-using SmartContractsGenerator.Interfaces;
+﻿using SmartContractsGenerator.Interfaces;
 
 namespace SmartContractsGenerator.Model
 {
@@ -9,12 +8,14 @@ namespace SmartContractsGenerator.Model
 
         public string GenerateCode()
         {
-            if (ToReturn == null)
+            if (ToReturn != null)
             {
-                throw new MissingMandatoryElementException("Object to return is mandatory element of return statement");
+                return $"return {ToReturn.GenerateCode()}";
             }
-
-            return $"return {ToReturn.GenerateCode()}";
+            else
+            {
+                return "return";
+            }
         }
     }
 }
