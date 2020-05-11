@@ -316,6 +316,15 @@ Blockly.Blocks['event_call'] = {
     defType_: 'call_void_function'
 };
 
+Blockly.Blocks['break_statement'] = {
+    init: function () {
+        this.appendDummyInput('TOPROW')
+            .appendField("Break loop")
+        this.setPreviousStatement(true);
+        this.setNextStatement(true);
+    }
+};
+
 Blockly.Blocks['call_returnable_function'] = {
     init: function () {
         this.appendDummyInput('TOPROW')

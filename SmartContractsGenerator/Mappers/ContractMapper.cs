@@ -29,6 +29,7 @@ namespace SmartContractsGenerator.Mappers
         private const string ModifierBlockType = "modifier";
         private const string ReturnBlockType = "return";
         private const string ModifierApplianceBlockType = "moddifier_appliance";
+        private const string BreakStatementBlockType = "break_statement";
 
         private const string PropertiesStatementName = "Properties";
         private const string ConstructorStatementName = "Constructor";
@@ -92,7 +93,8 @@ namespace SmartContractsGenerator.Mappers
                 { RequirementBlockType, GetRequirementFromXmlNode },
                 { EventCallBlockType, GetEventCallFromXmlNode },
                 { CallVoidFunctionBlockType, GetFunctionCallFromXmlNode },
-                { ReturnBlockType, GetReturnStatementFromXmlNode }
+                { ReturnBlockType, GetReturnStatementFromXmlNode },
+                { BreakStatementBlockType, GetBreakStatementFromXmlNode }
             };
 
             OneLineInstructionMappers = new Dictionary<string, Func<XmlNode, XmlNamespaceManager, IOneLineInstruction>>()
@@ -579,6 +581,8 @@ namespace SmartContractsGenerator.Mappers
             }
             return null;
         }
+
+        public BreakStatement GetBreakStatementFromXmlNode(XmlNode node, XmlNamespaceManager nsmgr) => node != null ? new BreakStatement() : null;
 
         public List<ContractEvent> GetContractEventsFromXmlNode(XmlNode node, XmlNamespaceManager nsmgr)
         {
