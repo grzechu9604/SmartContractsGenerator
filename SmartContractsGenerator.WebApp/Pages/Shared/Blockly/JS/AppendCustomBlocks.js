@@ -666,15 +666,35 @@ Blockly.Blocks['variable_declaration'] = {
 
 Blockly.Blocks['return'] = {
     init: function () {
-        this.appendValueInput("Return")
-            .appendField("Return: ")
-            .setCheck(["variable", "operation", "constant_value"]);
+        this.appendDummyInput()
+            .appendField("Break function")
+
+        var returnValueCheckbox = new Blockly.FieldCheckbox("FALSE", function (returnValueChecked) {
+            this.sourceBlock_.updateReturnValueInput_(returnValueChecked == "TRUE");
+        });
+        this.appendDummyInput()
+            .appendField("Return value")
+            .appendField(returnValueCheckbox, "ReturnValueCheckbox");
+
         this.setPreviousStatement(true, null);
         this.setNextStatement(false, null);
         this.setColour(230);
         this.setTooltip("");
         this.setHelpUrl("");
-    }
+    },
+
+    updateReturnValueInput_: function (returnValueChecked) {
+        var inputExists = this.getInput("ReturnValue");
+        if (returnValueChecked) {
+            if (!inputExists) {
+                this.appendValueInput("ReturnValue")
+                    .appendField("Value")
+                    .setCheck(["variable", "operation", "constant_value"]);
+            }
+        } else if (inputExists) {
+            this.removeInput('ReturnValue');
+        }
+    },
 };
 
 Blockly.Blocks['my_procedures_mutatorarg'] = {

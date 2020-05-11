@@ -49,6 +49,7 @@ namespace SmartContractsGenerator.Mappers
         private const string BreakConditionValueName = "break_condition";
         private const string StepInstructionValueName = "step_instruction";
         private const string ModifierValueName = "Modifier";
+        private const string ReturnValueValueName = "ReturnValue";
 
         private const string VisibilityFieldName = "Visibility";
         private const string OperatorFieldName = "Operator";
@@ -572,7 +573,7 @@ namespace SmartContractsGenerator.Mappers
         {
             if (node != null)
             {
-                var objectToReturnNode = node.SelectSingleNode($"gxml:value[@name=\"Return\"]/gxml:block", nsmgr);
+                var objectToReturnNode = node.SelectSingleNode($"gxml:value[@name=\"{ReturnValueValueName}\"]/gxml:block", nsmgr);
 
                 return new ReturnStatement()
                 {
