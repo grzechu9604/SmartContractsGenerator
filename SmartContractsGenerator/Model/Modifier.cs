@@ -1,11 +1,12 @@
 ﻿using SmartContractsGenerator.Exceptions;
+using SmartContractsGenerator.Interfaces;
 using SmartContractsGenerator.Model.AbstractPatterns;
 using SmartContractsGenerator.Validators;
 using System;
 
 namespace SmartContractsGenerator.Model
 {
-    public class Modifier : AbstractInstructionsContainer
+    public class Modifier : AbstractInstructionsContainer, ICallable
     {
         public ParametersList Parameters { get; set; }
         public string Name
@@ -25,7 +26,7 @@ namespace SmartContractsGenerator.Model
         }
         private string name;
 
-        protected override string GetFooter() => "_;\n}";
+        protected override string GetFooterPrefix() => "_;";
 
         protected override string GetHeader()
         {
@@ -35,6 +36,16 @@ namespace SmartContractsGenerator.Model
             }
 
             return $"modifier {Name}({Parameters?.GenerateCode()}) {{\n";
+        }
+
+        public string GenerateCallCode()
+        {
+            if (string.IsNullOrWhiteSpace(Name))
+            {
+                throw new MissingMandatoryElementException("Name is mandatory element of modifier");
+            }
+
+            return Name;
         }
     }
 }

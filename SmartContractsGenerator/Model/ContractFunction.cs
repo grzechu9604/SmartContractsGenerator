@@ -30,7 +30,11 @@ namespace SmartContractsGenerator.Model
         public Visibility? Visibility { get; set; }
         public ParametersList Parameters { get; set; }
         public ParametersList ModifierParameters { get; set; }
-        public Modifier Modifier { get; set; }
+        public ModifierAppliance Modifier { get; set; }
+
+        public string ReturningType { get; set; }
+
+        public ModificationType ModificationType { get; set; }
 
         protected override string GetHeader()
         {
@@ -44,7 +48,7 @@ namespace SmartContractsGenerator.Model
                 throw new MissingMandatoryElementException("Name is required for function");
             }
 
-            return $"function {Name}({Parameters?.GenerateCode()}) {Visibility.Value.GenerateCode()}{GetModifierHeaderPart()} {{\n";
+            return $"function {Name}({Parameters?.GenerateCode()}) {Visibility.Value.GenerateCode()}{GetModifierHeaderPart()}{GetModificationTypeHeaderPart()}{GetReturnsHeaderPart()} {{\n";
         }
 
         public virtual string GenerateCallCode()
@@ -61,20 +65,20 @@ namespace SmartContractsGenerator.Model
         {
             if (Modifier != null)
             {
-                var builder = new StringBuilder();
-                builder.Append($" {Modifier.Name}");
-                
-                if (ModifierParameters?.AnyParameter() == true)
-                {
-                    builder.Append($"({ModifierParameters.GenerateCode()})");
-                }
-
-                return builder.ToString();
+                return $" {Modifier.GenerateCode()}";
             }
             else
             {
                 return null;
             }
+        }
+
+        public string GetReturnsHeaderPart() => !string.IsNullOrWhiteSpace(ReturningType) ? $" returns ({ReturningType})" : null;
+
+        public string GetModificationTypeHeaderPart()
+        {
+            var code = ModificationType.GenerateCode();
+            return !string.IsNullOrWhiteSpace(code) ? $" {code}" : null;
         }
     }
 }

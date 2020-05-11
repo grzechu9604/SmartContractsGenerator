@@ -12,12 +12,12 @@ namespace SmartContractsGeneratorTests.Model.Helpers
             mocksHolder.Dispose();
         }
 
-        public InstructionsList PrepareMock(string expectedCode, bool containsOnlyIf, bool containsAnyElement)
+        public InstructionsList PrepareMock(string expectedCode, bool containsOnlyIf, bool containsAnyElement, Indentation indentation)
         {
             var mock = mocksHolder.GetMock();
 
             mock.Mock<InstructionsList>()
-                .Setup(x => x.GenerateCode())
+                .Setup(x => x.GenerateCode(indentation))
                 .Returns(expectedCode);
 
             mock.Mock<InstructionsList>()

@@ -1,4 +1,5 @@
-﻿using SmartContractsGenerator.Model;
+﻿using SmartContractsGenerator.Interfaces;
+using SmartContractsGenerator.Model;
 using SmartContractsGenerator.Model.AbstractPatterns;
 using SmartContractsGenerator.Model.Enums;
 using System;
@@ -93,6 +94,16 @@ namespace SmartContractGeneratorManualTests
             var pl2 = new ParametersList()
             {
                 Parameters = new List<Variable>() { p1, p2, p3 }
+            };
+
+            var cpl = new CallingParametersList()
+            {
+                Parameters = new List<IAssignable>() { p1, p2 }
+            };
+
+            var cpl2 = new CallingParametersList()
+            {
+                Parameters = new List<IAssignable>() { p1, p2, p3 }
             };
 
             var d = new Declaration()
@@ -219,12 +230,12 @@ namespace SmartContractGeneratorManualTests
             var falseInstructions = new InstructionsList();
 
             trueInstructions.AppendInstruction(
-                new FunctionCall() { FunctionToCall = function, Parameters = pl2 }
+                new FunctionCall() { FunctionToCall = function, Parameters = cpl2 }
                 );
 
-            var ecpl = new ParametersList()
+            var ecpl = new CallingParametersList()
             {
-                Parameters = new List<Variable>() { p1 }
+                Parameters = new List<IAssignable>() { p1 }
             };
             falseInstructions.AppendInstruction(
                 new EventCall() { EventToCall = e2, Parameters = ecpl }
@@ -283,15 +294,15 @@ namespace SmartContractGeneratorManualTests
             };
 
             var loopInstructions = new InstructionsList();
-            var ple = new ParametersList()
+            var cple = new CallingParametersList()
             {
-                Parameters = new List<Variable>() { loopVariable }
+                Parameters = new List<IAssignable>() { loopVariable }
             };
             loopInstructions.AppendInstruction(
                 new EventCall()
                 {
                     EventToCall = e3,
-                    Parameters = ple
+                    Parameters = cple
                 }
                 );
 
@@ -328,7 +339,7 @@ namespace SmartContractGeneratorManualTests
                 Properties = properties
             };
 
-            Console.WriteLine(contract.GenerateCode());
+            Console.WriteLine(contract.GenerateCode(new Indentation()));
         }
 
         private static Variable PrepareVariable(string name, string type)

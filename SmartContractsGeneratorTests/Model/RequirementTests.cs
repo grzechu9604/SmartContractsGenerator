@@ -38,14 +38,14 @@ namespace SmartContractsGenerator.Model.Tests
             {
                 Condition = conditionMockHelper.PrepareMock(ConditionCode)
             };
-            yield return new object[] { r1, $"require({ConditionCode});\n" };
+            yield return new object[] { r1, $"require({ConditionCode})" };
 
             var r2 = new Requirement()
             {
                 Condition = conditionMockHelper.PrepareMock(ConditionCode),
                 ErrorMessage = string.Empty
             };
-            yield return new object[] { r2, $"require({ConditionCode});\n" };
+            yield return new object[] { r2, $"require({ConditionCode})" };
 
             string msg = "MSG";
             var r3 = new Requirement()
@@ -53,7 +53,7 @@ namespace SmartContractsGenerator.Model.Tests
                 Condition = conditionMockHelper.PrepareMock(ConditionCode),
                 ErrorMessage = msg
             };
-            yield return new object[] { r3, $"require({ConditionCode}, {msg});\n" };
+            yield return new object[] { r3, $"require({ConditionCode}, {msg})" };
         }
     }
 }

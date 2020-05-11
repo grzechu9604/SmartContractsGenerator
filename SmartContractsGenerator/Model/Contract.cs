@@ -41,14 +41,14 @@ namespace SmartContractsGenerator.Model
             return $"contract {Name} {{\n";
         }
 
-        protected override string GetContent()
+        protected override string GetContent(Indentation indentation)
         {
             StringBuilder codeBuilder = new StringBuilder();
 
             bool propertiesAdded = false;
             if (Properties != null && Properties.Any())
             {
-                Properties.ForEach(property => codeBuilder.Append($"{property.GenerateDeclarationCode()};\n"));
+                Properties.ForEach(property => codeBuilder.Append($"{indentation?.GenerateCode()}{property.GenerateDeclarationCode()};\n"));
                 propertiesAdded = true;
             }
 
@@ -60,7 +60,7 @@ namespace SmartContractsGenerator.Model
                     codeBuilder.Append("\n");
                 }
 
-                Events.ForEach(contractEvent => codeBuilder.Append($"{contractEvent.GenerateCode()};\n"));
+                Events.ForEach(contractEvent => codeBuilder.Append($"{indentation?.GenerateCode()}{contractEvent.GenerateCode()};\n"));
                 eventsAdded = true;
             }
 
@@ -71,7 +71,7 @@ namespace SmartContractsGenerator.Model
                 {
                     codeBuilder.Append("\n");
                 }
-                codeBuilder.Append($"{Constructor.GenerateCode()}\n");
+                codeBuilder.Append($"{indentation?.GenerateCode()}{Constructor.GenerateCode(indentation)}\n");
                 constructorAdded = true;
             }
 
@@ -83,9 +83,10 @@ namespace SmartContractsGenerator.Model
                     codeBuilder.Append("\n");
                 }
 
-                Modifiers.Take(Modifiers.Count - 1).ToList().ForEach(modifer => codeBuilder.Append($"{modifer.GenerateCode()}\n\n"));
+                Modifiers.Take(Modifiers.Count - 1).ToList().ForEach(modifer => 
+                    codeBuilder.Append($"{indentation?.GenerateCode()}{modifer.GenerateCode(indentation)}\n\n"));
 
-                codeBuilder.Append($"{Modifiers.Last().GenerateCode()}\n");
+                codeBuilder.Append($"{indentation?.GenerateCode()}{Modifiers.Last().GenerateCode(indentation)}\n");
                 modifiersAdded = true;
             }
 
@@ -96,9 +97,10 @@ namespace SmartContractsGenerator.Model
                     codeBuilder.Append("\n");
                 }
 
-                Functions.Take(Functions.Count - 1).ToList().ForEach(function => codeBuilder.Append($"{function.GenerateCode()}\n\n"));
+                Functions.Take(Functions.Count - 1).ToList().ForEach(function => 
+                    codeBuilder.Append($"{indentation?.GenerateCode()}{function.GenerateCode(indentation)}\n\n"));
 
-                codeBuilder.Append($"{Functions.Last().GenerateCode()}\n");
+                codeBuilder.Append($"{indentation?.GenerateCode()}{Functions.Last().GenerateCode(indentation)}\n");
             }
 
             return codeBuilder.ToString();

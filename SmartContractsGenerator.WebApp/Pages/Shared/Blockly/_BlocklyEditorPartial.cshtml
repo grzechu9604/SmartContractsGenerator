@@ -61,11 +61,10 @@
     </category>
     <category name="Function elements">
         <block type="assignment"></block>
-        <block type="event_call"></block>
-        <block type="call_void_function"></block>
         <block type="requirement"></block>
         <block type="contract_loop"></block>
         <block type="if_statement"></block>
+        <block type="return"></block>
     </category>
     <category name="All">
         <block type="contract">
@@ -81,12 +80,9 @@
         <block type="contract_constructor">
             <field name="Visibility">1</field>
         </block>
-        <block type="event_call"></block>
         <block type="contract_event">
             <field name="Name">[event name]</field>
         </block>
-        <block type="call_returnable_function"></block>
-        <block type="call_void_function"></block>
         <block type="condition"></block>
         <block type="operation">
             <field name="Operator">0</field>
@@ -104,9 +100,11 @@
         <block type="modifier">
             <field name="Name">[modifier name]</field>
         </block>
+        <block type="return"></block>
     </category>
-    <category name="Variables" colour="330" custom="VARIABLE"></category>
-    <category name="Functions" colour="290" custom="PROCEDURE"></category>
+    <category name="Functions calls" colour="290" custom="MY_PROCEDURE"></category>
+    <category name="Events calls" colour="290" custom="MY_EVENTS"></category>
+    <category name="Modifiers calls" colour="290" custom="MY_MODIFIERS"></category>
 </xml>
 <button id="GenerateCodeButton">Generate code</button>
 
@@ -116,6 +114,13 @@
             toolbox: document.getElementById('toolbox'),
             scrollbars: true
         });
+
+    demoWorkspace.registerToolboxCategoryCallback(
+        'MY_PROCEDURE', myFunctionCategoryCallback);
+    demoWorkspace.registerToolboxCategoryCallback(
+        'MY_EVENTS', myEventsCategoryCallback);
+    demoWorkspace.registerToolboxCategoryCallback(
+        'MY_MODIFIERS', myModifiersCategoryCallback);
 
     $(document).ready(function () {
         $("#GenerateCodeButton").click(function (e) {

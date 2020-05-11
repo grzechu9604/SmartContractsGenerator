@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SmartContractsGenerator.Exceptions;
+using SmartContractsGenerator.Model.AbstractPatterns;
 using SmartContractsGenerator.Model.Enums;
 using SmartContractsGeneratorTests.Model.Helpers;
 using System.Collections.Generic;
@@ -23,7 +24,7 @@ namespace SmartContractsGenerator.Model.Tests
         [ExpectedException(typeof(MissingMandatoryElementException))]
         public void MissingVisibilityTest()
         {
-            new Constructor().GenerateCode();
+            new Constructor().GenerateCode(new Indentation());
         }
 
         [TestMethod]
@@ -39,10 +40,10 @@ namespace SmartContractsGenerator.Model.Tests
 
         [TestMethod]
         [DynamicData(nameof(GetDataForTests), DynamicDataSourceType.Method)]
-        public void ConstructorTest(Constructor c, string expected)
+        public void ConstructorTest(Constructor c, Indentation indentation, string expected)
         {
             System.Diagnostics.Contracts.Contract.Requires(c != null);
-            Assert.AreEqual(expected, c.GenerateCode());
+            Assert.AreEqual(expected, c.GenerateCode(indentation));
         }
 
         static IEnumerable<object[]> GetDataForTests()
@@ -50,8 +51,8 @@ namespace SmartContractsGenerator.Model.Tests
             var oneElementParametersListCode = "Type1 Name1";
             var twoElementParametersListCode = "Type1 Name1, Type2 Name2";
             var threeElementParametersListCode = "Type1 Name1, Type2 Name2, Type3 Name3";
-            var instructionsCode1 = "INSTRUCTIONS CODE 1";
-            var instructionsCode2 = "INSTRUCTIONS CODE 2";
+            var instructionsCode1 = "\tINSTRUCTIONS CODE 1";
+            var instructionsCode2 = "\tINSTRUCTIONS CODE 2";
 
             yield return GenerateRow(null, Visibility.Public, null, $"constructor() public {{\n}}");
             yield return GenerateRow(string.Empty, Visibility.Internal, null, $"constructor() internal {{\n}}");
@@ -67,8 +68,9 @@ namespace SmartContractsGenerator.Model.Tests
 
         static object[] GenerateRow(string parametersListCode, Visibility visibility, string instructionsListCode, string expected)
         {
+            var indentation = new Indentation();
             var parametersListMock = parametersListCode != null ? mockHelper.PrepareMock(parametersListCode, true) : null;
-            var instructionsListMock = instructionsListCode != null ? instructionsListMockHelper.PrepareMock(instructionsListCode, false, !string.IsNullOrWhiteSpace(instructionsListCode)) : null;
+            var instructionsListMock = instructionsListCode != null ? instructionsListMockHelper.PrepareMock(instructionsListCode, false, !string.IsNullOrWhiteSpace(instructionsListCode), indentation.GetIndentationWithIncrementedLevel()) : null;
 
             var c = new Constructor()
             {
@@ -76,7 +78,7 @@ namespace SmartContractsGenerator.Model.Tests
                 Parameters = parametersListMock,
                 Instructions = instructionsListMock
             };
-            return new object[] { c, expected };
+            return new object[] { c, indentation, expected };
         }
 
         static IEnumerable<object[]> GetInvalidVisibilities()

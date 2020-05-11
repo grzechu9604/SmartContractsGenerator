@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SmartContractsGenerator.Exceptions;
+using SmartContractsGenerator.Model.AbstractPatterns;
 using SmartContractsGeneratorTests.Model.Helpers;
 using System.Collections.Generic;
 
@@ -100,7 +101,7 @@ namespace SmartContractsGenerator.Model.Tests
             var functionName = "fName";
             var fc = new FunctionCall()
             {
-                FunctionToCall = functionMockCreator.PrepareMock(null, functionName)
+                FunctionToCall = functionMockCreator.PrepareMock(null, functionName, new Indentation())
             };
             var op6 = new Operation()
             {

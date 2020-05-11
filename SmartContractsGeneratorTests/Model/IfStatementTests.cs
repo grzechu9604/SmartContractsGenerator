@@ -12,11 +12,7 @@ namespace SmartContractsGenerator.Model.Tests
         private static readonly InstructionsListMockCreator instructionsListMockHelper = new InstructionsListMockCreator();
         private static readonly ConditionCodeMockCreator conditionMockHelper = new ConditionCodeMockCreator();
 
-        private const string TrueInstructionsCode = "TRUE INSTRUCTIONS CODE";
-        private const string FalseInstructionsCode = "FALSE INSTRUCTIONS CODE";
         private const string ConditionCode = "CONDITION CODE";
-        private const string TrueInstructionsCode2 = "TRUE INSTRUCTIONS CODE2";
-        private const string FalseInstructionsCode2 = "FALSE INSTRUCTIONS CODE2";
         private const string ConditionCode2 = "CONDITION CODE2";
 
         [TestCleanup]
@@ -30,25 +26,31 @@ namespace SmartContractsGenerator.Model.Tests
         [ExpectedException(typeof(MissingMandatoryElementException))]
         public void EmptyIfStatementTest()
         {
-            new IfStatement().GenerateCode();
+            new IfStatement().GenerateCode(new Indentation());
         }
 
         [TestMethod]
         [DynamicData(nameof(GetDataForTests), DynamicDataSourceType.Method)]
-        public void GenerateCodeTest(IfStatement statement, string expected)
+        public void GenerateCodeTest(IfStatement statement, Indentation indentation, string expected)
         {
             System.Diagnostics.Contracts.Contract.Requires(statement != null);
-            Assert.AreEqual(expected, statement.GenerateCode());
+            Assert.AreEqual(expected, statement.GenerateCode(indentation));
         }
 
         [TestMethod()]
         public void GenerateCodeElseIfFullTest()
         {
+            var trueInstructionsCode = "\tTRUE INSTRUCTIONS CODE";
+            var trueInstructionsCode2 = "\tTRUE INSTRUCTIONS CODE2";
+            var falseInstructionsCode = "\tFALSE INSTRUCTIONS CODE";
+
+            var indentation = new Indentation();
+
             var trueAndElseIfInsideIf = new IfStatement()
             {
                 Condition = conditionMockHelper.PrepareMock(ConditionCode2),
-                TrueInstructions = instructionsListMockHelper.PrepareMock(TrueInstructionsCode2, false, true),
-                FalseInstructions = instructionsListMockHelper.PrepareMock(FalseInstructionsCode2, false, true)
+                TrueInstructions = instructionsListMockHelper.PrepareMock(trueInstructionsCode2, false, true, indentation.GetIndentationWithIncrementedLevel()),
+                FalseInstructions = instructionsListMockHelper.PrepareMock(falseInstructionsCode, false, true, indentation.GetIndentationWithIncrementedLevel())
             };
 
             var onlyIfInstructionsList = new InstructionsList();
@@ -57,47 +59,69 @@ namespace SmartContractsGenerator.Model.Tests
             var trueAndElseIfFull = new IfStatement()
             {
                 Condition = conditionMockHelper.PrepareMock(ConditionCode),
-                TrueInstructions = instructionsListMockHelper.PrepareMock(TrueInstructionsCode, false, true),
+                TrueInstructions = instructionsListMockHelper.PrepareMock(trueInstructionsCode, false, true, indentation.GetIndentationWithIncrementedLevel()),
                 FalseInstructions = onlyIfInstructionsList
             };
 
-            string expected = $"if ({ConditionCode}) {{\n{TrueInstructionsCode}\n}} else if ({ConditionCode2}) {{\n{TrueInstructionsCode2}\n}} else {{\n{FalseInstructionsCode2}\n}}";
+            string expected = $"if ({ConditionCode}) {{\n{trueInstructionsCode}\n}} else if ({ConditionCode2}) {{\n{trueInstructionsCode2}\n}} else {{\n{falseInstructionsCode}\n}}";
 
-            Assert.AreEqual(expected, trueAndElseIfFull.GenerateCode());
+            Assert.AreEqual(expected, trueAndElseIfFull.GenerateCode(indentation));
         }
 
         static IEnumerable<object[]> GetDataForTests()
         {
+            var indentation = new Indentation();
+
+            var trueInstructionsCode = "\tTRUE INSTRUCTIONS CODE";
+            var falseInstructionsCode = "\tFALSE INSTRUCTIONS CODE";
+
             var onlyTrueInstructions = new IfStatement()
             {
                 Condition = conditionMockHelper.PrepareMock(ConditionCode),
-                TrueInstructions = instructionsListMockHelper.PrepareMock(TrueInstructionsCode, false, true),
-                FalseInstructions = instructionsListMockHelper.PrepareMock(FalseInstructionsCode, false, false)
+                TrueInstructions = instructionsListMockHelper.PrepareMock(trueInstructionsCode, false, true, indentation.GetIndentationWithIncrementedLevel()),
+                FalseInstructions = instructionsListMockHelper.PrepareMock(falseInstructionsCode, false, false, indentation.GetIndentationWithIncrementedLevel())
             };
-            yield return new object[] { onlyTrueInstructions, $"if ({ConditionCode}) {{\n{TrueInstructionsCode}\n}}"};
+            yield return new object[] { onlyTrueInstructions, indentation, $"if ({ConditionCode}) {{\n{trueInstructionsCode}\n}}" };
+
+            trueInstructionsCode = "\t\tTRUE INSTRUCTIONS CODE";
+
+            var onlyTrueInstructionsDoubleIndentation = new IfStatement()
+            {
+                Condition = conditionMockHelper.PrepareMock(ConditionCode),
+                TrueInstructions = instructionsListMockHelper.PrepareMock(trueInstructionsCode, false, true, indentation.GetIndentationWithIncrementedLevel().GetIndentationWithIncrementedLevel()),
+                FalseInstructions = instructionsListMockHelper.PrepareMock(falseInstructionsCode, false, false, indentation.GetIndentationWithIncrementedLevel().GetIndentationWithIncrementedLevel())
+            };
+            yield return new object[] { onlyTrueInstructionsDoubleIndentation, indentation.GetIndentationWithIncrementedLevel(), $"if ({ConditionCode}) {{\n{trueInstructionsCode}\n\t}}" };
+
+            trueInstructionsCode = "\tTRUE INSTRUCTIONS CODE";
+            falseInstructionsCode = "\tFALSE INSTRUCTIONS CODE";
 
             var trueAndFalseInstructions = new IfStatement()
             {
                 Condition = conditionMockHelper.PrepareMock(ConditionCode),
-                TrueInstructions = instructionsListMockHelper.PrepareMock(TrueInstructionsCode, false, true),
-                FalseInstructions = instructionsListMockHelper.PrepareMock(FalseInstructionsCode, false, true)
+                TrueInstructions = instructionsListMockHelper.PrepareMock(trueInstructionsCode, false, true, indentation.GetIndentationWithIncrementedLevel()),
+                FalseInstructions = instructionsListMockHelper.PrepareMock(falseInstructionsCode, false, true, indentation.GetIndentationWithIncrementedLevel())
             };
-            yield return new object[] { trueAndFalseInstructions, $"if ({ConditionCode}) {{\n{TrueInstructionsCode}\n}} else {{\n{FalseInstructionsCode}\n}}" };
+            yield return new object[] { trueAndFalseInstructions, indentation, $"if ({ConditionCode}) {{\n{trueInstructionsCode}\n}} else {{\n{falseInstructionsCode}\n}}" };
 
-            var trueAndElseIfInstructions = new IfStatement()
+
+            trueInstructionsCode = "\t\tTRUE INSTRUCTIONS CODE";
+            falseInstructionsCode = "\t\tFALSE INSTRUCTIONS CODE";
+
+            var trueAndFalseInstructionsDoubleIndentation = new IfStatement()
             {
                 Condition = conditionMockHelper.PrepareMock(ConditionCode),
-                TrueInstructions = instructionsListMockHelper.PrepareMock(TrueInstructionsCode, false, true),
-                FalseInstructions = instructionsListMockHelper.PrepareMock(FalseInstructionsCode, true, true)
+                TrueInstructions = instructionsListMockHelper.PrepareMock(trueInstructionsCode, false, true, indentation.GetIndentationWithIncrementedLevel().GetIndentationWithIncrementedLevel()),
+                FalseInstructions = instructionsListMockHelper.PrepareMock(falseInstructionsCode, false, true, indentation.GetIndentationWithIncrementedLevel().GetIndentationWithIncrementedLevel())
             };
-            yield return new object[] { trueAndElseIfInstructions, $"if ({ConditionCode}) {{\n{TrueInstructionsCode}\n}} else {FalseInstructionsCode}" };
+            yield return new object[] { trueAndFalseInstructionsDoubleIndentation, indentation.GetIndentationWithIncrementedLevel(), $"if ({ConditionCode}) {{\n{trueInstructionsCode}\n\t}} else {{\n{falseInstructionsCode}\n\t}}" };
 
 
             var onlyCondition = new IfStatement()
             {
                 Condition = conditionMockHelper.PrepareMock(ConditionCode)
             };
-            yield return new object[] { onlyCondition, $"if ({ConditionCode}) {{\n}}" };
+            yield return new object[] { onlyCondition, indentation, $"if ({ConditionCode}) {{\n}}" };
         }
     }
 }

@@ -48,7 +48,7 @@ namespace SmartContractsGenerator.WebApp
             app.UseStaticFiles(new StaticFileOptions
             {
                 FileProvider = new PhysicalFileProvider(
-                    Path.Combine(Directory.GetCurrentDirectory(), @"Pages\Shared\Blockly\JS")),
+                    Path.Combine(Directory.GetCurrentDirectory(), @"Pages/Shared/Blockly/JS")),
                     RequestPath = "/CustomBlocklyJS"
             });
 
