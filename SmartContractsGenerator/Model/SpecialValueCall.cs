@@ -1,11 +1,10 @@
 ﻿using SmartContractsGenerator.Exceptions;
 using SmartContractsGenerator.Interfaces;
 using SmartContractsGenerator.Model.Enums;
-using System;
 
 namespace SmartContractsGenerator.Model
 {
-    public class SpecialValueCall : ICodeGenerator, IInstruction
+    public class SpecialValueCall : IAssignable
     {
         public BlockOrTransactionProperty? PropertyToCall { get; set; }
         

@@ -1,4 +1,6 @@
-﻿
+﻿var iAssignables = ["variable", "operation", "constant_value", "special_value", "call_returnable_function"];
+var iValueContainers = ["variable", "variable_declaration"];
+
 Blockly.MyDynamicInputs = {
     allDefinitionsOfType_: function (root, type) {
         var blocks = root.getAllBlocks(false);
@@ -274,11 +276,11 @@ Blockly.Blocks['assignment'] = {
         this.appendDummyInput()
             .appendField("Assignment");
         this.appendValueInput("Destination")
-            .setCheck(["variable", "variable_declaration"]);
+            .setCheck(iValueContainers);
         this.appendDummyInput()
             .appendField("=");
         this.appendValueInput("Source")
-            .setCheck(["variable", "operation", "constant_value"]);
+            .setCheck(iAssignables);
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
         this.setColour(230);
@@ -400,13 +402,13 @@ Blockly.Blocks['operation'] = {
         this.appendDummyInput()
             .appendField("Operation");
         this.appendValueInput("left_side")
-            .setCheck(["variable", "operation", "constant_value"])
+            .setCheck(iAssignables)
             .appendField("Left");
         this.appendDummyInput()
             .appendField("Operator")
             .appendField(new Blockly.FieldDropdown([["+", "0"], ["-", "1"], ["%", "2"], ["/", "3"], ["*", "4"], ["!", "5"], ["||", "6"], ["&&", "7"], ["^", "8"], ["==", "9"], ["!=", "10"]]), "Operator");
         this.appendValueInput("right_side")
-            .setCheck(["variable", "operation", "constant_value"])
+            .setCheck(iAssignables)
             .appendField("Right");
         this.setOutput(true, "operation");
         this.setColour(230);
@@ -664,6 +666,19 @@ Blockly.Blocks['variable_declaration'] = {
     }
 };
 
+Blockly.Blocks['special_value_call'] = {
+    init: function () {
+        this.appendDummyInput()
+            .appendField("Special values:")
+            .appendField(new Blockly.FieldDropdown([["Block Coinbase", "0"], ["Block Difficulty", "1"], ["BlockGaslimit", "2"], ["Block Number", "3"], ["Block Timestamp", "4"], ["Gasleft", "5"], ["Message Data", "6"], ["Message Sender", "7"], ["Message Sig", "8"], ["Message Value", "9"], ["Now", "10"], ["Transaction Gasprice", "11"], ["Transaction Origin", "12"]]), "value");
+        this.setInputsInline(false);
+        this.setOutput(true, "special_value");
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+    }
+};
+
 Blockly.Blocks['return'] = {
     init: function () {
         this.appendDummyInput()
@@ -689,7 +704,7 @@ Blockly.Blocks['return'] = {
             if (!inputExists) {
                 this.appendValueInput("ReturnValue")
                     .appendField("Value")
-                    .setCheck(["variable", "operation", "constant_value"]);
+                    .setCheck(iAssignables);
             }
         } else if (inputExists) {
             this.removeInput('ReturnValue');

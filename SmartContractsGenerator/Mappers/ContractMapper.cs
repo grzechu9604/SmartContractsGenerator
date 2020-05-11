@@ -30,6 +30,7 @@ namespace SmartContractsGenerator.Mappers
         private const string ReturnBlockType = "return";
         private const string ModifierApplianceBlockType = "moddifier_appliance";
         private const string BreakStatementBlockType = "break_statement";
+        private const string SpecialValueCallBlockType = "special_value_call";
 
         private const string PropertiesStatementName = "Properties";
         private const string ConstructorStatementName = "Constructor";
@@ -62,6 +63,7 @@ namespace SmartContractsGenerator.Mappers
         private const string LCNameFieldName = "name";
         private const string LCTypeFieldName = "type";
         private const string AcceptsEthersFieldName = "AcceptsEthers";
+        private const string ValueFieldName = "value";
 
         private const string BlocklyBoolTrue = "TRUE";
 
@@ -77,7 +79,8 @@ namespace SmartContractsGenerator.Mappers
                 { ConstantValueBlockType, GetConstantValueFromElementNode },
                 { OperationBlockType, GetOperationFromElementNode },
                 { VariableBlockType, GetVariableFormXmlNode },
-                { CallReturnableFunctionBlockType, GetFunctionCallFromXmlNode }
+                { CallReturnableFunctionBlockType, GetFunctionCallFromXmlNode },
+                { SpecialValueCallBlockType, GetSpecialValueCallFromXmlNode }
             };
 
             ValueContainerMappers = new Dictionary<string, Func<XmlNode, XmlNamespaceManager, IValueContainer>>()
@@ -583,6 +586,18 @@ namespace SmartContractsGenerator.Mappers
             return null;
         }
 
+        public SpecialValueCall GetSpecialValueCallFromXmlNode(XmlNode node, XmlNamespaceManager nsmgr)
+        {
+            if (node != null)
+            {
+                return new SpecialValueCall()
+                {
+                    PropertyToCall = GetBlockOrTransactionPropertyForElementNode(node, nsmgr)
+                };
+            }
+            return null;
+        }
+
         public BreakStatement GetBreakStatementFromXmlNode(XmlNode node, XmlNamespaceManager nsmgr) => node != null ? new BreakStatement() : null;
 
         public List<ContractEvent> GetContractEventsFromXmlNode(XmlNode node, XmlNamespaceManager nsmgr)
@@ -710,6 +725,17 @@ namespace SmartContractsGenerator.Mappers
             }
 
             return ModificationType.None;
+        }
+
+        public BlockOrTransactionProperty GetBlockOrTransactionPropertyForElementNode(XmlNode node, XmlNamespaceManager nsmgr)
+        {
+            if (node != null)
+            {
+                var propertyId = GetValueFromFieldForElementNode(node, nsmgr, ValueFieldName);
+                return EnumMappers.MapBlocklyCodeToBlockOrTransactionProperty(propertyId);
+            }
+
+            throw new InvalidOperationException("Node is required in this function!");
         }
 
         public string GeTypeForElementNode(XmlNode node, XmlNamespaceManager nsmgr)
