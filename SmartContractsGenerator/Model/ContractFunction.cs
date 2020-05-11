@@ -4,7 +4,6 @@ using SmartContractsGenerator.Model.AbstractPatterns;
 using SmartContractsGenerator.Model.Enums;
 using SmartContractsGenerator.Validators;
 using System;
-using System.Text;
 
 namespace SmartContractsGenerator.Model
 {
@@ -31,9 +30,8 @@ namespace SmartContractsGenerator.Model
         public ParametersList Parameters { get; set; }
         public ParametersList ModifierParameters { get; set; }
         public ModifierAppliance Modifier { get; set; }
-
+        public bool IsPayable { get; set; }
         public string ReturningType { get; set; }
-
         public ModificationType ModificationType { get; set; }
 
         protected override string GetHeader()
@@ -48,7 +46,7 @@ namespace SmartContractsGenerator.Model
                 throw new MissingMandatoryElementException("Name is required for function");
             }
 
-            return $"function {Name}({Parameters?.GenerateCode()}) {Visibility.Value.GenerateCode()}{GetModifierHeaderPart()}{GetModificationTypeHeaderPart()}{GetReturnsHeaderPart()} {{\n";
+             return $"function {Name}({Parameters?.GenerateCode()}) {Visibility.Value.GenerateCode()}{GetModifierHeaderPart()}{GetModificationTypeHeaderPart()}{GetPayablePart()}{GetReturnsHeaderPart()} {{\n";
         }
 
         public virtual string GenerateCallCode()
@@ -80,5 +78,7 @@ namespace SmartContractsGenerator.Model
             var code = ModificationType.GenerateCode();
             return !string.IsNullOrWhiteSpace(code) ? $" {code}" : null;
         }
+
+        public string GetPayablePart() => IsPayable ? " payable" : null;
     }
 }
