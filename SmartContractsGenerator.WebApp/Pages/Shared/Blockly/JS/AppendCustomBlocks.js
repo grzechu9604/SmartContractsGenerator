@@ -500,6 +500,9 @@ Blockly.Blocks['contract_function'] = {
             .appendField('', 'PARAMS');
         this.setMutator(new Blockly.Mutator(['my_procedures_mutatorarg']));
         this.appendDummyInput()
+            .appendField("Accepts ethers")
+            .appendField(new Blockly.FieldCheckbox("FALSE"), "AcceptsEthers");
+        this.appendDummyInput()
             .appendField("Apply modifier")
             .appendField(modifierCheckbox, "ApplyModifier");
         this.appendDummyInput("Visibility")

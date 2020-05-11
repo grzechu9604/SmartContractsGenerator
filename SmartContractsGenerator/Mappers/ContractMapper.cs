@@ -59,6 +59,9 @@ namespace SmartContractsGenerator.Mappers
         private const string StateModificationFieldName = "StateModification";
         private const string LCNameFieldName = "name";
         private const string LCTypeFieldName = "type";
+        private const string AcceptsEthersFieldName = "AcceptsEthers";
+
+        private const string BlocklyBoolTrue = "TRUE";
 
         private readonly Dictionary<string, Func<XmlNode, XmlNamespaceManager, IAssignable>> AssignableMappers;
         private readonly Dictionary<string, Func<XmlNode, XmlNamespaceManager, IValueContainer>> ValueContainerMappers;
@@ -447,7 +450,8 @@ namespace SmartContractsGenerator.Mappers
                     Modifier = GetModifierApplianceFromXmlNode(modifierApplianceNode, nsmgr),
                     Parameters = GetParametersListFromXmlNode(parametersNode, nsmgr),
                     ReturningType = GeTypeForElementNode(node, nsmgr),
-                    ModificationType = GetModificationTypeForElementNode(node, nsmgr)
+                    ModificationType = GetModificationTypeForElementNode(node, nsmgr),
+                    IsPayable = GetAcceptsEthersForElementNode(node, nsmgr)
                 };
             }
 
@@ -665,6 +669,16 @@ namespace SmartContractsGenerator.Mappers
             return null;
         }
 
+        public bool GetAcceptsEthersForElementNode(XmlNode node, XmlNamespaceManager nsmgr)
+        {
+            if (node != null)
+            {
+                return GetBoolValueFromFieldForElementNode(node, nsmgr, AcceptsEthersFieldName);
+            }
+
+            return false;
+        }
+
         public Modifier GetModifierForElementNode(XmlNode node, XmlNamespaceManager nsmgr)
         {
             if (node != null)
@@ -701,6 +715,11 @@ namespace SmartContractsGenerator.Mappers
             }
 
             return null;
+        }
+
+        public bool GetBoolValueFromFieldForElementNode(XmlNode node, XmlNamespaceManager nsmgr, string fieldName)
+        {
+            return GetValueFromFieldForElementNode(node, nsmgr, fieldName) == BlocklyBoolTrue;
         }
 
         public string GetValueFromFieldForElementNode(XmlNode node, XmlNamespaceManager nsmgr, string fieldName)
