@@ -1,4 +1,7 @@
-﻿
+﻿var iAssignables = ["variable", "operation", "constant_value", "special_value", "call_returnable_function"];
+var iValueContainers = ["variable", "variable_declaration"];
+var solidityTypes = [["Bool", "0"], ["Int", "1"], ["UInt", "2"], ["Fixed", "3"], ["UFixed", "4"], ["Address", "5"], ["Address Payable", "6"], ["String", "7"]];
+
 Blockly.MyDynamicInputs = {
     allDefinitionsOfType_: function (root, type) {
         var blocks = root.getAllBlocks(false);
@@ -274,11 +277,11 @@ Blockly.Blocks['assignment'] = {
         this.appendDummyInput()
             .appendField("Assignment");
         this.appendValueInput("Destination")
-            .setCheck(["variable", "variable_declaration"]);
+            .setCheck(iValueContainers);
         this.appendDummyInput()
             .appendField("=");
         this.appendValueInput("Source")
-            .setCheck(["variable", "operation", "constant_value"]);
+            .setCheck(iAssignables);
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
         this.setColour(230);
@@ -314,6 +317,15 @@ Blockly.Blocks['event_call'] = {
     customContextMenu:
         Blockly.Blocks['procedures_callnoreturn'].customContextMenu,
     defType_: 'call_void_function'
+};
+
+Blockly.Blocks['break_statement'] = {
+    init: function () {
+        this.appendDummyInput('TOPROW')
+            .appendField("Break loop")
+        this.setPreviousStatement(true);
+        this.setNextStatement(true);
+    }
 };
 
 Blockly.Blocks['call_returnable_function'] = {
@@ -391,13 +403,13 @@ Blockly.Blocks['operation'] = {
         this.appendDummyInput()
             .appendField("Operation");
         this.appendValueInput("left_side")
-            .setCheck(["variable", "operation", "constant_value"])
+            .setCheck(iAssignables)
             .appendField("Left");
         this.appendDummyInput()
             .appendField("Operator")
             .appendField(new Blockly.FieldDropdown([["+", "0"], ["-", "1"], ["%", "2"], ["/", "3"], ["*", "4"], ["!", "5"], ["||", "6"], ["&&", "7"], ["^", "8"], ["==", "9"], ["!=", "10"]]), "Operator");
         this.appendValueInput("right_side")
-            .setCheck(["variable", "operation", "constant_value"])
+            .setCheck(iAssignables)
             .appendField("Right");
         this.setOutput(true, "operation");
         this.setColour(230);
@@ -500,6 +512,9 @@ Blockly.Blocks['contract_function'] = {
             .appendField('', 'PARAMS');
         this.setMutator(new Blockly.Mutator(['my_procedures_mutatorarg']));
         this.appendDummyInput()
+            .appendField("Accepts ethers")
+            .appendField(new Blockly.FieldCheckbox("FALSE"), "AcceptsEthers");
+        this.appendDummyInput()
             .appendField("Apply modifier")
             .appendField(modifierCheckbox, "ApplyModifier");
         this.appendDummyInput("Visibility")
@@ -545,7 +560,7 @@ Blockly.Blocks['contract_function'] = {
             if (!inputExists) {
                 this.appendDummyInput("ReturningType")
                     .appendField("Returning type")
-                    .appendField(new Blockly.FieldDropdown([["int256", "int256"], ["uint256", "uint256"], ["bool", "bool"]]), "TYPE");
+                    .appendField(new Blockly.FieldDropdown(solidityTypes), "TYPE");
                 this.moveInputBefore('ReturningType', 'InstructionsLabel');
             }
         } else if (inputExists) {
@@ -643,7 +658,7 @@ Blockly.Blocks['variable_declaration'] = {
             .appendField(new Blockly.FieldVariable("item"), "NAME");
         this.appendDummyInput()
             .appendField("type:")
-            .appendField(new Blockly.FieldDropdown([["int256", "int256"], ["uint256", "uint256"], ["bool", "bool"]]), "TYPE");
+            .appendField(new Blockly.FieldDropdown(solidityTypes), "TYPE");
         this.setInputsInline(false);
         this.setOutput(true, "variable_declaration");
         this.setColour(230);
@@ -652,17 +667,50 @@ Blockly.Blocks['variable_declaration'] = {
     }
 };
 
+Blockly.Blocks['special_value_call'] = {
+    init: function () {
+        this.appendDummyInput()
+            .appendField("Special values:")
+            .appendField(new Blockly.FieldDropdown([["Block Coinbase", "0"], ["Block Difficulty", "1"], ["BlockGaslimit", "2"], ["Block Number", "3"], ["Block Timestamp", "4"], ["Gasleft", "5"], ["Message Data", "6"], ["Message Sender", "7"], ["Message Sig", "8"], ["Message Value", "9"], ["Now", "10"], ["Transaction Gasprice", "11"], ["Transaction Origin", "12"]]), "value");
+        this.setInputsInline(false);
+        this.setOutput(true, "special_value");
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+    }
+};
+
 Blockly.Blocks['return'] = {
     init: function () {
-        this.appendValueInput("Return")
-            .appendField("Return: ")
-            .setCheck(["variable", "operation", "constant_value"]);
+        this.appendDummyInput()
+            .appendField("Break function")
+
+        var returnValueCheckbox = new Blockly.FieldCheckbox("FALSE", function (returnValueChecked) {
+            this.sourceBlock_.updateReturnValueInput_(returnValueChecked == "TRUE");
+        });
+        this.appendDummyInput()
+            .appendField("Return value")
+            .appendField(returnValueCheckbox, "ReturnValueCheckbox");
+
         this.setPreviousStatement(true, null);
         this.setNextStatement(false, null);
         this.setColour(230);
         this.setTooltip("");
         this.setHelpUrl("");
-    }
+    },
+
+    updateReturnValueInput_: function (returnValueChecked) {
+        var inputExists = this.getInput("ReturnValue");
+        if (returnValueChecked) {
+            if (!inputExists) {
+                this.appendValueInput("ReturnValue")
+                    .appendField("Value")
+                    .setCheck(iAssignables);
+            }
+        } else if (inputExists) {
+            this.removeInput('ReturnValue');
+        }
+    },
 };
 
 Blockly.Blocks['my_procedures_mutatorarg'] = {
@@ -681,7 +729,7 @@ Blockly.Blocks['my_procedures_mutatorarg'] = {
             .appendField(nameField, 'NAME')
             .appendField("Type")
             .appendField(new Blockly.FieldDropdown(
-                [["int256", "int256"], ["uint256", "uint256"], ["bool", "bool"]],
+                solidityTypes,
                 this.typeValidator_), "TYPE");
         this.setPreviousStatement(true);
         this.setNextStatement(true);

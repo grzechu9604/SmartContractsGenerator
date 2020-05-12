@@ -11,8 +11,8 @@ namespace SmartContractGeneratorManualTests
     {
         static void Main(string[] args)
         {
-            var boolType = "bool";
-            var intType = "int256";
+            var boolType = SolidityType.Bool;
+            var intType = SolidityType.Int;
 
             var propertyName = "PropertyName1";
             var propertyName2 = "PropertyName2";
@@ -342,7 +342,7 @@ namespace SmartContractGeneratorManualTests
             Console.WriteLine(contract.GenerateCode(new Indentation()));
         }
 
-        private static Variable PrepareVariable(string name, string type)
+        private static Variable PrepareVariable(string name, SolidityType type)
         {
             return new Variable()
             {

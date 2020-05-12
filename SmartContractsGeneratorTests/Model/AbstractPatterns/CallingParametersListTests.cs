@@ -1,10 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SmartContractsGenerator.Interfaces;
-using SmartContractsGenerator.Model.AbstractPatterns;
+using SmartContractsGenerator.Model.Enums;
 using SmartContractsGeneratorTests.Model.Helpers;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace SmartContractsGenerator.Model.AbstractPatterns.Tests
 {
@@ -33,9 +31,9 @@ namespace SmartContractsGenerator.Model.AbstractPatterns.Tests
             var name2 = "Name2";
             var name3 = "Name3";
 
-            var type1 = "type1";
-            var type2 = "type2";
-            var type3 = "type3";
+            var type1 = SolidityType.Bool;
+            var type2 = SolidityType.Fixed;
+            var type3 = SolidityType.Int;
 
             var p1 = new Variable()
             {

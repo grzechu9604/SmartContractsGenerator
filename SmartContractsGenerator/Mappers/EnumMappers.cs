@@ -12,9 +12,14 @@ namespace SmartContractsGenerator.Mappers
         private const int MaxOperationOperatorValue = 10;
         private const int MinModificationTypeValue = 0;
         private const int MaxModificationTypeValue = 2;
-        public static Visibility? MapBlocklyCodeToVisibility(string code)
+        private const int MinBlockOrTransactionPropertyValue = 0;
+        private const int MaxBlockOrTransactionPropertyValue = 12;
+        private const int MinSolidityType = 0;
+        private const int MaxSolidityType = 7;
+
+        public static Visibility MapBlocklyCodeToVisibility(string code)
         {
-            if (!string.IsNullOrEmpty(code) && code.Length == 1 && char.IsDigit(code.First()))
+            if (!string.IsNullOrWhiteSpace(code) && code.Length == 1 && char.IsDigit(code.First()))
             {
                 var value = Convert.ToInt16(code);
                 if (value >= MinVisibilityValue && value <= MaxVisibilityValue)
@@ -26,9 +31,9 @@ namespace SmartContractsGenerator.Mappers
             throw new InvalidOperationException($"Value {code} is invalid option for visibility code!");
         }
 
-        public static OperationOperator? MapBlocklyCodeToOperationOperator(string code)
+        public static OperationOperator MapBlocklyCodeToOperationOperator(string code)
         {
-            if (!string.IsNullOrEmpty(code) && (code.Length == 1 || code.Length == 2) && code.All(c => char.IsDigit(c)))
+            if (!string.IsNullOrWhiteSpace(code) && (code.Length == 1 || code.Length == 2) && code.All(c => char.IsDigit(c)))
             {
                 var value = Convert.ToInt16(code);
                 if (value >= MinOperationOperatorValue && value <= MaxOperationOperatorValue)
@@ -42,7 +47,7 @@ namespace SmartContractsGenerator.Mappers
 
         public static ModificationType MapBlocklyCodeToModificationType(string code)
         {
-            if (!string.IsNullOrEmpty(code) && code.Length == 1 && code.All(c => char.IsDigit(c)))
+            if (!string.IsNullOrWhiteSpace(code) && code.Length == 1 && code.All(c => char.IsDigit(c)))
             {
                 var value = Convert.ToInt16(code);
                 if (value >= MinModificationTypeValue && value <= MaxModificationTypeValue)
@@ -52,6 +57,34 @@ namespace SmartContractsGenerator.Mappers
             }
 
             throw new InvalidOperationException($"Value {code} is invalid option for ModificationType code!");
+        }
+
+        public static BlockOrTransactionProperty MapBlocklyCodeToBlockOrTransactionProperty(string code)
+        {
+            if (!string.IsNullOrWhiteSpace(code) && (code.Length == 1 || code.Length == 2) && code.All(c => char.IsDigit(c)))
+            {
+                var value = Convert.ToInt16(code);
+                if (value >= MinBlockOrTransactionPropertyValue && value <= MaxBlockOrTransactionPropertyValue)
+                {
+                    return (BlockOrTransactionProperty)value;
+                }
+            }
+
+            throw new InvalidOperationException($"Value {code} is invalid option for BlockOrTransactionProperty code!");
+        }
+
+        public static SolidityType MapBlocklyCodeToSolidityType(string code)
+        {
+            if (!string.IsNullOrWhiteSpace(code) && code.Length == 1 && code.All(c => char.IsDigit(c)))
+            {
+                var value = Convert.ToInt16(code);
+                if (value >= MinSolidityType && value <= MaxSolidityType)
+                {
+                    return (SolidityType)value;
+                }
+            }
+
+            throw new InvalidOperationException($"Value {code} is invalid option for SolidityType code!");
         }
     }
 }

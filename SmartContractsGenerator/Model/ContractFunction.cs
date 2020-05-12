@@ -4,7 +4,6 @@ using SmartContractsGenerator.Model.AbstractPatterns;
 using SmartContractsGenerator.Model.Enums;
 using SmartContractsGenerator.Validators;
 using System;
-using System.Text;
 
 namespace SmartContractsGenerator.Model
 {
@@ -31,9 +30,8 @@ namespace SmartContractsGenerator.Model
         public ParametersList Parameters { get; set; }
         public ParametersList ModifierParameters { get; set; }
         public ModifierAppliance Modifier { get; set; }
-
-        public string ReturningType { get; set; }
-
+        public bool IsPayable { get; set; }
+        public SolidityType? ReturningType { get; set; }
         public ModificationType ModificationType { get; set; }
 
         protected override string GetHeader()
@@ -48,7 +46,7 @@ namespace SmartContractsGenerator.Model
                 throw new MissingMandatoryElementException("Name is required for function");
             }
 
-            return $"function {Name}({Parameters?.GenerateCode()}) {Visibility.Value.GenerateCode()}{GetModifierHeaderPart()}{GetModificationTypeHeaderPart()}{GetReturnsHeaderPart()} {{\n";
+             return $"function {Name}({Parameters?.GenerateCode()}) {Visibility.Value.GenerateCode()}{GetModifierHeaderPart()}{GetModificationTypeHeaderPart()}{GetPayablePart()}{GetReturnsHeaderPart()} {{\n";
         }
 
         public virtual string GenerateCallCode()
@@ -73,12 +71,14 @@ namespace SmartContractsGenerator.Model
             }
         }
 
-        public string GetReturnsHeaderPart() => !string.IsNullOrWhiteSpace(ReturningType) ? $" returns ({ReturningType})" : null;
+        public string GetReturnsHeaderPart() => ReturningType.HasValue ? $" returns ({ReturningType.Value.GenerateCode()})" : null;
 
         public string GetModificationTypeHeaderPart()
         {
             var code = ModificationType.GenerateCode();
             return !string.IsNullOrWhiteSpace(code) ? $" {code}" : null;
         }
+
+        public string GetPayablePart() => IsPayable ? " payable" : null;
     }
 }

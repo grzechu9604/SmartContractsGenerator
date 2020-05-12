@@ -29,6 +29,8 @@ namespace SmartContractsGenerator.Mappers
         private const string ModifierBlockType = "modifier";
         private const string ReturnBlockType = "return";
         private const string ModifierApplianceBlockType = "moddifier_appliance";
+        private const string BreakStatementBlockType = "break_statement";
+        private const string SpecialValueCallBlockType = "special_value_call";
 
         private const string PropertiesStatementName = "Properties";
         private const string ConstructorStatementName = "Constructor";
@@ -48,6 +50,7 @@ namespace SmartContractsGenerator.Mappers
         private const string BreakConditionValueName = "break_condition";
         private const string StepInstructionValueName = "step_instruction";
         private const string ModifierValueName = "Modifier";
+        private const string ReturnValueValueName = "ReturnValue";
 
         private const string VisibilityFieldName = "Visibility";
         private const string OperatorFieldName = "Operator";
@@ -59,6 +62,10 @@ namespace SmartContractsGenerator.Mappers
         private const string StateModificationFieldName = "StateModification";
         private const string LCNameFieldName = "name";
         private const string LCTypeFieldName = "type";
+        private const string AcceptsEthersFieldName = "AcceptsEthers";
+        private const string ValueFieldName = "value";
+
+        private const string BlocklyBoolTrue = "TRUE";
 
         private readonly Dictionary<string, Func<XmlNode, XmlNamespaceManager, IAssignable>> AssignableMappers;
         private readonly Dictionary<string, Func<XmlNode, XmlNamespaceManager, IValueContainer>> ValueContainerMappers;
@@ -72,7 +79,8 @@ namespace SmartContractsGenerator.Mappers
                 { ConstantValueBlockType, GetConstantValueFromElementNode },
                 { OperationBlockType, GetOperationFromElementNode },
                 { VariableBlockType, GetVariableFormXmlNode },
-                { CallReturnableFunctionBlockType, GetFunctionCallFromXmlNode }
+                { CallReturnableFunctionBlockType, GetFunctionCallFromXmlNode },
+                { SpecialValueCallBlockType, GetSpecialValueCallFromXmlNode }
             };
 
             ValueContainerMappers = new Dictionary<string, Func<XmlNode, XmlNamespaceManager, IValueContainer>>()
@@ -89,7 +97,8 @@ namespace SmartContractsGenerator.Mappers
                 { RequirementBlockType, GetRequirementFromXmlNode },
                 { EventCallBlockType, GetEventCallFromXmlNode },
                 { CallVoidFunctionBlockType, GetFunctionCallFromXmlNode },
-                { ReturnBlockType, GetReturnStatementFromXmlNode }
+                { ReturnBlockType, GetReturnStatementFromXmlNode },
+                { BreakStatementBlockType, GetBreakStatementFromXmlNode }
             };
 
             OneLineInstructionMappers = new Dictionary<string, Func<XmlNode, XmlNamespaceManager, IOneLineInstruction>>()
@@ -447,7 +456,8 @@ namespace SmartContractsGenerator.Mappers
                     Modifier = GetModifierApplianceFromXmlNode(modifierApplianceNode, nsmgr),
                     Parameters = GetParametersListFromXmlNode(parametersNode, nsmgr),
                     ReturningType = GeTypeForElementNode(node, nsmgr),
-                    ModificationType = GetModificationTypeForElementNode(node, nsmgr)
+                    ModificationType = GetModificationTypeForElementNode(node, nsmgr),
+                    IsPayable = GetAcceptsEthersForElementNode(node, nsmgr)
                 };
             }
 
@@ -480,7 +490,7 @@ namespace SmartContractsGenerator.Mappers
                 return new Variable()
                 {
                     Name = node.Attributes[LCNameFieldName].Value,
-                    Type = node.Attributes[LCTypeFieldName].Value
+                    Type = EnumMappers.MapBlocklyCodeToSolidityType(node.Attributes[LCTypeFieldName].Value)
                 };
             }
 
@@ -566,7 +576,7 @@ namespace SmartContractsGenerator.Mappers
         {
             if (node != null)
             {
-                var objectToReturnNode = node.SelectSingleNode($"gxml:value[@name=\"Return\"]/gxml:block", nsmgr);
+                var objectToReturnNode = node.SelectSingleNode($"gxml:value[@name=\"{ReturnValueValueName}\"]/gxml:block", nsmgr);
 
                 return new ReturnStatement()
                 {
@@ -575,6 +585,20 @@ namespace SmartContractsGenerator.Mappers
             }
             return null;
         }
+
+        public SpecialValueCall GetSpecialValueCallFromXmlNode(XmlNode node, XmlNamespaceManager nsmgr)
+        {
+            if (node != null)
+            {
+                return new SpecialValueCall()
+                {
+                    PropertyToCall = GetBlockOrTransactionPropertyForElementNode(node, nsmgr)
+                };
+            }
+            return null;
+        }
+
+        public BreakStatement GetBreakStatementFromXmlNode(XmlNode node, XmlNamespaceManager nsmgr) => node != null ? new BreakStatement() : null;
 
         public List<ContractEvent> GetContractEventsFromXmlNode(XmlNode node, XmlNamespaceManager nsmgr)
         {
@@ -665,6 +689,16 @@ namespace SmartContractsGenerator.Mappers
             return null;
         }
 
+        public bool GetAcceptsEthersForElementNode(XmlNode node, XmlNamespaceManager nsmgr)
+        {
+            if (node != null)
+            {
+                return GetBoolValueFromFieldForElementNode(node, nsmgr, AcceptsEthersFieldName);
+            }
+
+            return false;
+        }
+
         public Modifier GetModifierForElementNode(XmlNode node, XmlNamespaceManager nsmgr)
         {
             if (node != null)
@@ -693,14 +727,34 @@ namespace SmartContractsGenerator.Mappers
             return ModificationType.None;
         }
 
-        public string GeTypeForElementNode(XmlNode node, XmlNamespaceManager nsmgr)
+        public BlockOrTransactionProperty GetBlockOrTransactionPropertyForElementNode(XmlNode node, XmlNamespaceManager nsmgr)
         {
             if (node != null)
             {
-                return GetValueFromFieldForElementNode(node, nsmgr, TypeFieldName);
+                var propertyId = GetValueFromFieldForElementNode(node, nsmgr, ValueFieldName);
+                return EnumMappers.MapBlocklyCodeToBlockOrTransactionProperty(propertyId);
+            }
+
+            throw new InvalidOperationException("Node is required in this function!");
+        }
+
+        public SolidityType? GeTypeForElementNode(XmlNode node, XmlNamespaceManager nsmgr)
+        {
+            if (node != null)
+            {
+                var typeId = GetValueFromFieldForElementNode(node, nsmgr, TypeFieldName);
+                if (!string.IsNullOrWhiteSpace(typeId))
+                {
+                    return EnumMappers.MapBlocklyCodeToSolidityType(typeId);
+                }
             }
 
             return null;
+        }
+
+        public bool GetBoolValueFromFieldForElementNode(XmlNode node, XmlNamespaceManager nsmgr, string fieldName)
+        {
+            return GetValueFromFieldForElementNode(node, nsmgr, fieldName) == BlocklyBoolTrue;
         }
 
         public string GetValueFromFieldForElementNode(XmlNode node, XmlNamespaceManager nsmgr, string fieldName)

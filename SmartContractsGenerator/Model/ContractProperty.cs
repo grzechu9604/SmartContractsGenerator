@@ -27,12 +27,12 @@ namespace SmartContractsGenerator.Model
                 throw new MissingMandatoryElementException("Visibility specifier is required for property");
             }
 
-            if (Variable == null || string.IsNullOrWhiteSpace(Variable.Type) || string.IsNullOrWhiteSpace(Variable.Name))
+            if (Variable == null || !Variable.Type.HasValue || string.IsNullOrWhiteSpace(Variable.Name))
             {
                 throw new MissingMandatoryElementException("Variable in property is not configured properly");
             }
 
-            return $"{Variable.Type} {Visibility.Value.GenerateCode()} {Variable.Name}";
+            return $"{Variable.Type.Value.GenerateCode()} {Visibility.Value.GenerateCode()} {Variable.Name}";
         }
     }
 }
