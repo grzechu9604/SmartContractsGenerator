@@ -31,7 +31,7 @@ namespace SmartContractsGenerator.Model
         public ParametersList ModifierParameters { get; set; }
         public ModifierAppliance Modifier { get; set; }
         public bool IsPayable { get; set; }
-        public string ReturningType { get; set; }
+        public SolidityType? ReturningType { get; set; }
         public ModificationType ModificationType { get; set; }
 
         protected override string GetHeader()
@@ -71,7 +71,7 @@ namespace SmartContractsGenerator.Model
             }
         }
 
-        public string GetReturnsHeaderPart() => !string.IsNullOrWhiteSpace(ReturningType) ? $" returns ({ReturningType})" : null;
+        public string GetReturnsHeaderPart() => ReturningType.HasValue ? $" returns ({ReturningType.Value.GenerateCode()})" : null;
 
         public string GetModificationTypeHeaderPart()
         {

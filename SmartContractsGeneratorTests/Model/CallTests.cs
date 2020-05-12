@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SmartContractsGenerator.Interfaces;
 using SmartContractsGenerator.Model.AbstractPatterns;
+using SmartContractsGenerator.Model.Enums;
 using System.Collections.Generic;
 
 namespace SmartContractsGenerator.Model.Tests
@@ -70,7 +71,7 @@ namespace SmartContractsGenerator.Model.Tests
             var v1 = new Variable()
             {
                 Name = vName1,
-                Type = "TYPE"
+                Type = SolidityType.Bool
             };
 
             parameters.Parameters.Add(v1);
@@ -82,7 +83,7 @@ namespace SmartContractsGenerator.Model.Tests
             var v2 = new Variable()
             {
                 Name = vName2,
-                Type = "TYPE"
+                Type = SolidityType.Bool
             };
 
             parameters.Parameters.Add(v2);

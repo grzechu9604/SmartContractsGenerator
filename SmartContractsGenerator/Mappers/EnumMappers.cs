@@ -14,6 +14,8 @@ namespace SmartContractsGenerator.Mappers
         private const int MaxModificationTypeValue = 2;
         private const int MinBlockOrTransactionPropertyValue = 0;
         private const int MaxBlockOrTransactionPropertyValue = 12;
+        private const int MinSolidityType = 0;
+        private const int MaxSolidityType = 7;
 
         public static Visibility MapBlocklyCodeToVisibility(string code)
         {
@@ -69,6 +71,20 @@ namespace SmartContractsGenerator.Mappers
             }
 
             throw new InvalidOperationException($"Value {code} is invalid option for BlockOrTransactionProperty code!");
+        }
+
+        public static SolidityType MapBlocklyCodeToSolidityType(string code)
+        {
+            if (!string.IsNullOrWhiteSpace(code) && code.Length == 1 && code.All(c => char.IsDigit(c)))
+            {
+                var value = Convert.ToInt16(code);
+                if (value >= MinSolidityType && value <= MaxSolidityType)
+                {
+                    return (SolidityType)value;
+                }
+            }
+
+            throw new InvalidOperationException($"Value {code} is invalid option for SolidityType code!");
         }
     }
 }

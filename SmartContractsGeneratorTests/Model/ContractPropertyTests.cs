@@ -89,20 +89,20 @@ namespace SmartContractsGenerator.Model.Tests
 
         static IEnumerable<object[]> GetDataForGenerateDeclarationCodeTest()
         {
-            string type1 = "TYPE1";
+            var type1 = SolidityType.Bool;
             string name1 = "NAME1";
             Visibility v1 = Visibility.Public;
-            yield return new object[] { GetContractProperty(type1, name1, v1), $"{type1} {v1.GenerateCode()} {name1}" };
+            yield return new object[] { GetContractProperty(type1, name1, v1), $"{type1.GenerateCode()} {v1.GenerateCode()} {name1}" };
 
-            string type2 = "TYPE2";
+            var type2 = SolidityType.Int;
             string name2 = "NAME2";
             Visibility v2 = Visibility.Private;
-            yield return new object[] { GetContractProperty(type2, name2, v2), $"{type2} {v2.GenerateCode()} {name2}" };
+            yield return new object[] { GetContractProperty(type2, name2, v2), $"{type2.GenerateCode()} {v2.GenerateCode()} {name2}" };
 
-            string type3 = "TYPE3";
+            var type3 = SolidityType.String;
             string name3 = "NAME3";
             Visibility v3 = Visibility.Private;
-            yield return new object[] { GetContractProperty(type3, name3, v3), $"{type3} {v3.GenerateCode()} {name3}" };
+            yield return new object[] { GetContractProperty(type3, name3, v3), $"{type3.GenerateCode()} {v3.GenerateCode()} {name3}" };
         }
 
         private static Variable GetVariableMock(string expectedCode, string expectedDeclarationCode)
@@ -110,7 +110,7 @@ namespace SmartContractsGenerator.Model.Tests
             return mocksCreator.PrepareMock(expectedCode, expectedDeclarationCode);
         }
 
-        private static ContractProperty GetContractProperty(string vType, string vName, Visibility visibility)
+        private static ContractProperty GetContractProperty(SolidityType vType, string vName, Visibility visibility)
         {
             var v = new Variable()
             {

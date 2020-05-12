@@ -1,5 +1,6 @@
 ﻿var iAssignables = ["variable", "operation", "constant_value", "special_value", "call_returnable_function"];
 var iValueContainers = ["variable", "variable_declaration"];
+var solidityTypes = [["Bool", "0"], ["Int", "1"], ["UInt", "2"], ["Fixed", "3"], ["UFixed", "4"], ["Address", "5"], ["Address Payable", "6"], ["String", "7"]];
 
 Blockly.MyDynamicInputs = {
     allDefinitionsOfType_: function (root, type) {
@@ -559,7 +560,7 @@ Blockly.Blocks['contract_function'] = {
             if (!inputExists) {
                 this.appendDummyInput("ReturningType")
                     .appendField("Returning type")
-                    .appendField(new Blockly.FieldDropdown([["int256", "int256"], ["uint256", "uint256"], ["bool", "bool"]]), "TYPE");
+                    .appendField(new Blockly.FieldDropdown(solidityTypes), "TYPE");
                 this.moveInputBefore('ReturningType', 'InstructionsLabel');
             }
         } else if (inputExists) {
@@ -657,7 +658,7 @@ Blockly.Blocks['variable_declaration'] = {
             .appendField(new Blockly.FieldVariable("item"), "NAME");
         this.appendDummyInput()
             .appendField("type:")
-            .appendField(new Blockly.FieldDropdown([["int256", "int256"], ["uint256", "uint256"], ["bool", "bool"]]), "TYPE");
+            .appendField(new Blockly.FieldDropdown(solidityTypes), "TYPE");
         this.setInputsInline(false);
         this.setOutput(true, "variable_declaration");
         this.setColour(230);
@@ -728,7 +729,7 @@ Blockly.Blocks['my_procedures_mutatorarg'] = {
             .appendField(nameField, 'NAME')
             .appendField("Type")
             .appendField(new Blockly.FieldDropdown(
-                [["int256", "int256"], ["uint256", "uint256"], ["bool", "bool"]],
+                solidityTypes,
                 this.typeValidator_), "TYPE");
         this.setPreviousStatement(true);
         this.setNextStatement(true);

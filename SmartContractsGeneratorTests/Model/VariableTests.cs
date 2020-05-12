@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SmartContractsGenerator.Exceptions;
+using SmartContractsGenerator.Model.Enums;
 using System;
 
 namespace SmartContractsGenerator.Model.Tests
@@ -45,7 +46,7 @@ namespace SmartContractsGenerator.Model.Tests
         public void GenerateUsageCodeTest()
         {
             var name = "name1";
-            var type = "type1";
+            var type = SolidityType.Bool;
             var v = new Variable()
             {
                 Type = type,
@@ -59,14 +60,14 @@ namespace SmartContractsGenerator.Model.Tests
         public void GenerateDeclarationCodeTest()
         {
             var name = "name1";
-            var type = "type1";
+            var type = SolidityType.Bool;
             var v = new Variable()
             {
                 Type = type,
                 Name = name
             };
 
-            Assert.AreEqual($"{type} {name}", v.GenerateDeclarationCode());
+            Assert.AreEqual($"{type.GenerateCode()} {name}", v.GenerateDeclarationCode());
         }
     }
 }

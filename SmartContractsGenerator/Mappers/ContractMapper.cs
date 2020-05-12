@@ -490,7 +490,7 @@ namespace SmartContractsGenerator.Mappers
                 return new Variable()
                 {
                     Name = node.Attributes[LCNameFieldName].Value,
-                    Type = node.Attributes[LCTypeFieldName].Value
+                    Type = EnumMappers.MapBlocklyCodeToSolidityType(node.Attributes[LCTypeFieldName].Value)
                 };
             }
 
@@ -738,11 +738,15 @@ namespace SmartContractsGenerator.Mappers
             throw new InvalidOperationException("Node is required in this function!");
         }
 
-        public string GeTypeForElementNode(XmlNode node, XmlNamespaceManager nsmgr)
+        public SolidityType? GeTypeForElementNode(XmlNode node, XmlNamespaceManager nsmgr)
         {
             if (node != null)
             {
-                return GetValueFromFieldForElementNode(node, nsmgr, TypeFieldName);
+                var typeId = GetValueFromFieldForElementNode(node, nsmgr, TypeFieldName);
+                if (!string.IsNullOrWhiteSpace(typeId))
+                {
+                    return EnumMappers.MapBlocklyCodeToSolidityType(typeId);
+                }
             }
 
             return null;

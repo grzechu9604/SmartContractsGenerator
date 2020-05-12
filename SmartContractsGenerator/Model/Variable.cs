@@ -1,5 +1,6 @@
 ﻿using SmartContractsGenerator.Exceptions;
 using SmartContractsGenerator.Interfaces;
+using SmartContractsGenerator.Model.Enums;
 using SmartContractsGenerator.Validators;
 using System;
 
@@ -24,7 +25,7 @@ namespace SmartContractsGenerator.Model
         }
         private string name;
 
-        public string Type { get; set; } // consider enum
+        public SolidityType? Type { get; set; }
 
         public virtual string GenerateDeclarationCode()
         {
@@ -33,12 +34,12 @@ namespace SmartContractsGenerator.Model
                 throw new MissingMandatoryElementException("Name is required for Variable");
             }
 
-            if (string.IsNullOrWhiteSpace(Type))
+            if (Type == null)
             {
                 throw new MissingMandatoryElementException("Type is required for Variable");
             }
 
-            return $"{Type} {Name}";
+            return $"{Type.Value.GenerateCode()} {Name}";
         }
 
         public virtual string GenerateCode()
