@@ -66,7 +66,10 @@ Blockly.MyDynamicInputs = {
             }
         }
         this.updateParams_();
-        Blockly.Procedures.mutateCallers(this);
+
+        if (this.performCallersMutation) {
+            Blockly.Procedures.mutateCallers(this);
+        }
     },
     decompose: function (workspace) {
         var containerBlockNode = Blockly.utils.xml.createElement('block');
@@ -101,7 +104,9 @@ Blockly.MyDynamicInputs = {
         var containerBlock = Blockly.Xml.domToBlock(containerBlockNode, workspace);
 
         // Initialize procedure's callers with blank IDs.
-        Blockly.Procedures.mutateCallers(this);
+        if (this.performCallersMutation) {
+            Blockly.Procedures.mutateCallers(this);
+        }
         return containerBlock;
     },
     compose: function (containerBlock) {
@@ -122,7 +127,9 @@ Blockly.MyDynamicInputs = {
                 paramBlock.nextConnection.targetBlock();
         }
         this.updateParams_();
-        Blockly.Procedures.mutateCallers(this);
+        if (this.performCallersMutation) {
+            Blockly.Procedures.mutateCallers(this);
+        }
     },
     populateElements(elementsList, blockType) {
         var xmlList = [];
@@ -199,6 +206,7 @@ Blockly.Blocks['contract_constructor'] = {
         this.setHelpUrl("");
         this.arguments_ = [];
         this.argumentVarModels_ = [];
+        this.performCallersMutation = false;
     },
 
     updateParams_: Blockly.Blocks['procedures_defnoreturn'].updateParams_,
@@ -206,7 +214,6 @@ Blockly.Blocks['contract_constructor'] = {
     domToMutation: Blockly.MyDynamicInputs.domToMutation,
     decompose: Blockly.MyDynamicInputs.decompose,
     compose: Blockly.MyDynamicInputs.compose,
-    getProcedureDef: Blockly.Blocks['procedures_defnoreturn'].getProcedureDef,
     getVars: Blockly.Blocks['procedures_defnoreturn'].getVars,
     getVarModels: Blockly.Blocks['procedures_defnoreturn'].getVarModels,
     renameVarById: Blockly.Blocks['procedures_defnoreturn'].renameVarById,
@@ -235,7 +242,7 @@ Blockly.Blocks['contract_property'] = {
 
 Blockly.Blocks['contract_event'] = {
     init: function () {
-        var nameField = new Blockly.FieldTextInput('',
+        var nameField = new Blockly.FieldTextInput('unnamed',
             Blockly.Procedures.rename);
         nameField.setSpellcheck(false);
         this.appendDummyInput()
@@ -250,6 +257,7 @@ Blockly.Blocks['contract_event'] = {
         this.setHelpUrl("");
         this.arguments_ = [];
         this.argumentVarModels_ = [];
+        this.performCallersMutation = true;
     },
 
     updateParams_: Blockly.Blocks['procedures_defnoreturn'].updateParams_,
@@ -511,7 +519,7 @@ Blockly.Blocks['contract_function'] = {
         });
         this.appendDummyInput()
             .appendField("Function");
-        var nameField = new Blockly.FieldTextInput('',
+        var nameField = new Blockly.FieldTextInput('unnamed',
             Blockly.Procedures.rename);
         nameField.setSpellcheck(false);
         this.appendDummyInput()
@@ -546,6 +554,7 @@ Blockly.Blocks['contract_function'] = {
         this.arguments_ = [];
         this.argumentVarModels_ = [];
         this.statementConnection_ = null;
+        this.performCallersMutation = true;
     },
 
     updateModifierInput_: function (applyModifierInput) {
@@ -607,7 +616,7 @@ Blockly.Blocks['contract_function'] = {
 
 Blockly.Blocks['modifier'] = {
     init: function () {
-        var nameField = new Blockly.FieldTextInput('',
+        var nameField = new Blockly.FieldTextInput('unnamed',
             Blockly.Procedures.rename);
         nameField.setSpellcheck(false);
         this.appendDummyInput()
@@ -627,6 +636,7 @@ Blockly.Blocks['modifier'] = {
         this.setHelpUrl("");
         this.arguments_ = [];
         this.argumentVarModels_ = [];
+        this.performCallersMutation = true;
     },
 
     updateParams_: Blockly.Blocks['procedures_defnoreturn'].updateParams_,
