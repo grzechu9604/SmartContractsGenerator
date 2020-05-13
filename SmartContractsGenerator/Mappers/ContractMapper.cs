@@ -1,6 +1,7 @@
 ﻿using SmartContractsGenerator.Interfaces;
 using SmartContractsGenerator.Model;
 using SmartContractsGenerator.Model.AbstractPatterns;
+using SmartContractsGenerator.Model.BuiltinFunctionCalls;
 using SmartContractsGenerator.Model.Enums;
 using SmartContractsGenerator.Model.SpecialFunctions;
 using System;
@@ -32,6 +33,8 @@ namespace SmartContractsGenerator.Mappers
         private const string ModifierApplianceBlockType = "moddifier_appliance";
         private const string BreakStatementBlockType = "break_statement";
         private const string SpecialValueCallBlockType = "special_value_call";
+        private const string BalanceCallBlockType = "balance_call";
+        private const string TransferCallBlockType = "transfer_call";
 
         private const string PropertiesStatementName = "Properties";
         private const string ConstructorStatementName = "Constructor";
@@ -52,6 +55,8 @@ namespace SmartContractsGenerator.Mappers
         private const string StepInstructionValueName = "step_instruction";
         private const string ModifierValueName = "Modifier";
         private const string ReturnValueValueName = "ReturnValue";
+        private const string AddressValueName = "Address";
+        private const string AmountValueName = "Amount";
 
         private const string VisibilityFieldName = "Visibility";
         private const string OperatorFieldName = "Operator";
@@ -81,7 +86,8 @@ namespace SmartContractsGenerator.Mappers
                 { OperationBlockType, GetOperationFromElementNode },
                 { VariableBlockType, GetVariableFormXmlNode },
                 { CallReturnableFunctionBlockType, GetFunctionCallFromXmlNode },
-                { SpecialValueCallBlockType, GetSpecialValueCallFromXmlNode }
+                { SpecialValueCallBlockType, GetSpecialValueCallFromXmlNode },
+                { BalanceCallBlockType, GetBalanceCallFromXmlNode }
             };
 
             ValueContainerMappers = new Dictionary<string, Func<XmlNode, XmlNamespaceManager, IValueContainer>>()
@@ -99,7 +105,8 @@ namespace SmartContractsGenerator.Mappers
                 { EventCallBlockType, GetEventCallFromXmlNode },
                 { CallVoidFunctionBlockType, GetFunctionCallFromXmlNode },
                 { ReturnBlockType, GetReturnStatementFromXmlNode },
-                { BreakStatementBlockType, GetBreakStatementFromXmlNode }
+                { BreakStatementBlockType, GetBreakStatementFromXmlNode },
+                { TransferCallBlockType, GetTransferCallFromXmlNode }
             };
 
             OneLineInstructionMappers = new Dictionary<string, Func<XmlNode, XmlNamespaceManager, IOneLineInstruction>>()
@@ -717,6 +724,38 @@ namespace SmartContractsGenerator.Mappers
                 {
                     Visibility = GetVisibilityForElementNode(node, nsmgr),
                     Variable = GetVariableFormXmlNode(variableNode, nsmgr)
+                };
+            }
+
+            return null;
+        }
+
+        public TransferCall GetTransferCallFromXmlNode(XmlNode node, XmlNamespaceManager nsmgr)
+        {
+            if (node != null)
+            {
+                var addressNode = node.SelectSingleNode($"gxml:value[@name=\"{AddressValueName}\"]/gxml:block", nsmgr);
+                var amountNode = node.SelectSingleNode($"gxml:value[@name=\"{AmountValueName}\"]/gxml:block", nsmgr);
+
+                return new TransferCall()
+                {
+                    Address = GetAssignableFromXmlNode(addressNode, nsmgr),
+                    ValueToTransfer = GetAssignableFromXmlNode(amountNode, nsmgr)
+                };
+            }
+
+            return null;
+        }
+
+        public BalanceCall GetBalanceCallFromXmlNode(XmlNode node, XmlNamespaceManager nsmgr)
+        {
+            if (node != null)
+            {
+                var addressNode = node.SelectSingleNode($"gxml:value[@name=\"{AddressValueName}\"]/gxml:block", nsmgr);
+
+                return new BalanceCall()
+                {
+                    Address = GetAssignableFromXmlNode(addressNode, nsmgr)
                 };
             }
 

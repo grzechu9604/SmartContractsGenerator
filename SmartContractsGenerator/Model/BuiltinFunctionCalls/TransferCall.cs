@@ -1,12 +1,9 @@
 ﻿using SmartContractsGenerator.Exceptions;
 using SmartContractsGenerator.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SmartContractsGenerator.Model.BuiltinFunctionCalls
 {
-    public class TransferCall : IInstruction, ICodeGenerator
+    public class TransferCall : IOneLineInstruction, ICodeGenerator
     {
         public IAssignable Address { get; set; }
         public IAssignable ValueToTransfer { get; set; }

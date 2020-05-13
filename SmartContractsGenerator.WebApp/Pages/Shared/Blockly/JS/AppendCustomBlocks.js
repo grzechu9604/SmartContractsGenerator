@@ -1,4 +1,4 @@
-﻿var iAssignables = ["variable", "operation", "constant_value", "special_value", "call_returnable_function"];
+﻿var iAssignables = ["variable", "operation", "constant_value", "special_value", "call_returnable_function", "balance_call"];
 var iValueContainers = ["variable", "variable_declaration"];
 var solidityTypes = [["Bool", "0"], ["Int", "1"], ["UInt", "2"], ["Fixed", "3"], ["UFixed", "4"], ["Address", "5"], ["Address Payable", "6"], ["String", "7"]];
 
@@ -751,6 +751,53 @@ Blockly.Blocks['receive_function'] = {
         this.setHelpUrl("");
     }
 };
+
+Blockly.Blocks['balance_call'] = {
+    init: function () {
+        this.appendValueInput("Address")
+            .setCheck(iAssignables)
+            .appendField("Check balance");
+        this.setOutput(true, "balance_call");
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+    }
+};
+
+Blockly.Blocks['transfer_call'] = {
+    init: function () {
+        this.appendDummyInput()
+            .appendField("Transfer Ethers");
+
+        this.appendValueInput("Address")
+            .appendField("Address")
+            .setCheck(iAssignables);
+
+        this.appendValueInput("Amount")
+            .appendField("Amount")
+            .setCheck(iAssignables);
+
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+    },
+
+    updateReturnValueInput_: function (returnValueChecked) {
+        var inputExists = this.getInput("ReturnValue");
+        if (returnValueChecked) {
+            if (!inputExists) {
+                this.appendValueInput("ReturnValue")
+                    .appendField("Value")
+                    .setCheck(iAssignables);
+            }
+        } else if (inputExists) {
+            this.removeInput('ReturnValue');
+        }
+    },
+};
+
 
 Blockly.Blocks['my_procedures_mutatorarg'] = {
     init: function () {
