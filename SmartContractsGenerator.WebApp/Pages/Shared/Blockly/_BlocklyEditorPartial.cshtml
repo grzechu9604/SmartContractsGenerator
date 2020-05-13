@@ -37,27 +37,22 @@
 <xml xmlns="https://developers.google.com/blockly/xml" id="toolbox" style="display: none">
     <category name="Contract">
         <block type="contract">
-            <field name="Name">[insert contract name]</field>
+            <field name="NAME">[insert contract name]</field>
         </block>
     </category>
     <category name="Contract elements">
         <block type="contract_property">
             <field name="Visibility">1</field>
         </block>
-        <block type="contract_event">
-            <field name="Name">[event name]</field>
-        </block>
+        <block type="contract_event"></block>
         <block type="contract_constructor">
             <field name="Visibility">1</field>
         </block>
         <block type="contract_function">
-            <field name="Name">[function name]</field>
             <field name="Visibility">1</field>
             <mutation apply_modifier="false"></mutation>
         </block>
-        <block type="modifier">
-            <field name="Name">[modifier name]</field>
-        </block>
+        <block type="modifier"></block>
         <block type="fallback_function"></block>
         <block type="receive_function"></block>
     </category>
@@ -75,7 +70,7 @@
     </category>
     <category name="All">
         <block type="contract">
-            <field name="Name">[insert contract name]</field>
+            <field name="NAME">[insert contract name]</field>
         </block>
         <block type="assignment"></block>
         <block type="constant_value">
@@ -87,9 +82,7 @@
         <block type="contract_constructor">
             <field name="Visibility">1</field>
         </block>
-        <block type="contract_event">
-            <field name="Name">[event name]</field>
-        </block>
+        <block type="contract_event"></block>
         <block type="condition"></block>
         <block type="operation">
             <field name="Operator">0</field>
@@ -100,13 +93,10 @@
         <block type="contract_loop"></block>
         <block type="if_statement"></block>
         <block type="contract_function">
-            <field name="Name">[function name]</field>
             <field name="Visibility">1</field>
             <mutation apply_modifier="false"></mutation>
         </block>
-        <block type="modifier">
-            <field name="Name">[modifier name]</field>
-        </block>
+        <block type="modifier"></block>
         <block type="return"></block>
         <block type="break_statement"></block>
         <block type="special_value_call"></block>
