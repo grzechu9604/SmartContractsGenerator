@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Xml;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using SmartContractsGenerator.Mappers;
+using SmartContractsGenerator.Model;
 using SmartContractsGenerator.Model.AbstractPatterns;
+using System;
+using System.Xml;
 
 namespace SmartContractsGenerator.WebApp.Controllers
 {
@@ -17,8 +15,24 @@ namespace SmartContractsGenerator.WebApp.Controllers
             var xmlDocument = new XmlDocument();
             xmlDocument.LoadXml(Request.Form["code"]);
             var mapper = new ContractMapper();
-            var c = mapper.MapXmlDocumentToContract(xmlDocument);
-            return c.GenerateCode(new Indentation());
+            Contract c;
+            try
+            { 
+                c = mapper.MapXmlDocumentToContract(xmlDocument);
+            } 
+            catch (Exception e)
+            {
+                return "Error ocurred during deserialization your workspace\n" + e.Message;
+            }
+            try
+            {
+                return c.GenerateCode(new Indentation());
+            }
+            catch (Exception e)
+            {
+                return "Error ocurred during generating code of your contract\n" + e.Message;
+
+            }
         }
     }
 }
