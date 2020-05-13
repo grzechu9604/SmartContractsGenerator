@@ -507,6 +507,9 @@ Blockly.Blocks['contract_function'] = {
         var returnsCheckbox = new Blockly.FieldCheckbox("FALSE", function (applyReturnsChecked) {
             this.sourceBlock_.updateReturnsInput_(applyReturnsChecked == "TRUE");
         });
+        var acceptsEthersCheckbox = new Blockly.FieldCheckbox("FALSE", function (acceptsEthersChecked) {
+            this.sourceBlock_.updateStateModificationInput_(acceptsEthersChecked == "TRUE");
+        });
         this.appendDummyInput()
             .appendField("Function");
         var nameField = new Blockly.FieldTextInput('',
@@ -519,7 +522,7 @@ Blockly.Blocks['contract_function'] = {
         this.setMutator(new Blockly.Mutator(['my_procedures_mutatorarg']));
         this.appendDummyInput()
             .appendField("Accepts ethers")
-            .appendField(new Blockly.FieldCheckbox("FALSE"), "AcceptsEthers");
+            .appendField(acceptsEthersCheckbox, "AcceptsEthers");
         this.appendDummyInput()
             .appendField("Apply modifier")
             .appendField(modifierCheckbox, "ApplyModifier");
@@ -529,7 +532,7 @@ Blockly.Blocks['contract_function'] = {
         this.appendDummyInput("StateModification")
             .appendField("State modification type")
             .appendField(new Blockly.FieldDropdown([["ReadWrite", "0"], ["ReadOnly", "1"], ["Calculation only", "2"]]), "StateModification");
-        this.appendDummyInput()
+        this.appendDummyInput("ApplyReturns")
             .appendField("Return value")
             .appendField(returnsCheckbox, "ApplyReturns");
         this.appendDummyInput("InstructionsLabel")
@@ -571,6 +574,20 @@ Blockly.Blocks['contract_function'] = {
             }
         } else if (inputExists) {
             this.removeInput('ReturningType');
+        }
+    },
+
+    updateStateModificationInput_: function (acceptsEthersChecked) {
+        var inputExists = this.getInput("StateModification");
+        if (!acceptsEthersChecked) {
+            if (!inputExists) {
+                this.appendDummyInput("StateModification")
+                    .appendField("State modification type")
+                    .appendField(new Blockly.FieldDropdown([["ReadWrite", "0"], ["ReadOnly", "1"], ["Calculation only", "2"]]), "StateModification");
+                this.moveInputBefore('StateModification', 'ApplyReturns');
+            }
+        } else if (inputExists) {
+            this.removeInput('StateModification');
         }
     },
 
@@ -797,7 +814,6 @@ Blockly.Blocks['transfer_call'] = {
         }
     },
 };
-
 
 Blockly.Blocks['my_procedures_mutatorarg'] = {
     init: function () {

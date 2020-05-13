@@ -804,7 +804,10 @@ namespace SmartContractsGenerator.Mappers
             if (node != null)
             {
                 var mName = GetValueFromFieldForElementNode(node, nsmgr, StateModificationFieldName);
-                return EnumMappers.MapBlocklyCodeToModificationType(mName);
+                if (!string.IsNullOrWhiteSpace(mName))
+                {
+                    return EnumMappers.MapBlocklyCodeToModificationType(mName);
+                }
             }
 
             return ModificationType.None;
