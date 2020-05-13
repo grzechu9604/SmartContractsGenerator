@@ -157,10 +157,10 @@ Blockly.Blocks['contract'] = {
             .setCheck("contract_property")
             .appendField("Properties");
         this.appendStatementInput("Events")
-            .setCheck(null)
+            .setCheck('contract_event')
             .appendField("Events");
         this.appendStatementInput("Modifiers")
-            .setCheck(null)
+            .setCheck('modifier')
             .appendField("Modifiers");
         this.appendStatementInput("Constructor")
             .setCheck("contract_constructor")
@@ -172,7 +172,7 @@ Blockly.Blocks['contract'] = {
             .setCheck("receive_function")
             .appendField("On receive Ether function");
         this.appendStatementInput("Functions")
-            .setCheck(null)
+            .setCheck('contract_function')
             .appendField("Functions");
         this.setColour(230);
         this.setTooltip("");
@@ -192,7 +192,7 @@ Blockly.Blocks['contract_constructor'] = {
         this.appendDummyInput()
             .appendField("Instructions");
         this.appendStatementInput("Instructions")
-            .setCheck(null);
+            .setCheck('IInstruction');
         this.setPreviousStatement(true, "contract_constructor");
         this.setColour(230);
         this.setTooltip("");
@@ -243,8 +243,8 @@ Blockly.Blocks['contract_event'] = {
             .appendField(nameField, 'NAME')
             .appendField('', 'PARAMS');
         this.setMutator(new Blockly.Mutator(['my_procedures_mutatorarg']));
-        this.setPreviousStatement(true, null);
-        this.setNextStatement(true, null);
+        this.setPreviousStatement(true, 'contract_event');
+        this.setNextStatement(true, 'contract_event');
         this.setColour(230);
         this.setTooltip("");
         this.setHelpUrl("");
@@ -288,8 +288,8 @@ Blockly.Blocks['assignment'] = {
             .appendField("=");
         this.appendValueInput("Source")
             .setCheck(iAssignables);
-        this.setPreviousStatement(true, null);
-        this.setNextStatement(true, null);
+        this.setPreviousStatement(true, 'IInstruction');
+        this.setNextStatement(true, 'IInstruction');
         this.setColour(230);
         this.setTooltip("");
         this.setHelpUrl("");
@@ -301,8 +301,8 @@ Blockly.Blocks['event_call'] = {
         this.appendDummyInput('TOPROW')
             .appendField("Emit")
             .appendField(this.id, 'NAME');
-        this.setPreviousStatement(true);
-        this.setNextStatement(true);
+        this.setPreviousStatement(true, 'IInstruction');
+        this.setNextStatement(true, 'IInstruction');
         this.setStyle('procedure_blocks');
         this.arguments_ = [];
         this.argumentVarModels_ = [];
@@ -329,8 +329,7 @@ Blockly.Blocks['break_statement'] = {
     init: function () {
         this.appendDummyInput('TOPROW')
             .appendField("Break loop")
-        this.setPreviousStatement(true);
-        this.setNextStatement(true);
+        this.setPreviousStatement(true, 'IInstruction');
     }
 };
 
@@ -339,7 +338,7 @@ Blockly.Blocks['call_returnable_function'] = {
         this.appendDummyInput('TOPROW')
             .appendField("Execute")
             .appendField(this.id, 'NAME');
-        this.setOutput(true, null);
+        this.setOutput(true, 'call_returnable_function');
         this.setStyle('procedure_blocks');
         this.arguments_ = [];
         this.argumentVarModels_ = [];
@@ -367,8 +366,8 @@ Blockly.Blocks['call_void_function'] = {
         this.appendDummyInput('TOPROW')
             .appendField("Execute")
             .appendField(this.id, 'NAME');
-        this.setPreviousStatement(true);
-        this.setNextStatement(true);
+        this.setPreviousStatement(true, 'IInstruction');
+        this.setNextStatement(true, 'IInstruction');
         this.setStyle('procedure_blocks');
         this.arguments_ = [];
         this.argumentVarModels_ = [];
@@ -434,8 +433,8 @@ Blockly.Blocks['requirement'] = {
         this.appendDummyInput()
             .appendField("Error message:")
             .appendField(new Blockly.FieldTextInput("[message]"), "ErrorMessage");
-        this.setPreviousStatement(true, null);
-        this.setNextStatement(true, null);
+        this.setPreviousStatement(true, 'IInstruction');
+        this.setNextStatement(true, 'IInstruction');
         this.setColour(230);
         this.setTooltip("");
         this.setHelpUrl("");
@@ -468,10 +467,10 @@ Blockly.Blocks['contract_loop'] = {
             .setCheck("condition")
             .appendField("Break contition");
         this.appendStatementInput("Instructions")
-            .setCheck(null)
+            .setCheck('IInstruction')
             .appendField("Instructions");
-        this.setPreviousStatement(true, null);
-        this.setNextStatement(true, null);
+        this.setPreviousStatement(true, 'IInstruction');
+        this.setNextStatement(true, 'IInstruction');
         this.setColour(230);
         this.setTooltip("");
         this.setHelpUrl("");
@@ -486,13 +485,13 @@ Blockly.Blocks['if_statement'] = {
             .setCheck("condition")
             .appendField("Condition");
         this.appendStatementInput("true_instructions")
-            .setCheck(null)
+            .setCheck('IInstruction')
             .appendField("If true");
         this.appendStatementInput("false_instructions")
-            .setCheck(null)
+            .setCheck('IInstruction')
             .appendField("If false");
-        this.setPreviousStatement(true, null);
-        this.setNextStatement(true, null);
+        this.setPreviousStatement(true, 'IInstruction');
+        this.setNextStatement(true, 'IInstruction');
         this.setColour(230);
         this.setTooltip("");
         this.setHelpUrl("");
@@ -538,9 +537,9 @@ Blockly.Blocks['contract_function'] = {
         this.appendDummyInput("InstructionsLabel")
             .appendField("Instructions");
         this.appendStatementInput("Instructions")
-            .setCheck(null);
-        this.setPreviousStatement(true, null);
-        this.setNextStatement(true, null);
+            .setCheck('IInstruction');
+        this.setPreviousStatement(true, 'contract_function');
+        this.setNextStatement(true, 'contract_function');
         this.setColour(230);
         this.setTooltip("");
         this.setHelpUrl("");
@@ -620,9 +619,9 @@ Blockly.Blocks['modifier'] = {
         this.appendDummyInput()
             .appendField("Instructions");
         this.appendStatementInput("Instructions")
-            .setCheck(null);
-        this.setPreviousStatement(true, "contract_constructor");
-        this.setNextStatement(true, null);
+            .setCheck('IInstruction');
+        this.setPreviousStatement(true, "modifier");
+        this.setNextStatement(true, 'modifier');
         this.setColour(230);
         this.setTooltip("");
         this.setHelpUrl("");
@@ -644,12 +643,12 @@ Blockly.Blocks['modifier'] = {
     customContextMenu: Blockly.Blocks['procedures_defnoreturn'].customContextMenu
 };
 
-Blockly.Blocks['moddifier_appliance'] = {
+Blockly.Blocks['modifier_appliance'] = {
     init: function () {
         this.appendDummyInput('TOPROW')
             .appendField("Use modifier")
             .appendField(this.id, 'NAME');
-        this.setOutput(true, null);
+        this.setOutput(true, 'modifier_appliance');
         this.setStyle('procedure_blocks');
         this.arguments_ = [];
         this.argumentVarModels_ = [];
@@ -669,7 +668,7 @@ Blockly.Blocks['moddifier_appliance'] = {
     //onchange: Blockly.Blocks['procedures_callnoreturn'].onchange,
     customContextMenu:
         Blockly.Blocks['procedures_callnoreturn'].customContextMenu,
-    defType_: 'moddifier_appliance'
+    defType_: 'modifier_appliance'
 };
 
 Blockly.Blocks['variable_declaration'] = {
@@ -715,7 +714,7 @@ Blockly.Blocks['return'] = {
             .appendField("Return value")
             .appendField(returnValueCheckbox, "ReturnValueCheckbox");
 
-        this.setPreviousStatement(true, null);
+        this.setPreviousStatement(true, 'IInstruction');
         this.setNextStatement(false, null);
         this.setColour(230);
         this.setTooltip("");
@@ -746,7 +745,7 @@ Blockly.Blocks['fallback_function'] = {
         this.appendDummyInput()
             .appendField("Instructions");
         this.appendStatementInput("Instructions")
-            .setCheck(null);
+            .setCheck('IInstruction');
         this.setPreviousStatement(true, "fallback_function");
         this.setColour(230);
         this.setTooltip("");
@@ -761,7 +760,7 @@ Blockly.Blocks['receive_function'] = {
         this.appendDummyInput()
             .appendField("Instructions");
         this.appendStatementInput("Instructions")
-            .setCheck(null);
+            .setCheck('IInstruction');
         this.setPreviousStatement(true, "receive_function");
         this.setColour(230);
         this.setTooltip("");
@@ -794,8 +793,8 @@ Blockly.Blocks['transfer_call'] = {
             .appendField("Amount")
             .setCheck(iAssignables);
 
-        this.setPreviousStatement(true, null);
-        this.setNextStatement(true, null);
+        this.setPreviousStatement(true, 'IInstruction');
+        this.setNextStatement(true, 'IInstruction');
         this.setColour(230);
         this.setTooltip("");
         this.setHelpUrl("");
@@ -954,5 +953,5 @@ myEventsCategoryCallback = function (workspace) {
 
 myModifiersCategoryCallback = function (workspace) {
     var tuples = Blockly.MyDynamicInputs.allModifiers(workspace);
-    return Blockly.MyDynamicInputs.populateElements(tuples, 'moddifier_appliance');
+    return Blockly.MyDynamicInputs.populateElements(tuples, 'modifier_appliance');
 };

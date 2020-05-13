@@ -30,7 +30,7 @@ namespace SmartContractsGenerator.Mappers
         private const string CallVoidFunctionBlockType = "call_void_function";
         private const string ModifierBlockType = "modifier";
         private const string ReturnBlockType = "return";
-        private const string ModifierApplianceBlockType = "moddifier_appliance";
+        private const string ModifierApplianceBlockType = "modifier_appliance";
         private const string BreakStatementBlockType = "break_statement";
         private const string SpecialValueCallBlockType = "special_value_call";
         private const string BalanceCallBlockType = "balance_call";
