@@ -53,6 +53,34 @@ namespace SmartContractsGenerator.Model.Tests
             function.GenerateCode(new Indentation());
         }
 
+        [TestMethod()]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void ModificationTypeXorIsPayableTest()
+        {
+            var function = new ContractFunction()
+            {
+                Name = "Test",
+                Visibility = Visibility.Public,
+                ModificationType = ModificationType.Pure,
+                IsPayable = true
+            };
+            function.GenerateCode(new Indentation());
+        }
+
+        [TestMethod()]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void ModificationTypeXorIsPayableTest2()
+        {
+            var function = new ContractFunction()
+            {
+                Name = "Test",
+                Visibility = Visibility.Public,
+                ModificationType = ModificationType.View,
+                IsPayable = true
+            };
+            function.GenerateCode(new Indentation());
+        }
+
         [TestMethod]
         [DynamicData(nameof(GenerateTestData), DynamicDataSourceType.Method)]
         public void GenerateCodeTest(ContractFunction function, Indentation indentation, string expected)
@@ -151,14 +179,14 @@ namespace SmartContractsGenerator.Model.Tests
             var expectedWithModifierAndReturnsAndViewAndParamList2 = $"function {name1}({parametersCode2}) {visibility4.GenerateCode()} {m2Name}({parametersCode2}) {ModificationType.View.GenerateCode()} returns ({returningType2.GenerateCode()}) {{\n}}";
             yield return GenerateRow(parametersCode2, name1, null, visibility4, m2, parametersCode2, true, returningType2, ModificationType.View, false, expectedWithModifierAndReturnsAndViewAndParamList2);
 
-            var expectedWithInstructionsAndPurePayable = $"function {name2}() {visibility2.GenerateCode()} {ModificationType.Pure.GenerateCode()} payable {{\n{instructionCode1}\n}}";
-            yield return GenerateRow(null, name2, instructionCode1, visibility2, null, null, false, null, ModificationType.Pure, true, expectedWithInstructionsAndPurePayable);
+            var expectedWithInstructionsAndPurePayable = $"function {name2}() {visibility2.GenerateCode()} payable {{\n{instructionCode1}\n}}";
+            yield return GenerateRow(null, name2, instructionCode1, visibility2, null, null, false, null, ModificationType.None, true, expectedWithInstructionsAndPurePayable);
 
-            var expectedWithModifierAndViewAndParamList2Payable = $"function {name1}({parametersCode2}) {visibility4.GenerateCode()} {m2Name}({parametersCode2}) {ModificationType.View.GenerateCode()} payable {{\n}}";
-            yield return GenerateRow(parametersCode2, name1, null, visibility4, m2, parametersCode2, true, null, ModificationType.View, true, expectedWithModifierAndViewAndParamList2Payable);
+            var expectedWithModifierAndViewAndParamList2Payable = $"function {name1}({parametersCode2}) {visibility4.GenerateCode()} {m2Name}({parametersCode2}) payable {{\n}}";
+            yield return GenerateRow(parametersCode2, name1, null, visibility4, m2, parametersCode2, true, null, ModificationType.None, true, expectedWithModifierAndViewAndParamList2Payable);
 
-            var expectedWithModifierAndReturnsAndViewAndParamList2Payable = $"function {name1}({parametersCode2}) {visibility4.GenerateCode()} {m2Name}({parametersCode2}) {ModificationType.View.GenerateCode()} payable returns ({returningType2.GenerateCode()}) {{\n}}";
-            yield return GenerateRow(parametersCode2, name1, null, visibility4, m2, parametersCode2, true, returningType2, ModificationType.View, true, expectedWithModifierAndReturnsAndViewAndParamList2Payable);
+            var expectedWithModifierAndReturnsAndViewAndParamList2Payable = $"function {name1}({parametersCode2}) {visibility4.GenerateCode()} {m2Name}({parametersCode2}) payable returns ({returningType2.GenerateCode()}) {{\n}}";
+            yield return GenerateRow(parametersCode2, name1, null, visibility4, m2, parametersCode2, true, returningType2, ModificationType.None, true, expectedWithModifierAndReturnsAndViewAndParamList2Payable);
         }
 
         static object[] GenerateRow(string parametersListCode, string name, string instructionsListCode, Visibility? visibility, Modifier m, string modifierParametersListCode, bool anyModifierParameter, SolidityType? returningType, ModificationType modificationType, bool isPayable, string expected)

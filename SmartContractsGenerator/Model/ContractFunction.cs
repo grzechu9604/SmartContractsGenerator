@@ -46,6 +46,11 @@ namespace SmartContractsGenerator.Model
                 throw new MissingMandatoryElementException("Name is required for function");
             }
 
+            if (IsPayable && ModificationType != ModificationType.None)
+            {
+                throw new InvalidOperationException("Function cannot have state modification type if is accepts Ethers");
+            }
+
              return $"function {Name}({Parameters?.GenerateCode()}) {Visibility.Value.GenerateCode()}{GetModifierHeaderPart()}{GetModificationTypeHeaderPart()}{GetPayablePart()}{GetReturnsHeaderPart()} {{\n";
         }
 
