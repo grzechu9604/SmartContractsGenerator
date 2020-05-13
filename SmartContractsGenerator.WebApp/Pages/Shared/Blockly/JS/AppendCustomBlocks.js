@@ -165,6 +165,12 @@ Blockly.Blocks['contract'] = {
         this.appendStatementInput("Constructor")
             .setCheck("contract_constructor")
             .appendField("Constructor");
+        this.appendStatementInput("FallbackFunction")
+            .setCheck("fallback_function")
+            .appendField("Default function");
+        this.appendStatementInput("ReceiveFunction")
+            .setCheck("receive_function")
+            .appendField("On receive Ether function");
         this.appendStatementInput("Functions")
             .setCheck(null)
             .appendField("Functions");
@@ -711,6 +717,39 @@ Blockly.Blocks['return'] = {
             this.removeInput('ReturnValue');
         }
     },
+};
+
+Blockly.Blocks['fallback_function'] = {
+    init: function () {
+        this.appendDummyInput()
+            .appendField("Default function");
+        this.appendDummyInput()
+            .appendField("Accepts ethers")
+            .appendField(new Blockly.FieldCheckbox("FALSE"), "AcceptsEthers");
+        this.appendDummyInput()
+            .appendField("Instructions");
+        this.appendStatementInput("Instructions")
+            .setCheck(null);
+        this.setPreviousStatement(true, "fallback_function");
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+    }
+};
+
+Blockly.Blocks['receive_function'] = {
+    init: function () {
+        this.appendDummyInput()
+            .appendField("On receive Ether function");
+        this.appendDummyInput()
+            .appendField("Instructions");
+        this.appendStatementInput("Instructions")
+            .setCheck(null);
+        this.setPreviousStatement(true, "receive_function");
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+    }
 };
 
 Blockly.Blocks['my_procedures_mutatorarg'] = {

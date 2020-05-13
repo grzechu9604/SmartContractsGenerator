@@ -2,6 +2,7 @@
 using SmartContractsGenerator.Model;
 using SmartContractsGenerator.Model.AbstractPatterns;
 using SmartContractsGenerator.Model.Enums;
+using SmartContractsGenerator.Model.SpecialFunctions;
 using System;
 using System.Collections.Generic;
 using System.Xml;
@@ -163,6 +164,18 @@ namespace SmartContractsGenerator.Mappers
                     c.Modifiers = GetModifiersFromXmlNode(modifiersRootNode, nsmgr);
                 }
 
+                var fallbackRootNode = node.SelectSingleNode($"gxml:statement[@name=\"FallbackFunction\"]/gxml:block[@type=\"fallback_function\"]", nsmgr);
+                if (fallbackRootNode != null)
+                {
+                    c.FallbackFunction = GetFallbackFunctionFromXmlNode(fallbackRootNode, nsmgr);
+                }
+                
+                var receiveRootNode = node.SelectSingleNode($"gxml:statement[@name=\"ReceiveFunction\"]/gxml:block[@type=\"receive_function\"]", nsmgr);
+                if (receiveRootNode != null)
+                {
+                    c.ReceiveFunction = GetReceiveFunctionFromXmlNode(receiveRootNode, nsmgr);
+                }
+
                 return c;
             }
 
@@ -184,6 +197,37 @@ namespace SmartContractsGenerator.Mappers
                 };
 
                 return c;
+            }
+
+            return null;
+        }
+
+        public ReceiveFunction GetReceiveFunctionFromXmlNode(XmlNode node, XmlNamespaceManager nsmgr)
+        {
+            if (node != null)
+            {
+                var instructionNode = node.SelectSingleNode($"gxml:statement[@name=\"{InstructionsStatementName}\"]/gxml:block", nsmgr);
+
+                return new ReceiveFunction()
+                {
+                    Instructions = GetInstructionsListFromXmlNode(instructionNode, nsmgr)
+                };
+            }
+
+            return null;
+        }
+
+        public FallbackFunction GetFallbackFunctionFromXmlNode(XmlNode node, XmlNamespaceManager nsmgr)
+        {
+            if (node != null)
+            {
+                var instructionNode = node.SelectSingleNode($"gxml:statement[@name=\"{InstructionsStatementName}\"]/gxml:block", nsmgr);
+
+                return new FallbackFunction()
+                {
+                    Instructions = GetInstructionsListFromXmlNode(instructionNode, nsmgr),
+                    IsPayable = GetAcceptsEthersForElementNode(node, nsmgr)
+                };
             }
 
             return null;
