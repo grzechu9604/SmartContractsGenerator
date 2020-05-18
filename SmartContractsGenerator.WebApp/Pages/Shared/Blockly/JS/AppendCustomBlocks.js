@@ -191,11 +191,9 @@ Blockly.Blocks['contract_constructor'] = {
     init: function () {
         this.appendDummyInput()
             .appendField("Constructor")
-            .appendField('', 'PARAMS');
-        this.setMutator(new Blockly.Mutator(['my_procedures_mutatorarg']));
-        this.appendDummyInput()
-            .appendField("Visibility")
+            .appendField('', 'PARAMS')
             .appendField(new Blockly.FieldDropdown([["Public", "1"], ["Internal", "2"]]), "Visibility");
+        this.setMutator(new Blockly.Mutator(['my_procedures_mutatorarg']));
         this.appendDummyInput()
             .appendField("Instructions");
         this.appendStatementInput("Instructions")
@@ -225,9 +223,7 @@ Blockly.Blocks['contract_constructor'] = {
 Blockly.Blocks['contract_property'] = {
     init: function () {
         this.appendDummyInput()
-            .appendField("Property");
-        this.appendDummyInput()
-            .appendField("Visibility")
+            .appendField("Property")
             .appendField(new Blockly.FieldDropdown([["External", "0"], ["Public", "1"], ["Private", "3"], ["Internal", "2"]]), "Visibility");
         this.appendValueInput("Variable")
             .setCheck("variable_declaration")
@@ -288,8 +284,6 @@ Blockly.Blocks['constant_value'] = {
 
 Blockly.Blocks['assignment'] = {
     init: function () {
-        this.appendDummyInput()
-            .appendField("Assignment");
         this.appendValueInput("Destination")
             .setCheck(iValueContainers);
         this.appendDummyInput()
@@ -413,17 +407,12 @@ Blockly.Blocks['condition'] = {
 
 Blockly.Blocks['operation'] = {
     init: function () {
-        this.appendDummyInput()
-            .appendField("Operation");
         this.appendValueInput("left_side")
-            .setCheck(iAssignables)
-            .appendField("Left");
+            .setCheck(iAssignables);
         this.appendDummyInput()
-            .appendField("Operator")
             .appendField(new Blockly.FieldDropdown([["+", "0"], ["-", "1"], ["%", "2"], ["/", "3"], ["*", "4"], ["!", "5"], ["||", "6"], ["&&", "7"], ["^", "8"], ["==", "9"], ["!=", "10"]]), "Operator");
         this.appendValueInput("right_side")
-            .setCheck(iAssignables)
-            .appendField("Right");
+            .setCheck(iAssignables);
         this.setOutput(true, "operation");
         this.setColour(230);
         this.setTooltip("");
@@ -452,8 +441,7 @@ Blockly.Blocks['requirement'] = {
 Blockly.Blocks['variable'] = {
     init: function () {
         this.appendDummyInput()
-            .appendField("Variable")
-            .appendField(new Blockly.FieldVariable("item"), "NAME");
+            .appendField(new Blockly.FieldVariable(), "NAME");
         this.setOutput(true, "variable");
         this.setColour(230);
         this.setTooltip("");
@@ -518,7 +506,8 @@ Blockly.Blocks['contract_function'] = {
             this.sourceBlock_.updateStateModificationInput_(acceptsEthersChecked == "TRUE");
         });
         this.appendDummyInput()
-            .appendField("Function");
+            .appendField("Function")
+            .appendField(new Blockly.FieldDropdown([["External", "0"], ["Public", "1"], ["Private", "3"], ["Internal", "2"]]), "Visibility");
         var nameField = new Blockly.FieldTextInput('unnamed',
             Blockly.Procedures.rename);
         nameField.setSpellcheck(false);
@@ -533,9 +522,6 @@ Blockly.Blocks['contract_function'] = {
         this.appendDummyInput()
             .appendField("Apply modifier")
             .appendField(modifierCheckbox, "ApplyModifier");
-        this.appendDummyInput("Visibility")
-            .appendField("Visibility")
-            .appendField(new Blockly.FieldDropdown([["External", "0"], ["Public", "1"], ["Private", "3"], ["Internal", "2"]]), "Visibility");
         this.appendDummyInput("StateModification")
             .appendField("State modification type")
             .appendField(new Blockly.FieldDropdown([["ReadWrite", "0"], ["ReadOnly", "1"], ["Calculation only", "2"]]), "StateModification");
@@ -564,7 +550,13 @@ Blockly.Blocks['contract_function'] = {
                 this.appendValueInput("Modifier")
                     .appendField("Modifier: ")
                     .setCheck(["modifier_appliance"]);
-                this.moveInputBefore('Modifier', 'Visibility');
+
+                if (this.getInput("StateModification")) {
+                    this.moveInputBefore('Modifier', 'StateModification');
+                }
+                else {
+                    this.moveInputBefore('Modifier', 'ApplyReturns');
+                }
             }
         } else if (inputExists) {
             this.removeInput('Modifier');
@@ -620,8 +612,7 @@ Blockly.Blocks['modifier'] = {
             Blockly.Procedures.rename);
         nameField.setSpellcheck(false);
         this.appendDummyInput()
-            .appendField("Modifier");
-        this.appendDummyInput()
+            .appendField("Modifier")
             .appendField(nameField, 'NAME')
             .appendField('', 'PARAMS');
         this.setMutator(new Blockly.Mutator(['my_procedures_mutatorarg']));
@@ -687,7 +678,7 @@ Blockly.Blocks['variable_declaration'] = {
             .appendField("Variable declaration");
         this.appendDummyInput()
             .appendField("Name")
-            .appendField(new Blockly.FieldVariable("item"), "NAME");
+            .appendField(new Blockly.FieldVariable(), "NAME");
         this.appendDummyInput()
             .appendField("type:")
             .appendField(new Blockly.FieldDropdown(solidityTypes), "TYPE");
