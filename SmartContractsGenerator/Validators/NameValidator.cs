@@ -30,7 +30,6 @@ namespace SmartContractsGenerator.Validators
             "balance",
             "function",
             "true",
-            "i",
             "false",
             "bool",
             "constructor",
@@ -248,6 +247,5 @@ namespace SmartContractsGenerator.Validators
             "seconds",
             "years"
         };
-
     }
 }
