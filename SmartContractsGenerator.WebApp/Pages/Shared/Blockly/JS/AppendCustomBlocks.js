@@ -850,6 +850,24 @@ Blockly.Blocks['transfer_call'] = {
     },
 };
 
+Blockly.Blocks['true_const'] = {
+    init: function () {
+        this.appendDummyInput('TOPROW')
+            .appendField("true")
+        this.setOutput(true, "constant_value");
+        this.setColour(60);
+    }
+};
+
+Blockly.Blocks['false_const'] = {
+    init: function () {
+        this.appendDummyInput('TOPROW')
+            .appendField("false")
+        this.setOutput(true, "constant_value");
+        this.setColour(60);
+    }
+};
+
 Blockly.Blocks['my_procedures_mutatorarg'] = {
     init: function () {
         var nameField = new Blockly.FieldTextInput(

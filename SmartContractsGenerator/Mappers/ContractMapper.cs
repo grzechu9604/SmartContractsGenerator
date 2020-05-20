@@ -20,6 +20,8 @@ namespace SmartContractsGenerator.Mappers
         private const string AssignmentBlockType = "assignment";
         private const string VariableBlockType = "variable";
         private const string ConstantValueBlockType = "constant_value";
+        private const string TrueConstantBlockType = "true_const";
+        private const string FalseConstantBlockType = "false_const";
         private const string OperationBlockType = "operation";
         private const string LogicOperationBlockType = "logic_operation";
         private const string VariableDeclarationBlockType = "variable_declaration";
@@ -84,6 +86,8 @@ namespace SmartContractsGenerator.Mappers
             AssignableMappers = new Dictionary<string, Func<XmlNode, XmlNamespaceManager, IAssignable>>()
             {
                 { ConstantValueBlockType, GetConstantValueFromElementNode },
+                { TrueConstantBlockType, GetLogicTrueConstantValueFromElementNode },
+                { FalseConstantBlockType, GetLogicFalseConstantValueFromElementNode },
                 { OperationBlockType, GetMathOperationFromElementNode },
                 { LogicOperationBlockType, GetLogicOperationFromElementNode },
                 { VariableBlockType, GetVariableFormXmlNode },
@@ -376,6 +380,29 @@ namespace SmartContractsGenerator.Mappers
                 return new ConstantValue()
                 {
                     Value = node.InnerText
+                };
+            }
+
+            return null;
+        }
+
+        public ConstantValue GetLogicTrueConstantValueFromElementNode(XmlNode node, XmlNamespaceManager nsmgr)
+        {
+            return GetConstantValueFromElementNodeWithPredefinedValue(node, nsmgr, "true");
+        }
+
+        public ConstantValue GetLogicFalseConstantValueFromElementNode(XmlNode node, XmlNamespaceManager nsmgr)
+        {
+            return GetConstantValueFromElementNodeWithPredefinedValue(node, nsmgr, "false");
+        }
+        
+        private ConstantValue GetConstantValueFromElementNodeWithPredefinedValue(XmlNode node, XmlNamespaceManager nsmgr, string value)
+        {
+            if (node != null)
+            {
+                return new ConstantValue()
+                {
+                    Value = value
                 };
             }
 
@@ -876,20 +903,6 @@ namespace SmartContractsGenerator.Mappers
                 }
             }
                 
-            return string.Empty;
-        }
-
-        public string GetValueForConstantValueNode(XmlNode node, XmlNamespaceManager nsmgr)
-        {
-            if (node != null)
-            {
-                var nameNode = node.SelectSingleNode($"gxml:field[@name=\"{NameFieldName}\"]", nsmgr);
-                if (nameNode != null)
-                {
-                    return nameNode.InnerText;
-                }
-            }
-            
             return string.Empty;
         }
 
