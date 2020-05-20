@@ -1,4 +1,5 @@
-﻿using SmartContractsGenerator.Interfaces;
+﻿using SmartContractsGenerator.Helpers;
+using SmartContractsGenerator.Interfaces;
 using SmartContractsGenerator.Model;
 using SmartContractsGenerator.Model.AbstractPatterns;
 using SmartContractsGenerator.Model.BuiltinFunctionCalls;
@@ -413,8 +414,7 @@ namespace SmartContractsGenerator.Mappers
         {
             if (node != null)
             {
-                //TODO escape special chars
-                return $"\"{node.InnerText}\"";
+                return SolidityStringsEscaper.EscapeString(node.InnerText);
             }
 
             return null;
