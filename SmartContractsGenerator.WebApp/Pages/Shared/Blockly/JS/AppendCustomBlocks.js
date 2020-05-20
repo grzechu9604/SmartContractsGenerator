@@ -29,6 +29,11 @@ Blockly.MyDynamicInputs = {
     allModifiers: function (root) {
         return Blockly.MyDynamicInputs.allDefinitionsOfType_(root, "modifier");
     },
+    copyVariable: function (variable) {
+        return {
+            type: variable.type, name: variable.name, id: variable.getId(), getId: function () { return this.id }
+        };
+    },
     mutationToDom: function (opt_paramIds) {
         var container = Blockly.utils.xml.createElement('mutation');
         if (opt_paramIds) {
@@ -54,13 +59,14 @@ Blockly.MyDynamicInputs = {
         for (var i = 0, childNode; (childNode = xmlElement.childNodes[i]); i++) {
             if (childNode.nodeName.toLowerCase() == 'arg') {
                 var varName = childNode.getAttribute('name');
-                var varType = childNode.getAttribute('type');
                 var varId = childNode.getAttribute('varid') || childNode.getAttribute('varId');
                 this.arguments_.push(varName);
                 var variable = Blockly.Variables.getOrCreateVariablePackage(
-                    this.workspace, varId, varName, varType);
+                    this.workspace, varId, varName, '');
                 if (variable != null) {
-                    this.argumentVarModels_.push(variable);
+                    var modelVariable = Blockly.MyDynamicInputs.copyVariable(variable);
+                    modelVariable.type = childNode.getAttribute('type');
+                    this.argumentVarModels_.push(modelVariable);
                 } else {
                     console.log('Failed to create a variable with name ' + varName + ', ignoring.');
                 }
@@ -118,10 +124,11 @@ Blockly.MyDynamicInputs = {
         var paramBlock = containerBlock.getInputTargetBlock('STACK');
         while (paramBlock) {
             var varName = paramBlock.getFieldValue('NAME');
-            var varType = paramBlock.getFieldValue('TYPE');
             this.arguments_.push(varName);
-            var variable = this.workspace.getVariable(varName, varType);
-            this.argumentVarModels_.push(variable);
+            var variable = this.workspace.getVariable(varName, '');
+            var modelVariable = Blockly.MyDynamicInputs.copyVariable(variable);
+            modelVariable.type = paramBlock.getFieldValue('TYPE');
+            this.argumentVarModels_.push(modelVariable);
 
             this.paramIds_.push(paramBlock.id);
             paramBlock = paramBlock.nextConnection &&
@@ -886,8 +893,7 @@ Blockly.Blocks['my_procedures_mutatorarg'] = {
             .appendField(nameField, 'NAME')
             .appendField("Type")
             .appendField(new Blockly.FieldDropdown(
-                solidityTypes,
-                this.typeValidator_), "TYPE");
+                solidityTypes), "TYPE");
         this.setPreviousStatement(true);
         this.setNextStatement(true);
         this.setStyle('procedure_blocks');
@@ -899,77 +905,7 @@ Blockly.Blocks['my_procedures_mutatorarg'] = {
         nameField.onFinishEditing_('x');
     },
 
-    typeValidator_: function (newType) {
-        var sourceBlock = this.getSourceBlock();
-
-        if (sourceBlock.isInFlyout) {
-            return newType;
-        }
-
-        var name = sourceBlock.getFieldValue("NAME");
-
-        var outerWs = Blockly.Mutator.findParentWs(sourceBlock.workspace);
-        var model = outerWs.getVariable(name, newType);
-
-        if (model && model.type != newType) {
-            outerWs.deleteVariableById(model.getId());
-            model = null;
-        }
-
-        if (!model) {
-            model = outerWs.createVariable(name, newType);
-            if (model && this.createdVariables_) {
-                this.createdVariables_.push(model);
-            }
-        }
-
-        return newType;
-    },
-
-    validator_: function (varName) {
-        var sourceBlock = this.getSourceBlock();
-        var varType = sourceBlock.getFieldValue("TYPE");
-
-        var outerWs = Blockly.Mutator.findParentWs(sourceBlock.workspace);
-        if (!varName) {
-            return null;
-        }
-
-        // Prevents duplicate parameter names in functions
-        var workspace = sourceBlock.workspace.targetWorkspace ||
-            sourceBlock.workspace;
-        var blocks = workspace.getAllBlocks(false);
-        var caselessName = varName.toLowerCase();
-        for (var i = 0; i < blocks.length; i++) {
-            if (blocks[i].id == this.getSourceBlock().id) {
-                continue;
-            }
-            // Other blocks values may not be set yet when this is loaded.
-            var otherVar = blocks[i].getFieldValue('NAME');
-            if (otherVar && otherVar.toLowerCase() == caselessName) {
-                return null;
-            }
-        }
-
-        // Don't create variables for arg blocks that
-        // only exist in the mutator's flyout.
-        if (sourceBlock.isInFlyout) {
-            return varName;
-        }
-
-        var model = outerWs.getVariable(varName, varType);
-        if (model && model.name != varName) {
-            // Rename the variable (case change)
-            outerWs.renameVariableById(model.getId(), varName);
-        }
-        if (!model) {
-            model = outerWs.createVariable(varName, varType);
-            if (model && this.createdVariables_) {
-                this.createdVariables_.push(model);
-            }
-        }
-        return varName;
-    },
+    validator_: Blockly.Blocks['procedures_mutatorarg'].validator_,
     deleteIntermediateVars_: Blockly.Blocks['procedures_mutatorarg'].deleteIntermediateVars_
 };
 
