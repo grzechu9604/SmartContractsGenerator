@@ -1,6 +1,7 @@
 ﻿var iAssignables = ["variable", "operation", "constant_value", "special_value", "call_returnable_function", "balance_call", "logic_operation"];
 var iValueContainers = ["variable", "variable_declaration"];
 var solidityTypes = [["Bool", "0"], ["Int", "1"], ["UInt", "2"], ["Fixed", "3"], ["UFixed", "4"], ["Address", "5"], ["Address Payable", "6"], ["String", "7"]];
+var constantTypes = [["Int", "1"], ["Fixed", "3"], ["String", "7"]];
 
 Blockly.MyDynamicInputs = {
     allDefinitionsOfType_: function (root, type) {
@@ -274,7 +275,8 @@ Blockly.Blocks['constant_value'] = {
     init: function () {
         this.appendDummyInput()
             .appendField("Value: ")
-            .appendField(new Blockly.FieldTextInput("[value]"), "Value");
+            .appendField(new Blockly.FieldTextInput("[value]"), "value")
+            .appendField(new Blockly.FieldDropdown(constantTypes), "TYPE");
         this.setOutput(true, "constant_value");
         this.setColour(60);
         this.setTooltip("");

@@ -378,13 +378,39 @@ namespace SmartContractsGenerator.Mappers
         {
             if (node != null)
             {
+                var type = GeTypeForElementNode(node, nsmgr);
+                var valueText = GetValueFromFieldForElementNode(node, nsmgr, ValueFieldName);
+
                 return new ConstantValue()
                 {
-                    Value = node.InnerText
+                    Value = GetValueForConstantValue(valueText, type)
                 };
             }
 
             return null;
+        }
+
+        public string GetValueForConstantValue(string value, SolidityType? type)
+        {
+            try
+            {
+                switch (type)
+                {
+                    case SolidityType.Int:
+                        return Convert.ToInt64(value).ToString();
+                    case SolidityType.Fixed:
+                        return Convert.ToDecimal(value).ToString();
+                    case SolidityType.String:
+                        return SolidityStringsEscaper.EscapeString(value);
+                    default:
+                        break;
+                }
+            }
+            catch (FormatException fe)
+            {
+                throw new InvalidOperationException($"Couldn't convert value: {value} to {type}", fe);
+            }
+            return SolidityStringsEscaper.EscapeString(value);
         }
 
         public ConstantValue GetLogicTrueConstantValueFromElementNode(XmlNode node, XmlNamespaceManager nsmgr)
