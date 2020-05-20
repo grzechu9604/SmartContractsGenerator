@@ -35,12 +35,12 @@
 
 <div id="blocklyDiv" style="height: 480px; width: 100%;"></div>
 <xml xmlns="https://developers.google.com/blockly/xml" id="toolbox" style="display: none">
-    <category name="Contract">
+    <category name="Contract" colour="0">
         <block type="contract">
             <field name="NAME">[insert contract name]</field>
         </block>
     </category>
-    <category name="Contract elements">
+    <category name="Contract elements" colour="230">
         <block type="contract_property">
             <field name="Visibility">1</field>
         </block>
@@ -56,7 +56,7 @@
         <block type="fallback_function"></block>
         <block type="receive_function"></block>
     </category>
-    <category name="Function elements">
+    <category name="Function elements" colour="120">
         <block type="assignment"></block>
         <block type="requirement"></block>
         <block type="contract_loop"></block>
@@ -64,48 +64,29 @@
         <block type="return"></block>
         <block type="break_statement"></block>
     </category>
-    <category name="Built-in functions">
+    <category name="Built-in functions" colour="150">
         <block type="balance_call"></block>
         <block type="transfer_call"></block>
     </category>
-    <category name="All">
-        <block type="contract">
-            <field name="NAME">[insert contract name]</field>
-        </block>
-        <block type="assignment"></block>
+    <category name="Variables" colour="60">
+        <block type="variable"></block>
+        <block type="variable_declaration"></block>
+    </category>
+    <category name="Calculation" colour="60">
         <block type="constant_value">
             <field name="Value">[value]</field>
         </block>
-        <block type="contract_property">
-            <field name="Visibility">1</field>
-        </block>
-        <block type="contract_constructor">
-            <field name="Visibility">1</field>
-        </block>
-        <block type="contract_event"></block>
-        <block type="condition"></block>
+        <block type="special_value_call"></block>
         <block type="operation">
             <field name="Operator">0</field>
         </block>
-        <block type="requirement"></block>
-        <block type="variable"></block>
-        <block type="variable_declaration"></block>
-        <block type="contract_loop"></block>
-        <block type="if_statement"></block>
-        <block type="contract_function">
-            <field name="Visibility">1</field>
-            <mutation apply_modifier="false"></mutation>
-        </block>
-        <block type="modifier"></block>
-        <block type="return"></block>
-        <block type="break_statement"></block>
-        <block type="special_value_call"></block>
-        <block type="receive_function"></block>
-        <block type="fallback_function"></block>
     </category>
-    <category name="Functions calls" colour="290" custom="MY_PROCEDURE"></category>
-    <category name="Events calls" colour="290" custom="MY_EVENTS"></category>
-    <category name="Modifiers calls" colour="290" custom="MY_MODIFIERS"></category>
+    <category name="Logic" colour="315">
+        <block type="condition"></block>
+    </category>
+    <category name="Functions calls" colour="120" custom="MY_PROCEDURE"></category>
+    <category name="Events calls" colour="120" custom="MY_EVENTS"></category>
+    <category name="Modifiers calls" colour="30" custom="MY_MODIFIERS"></category>
 </xml>
 <button id="GenerateCodeButton">Generate code</button>
 

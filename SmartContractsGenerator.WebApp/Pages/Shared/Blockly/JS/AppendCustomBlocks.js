@@ -181,7 +181,7 @@ Blockly.Blocks['contract'] = {
         this.appendStatementInput("Functions")
             .setCheck('contract_function')
             .appendField("Functions");
-        this.setColour(230);
+        this.setColour(0);
         this.setTooltip("");
         this.setHelpUrl("");
     }
@@ -276,7 +276,7 @@ Blockly.Blocks['constant_value'] = {
             .appendField("Value: ")
             .appendField(new Blockly.FieldTextInput("[value]"), "Value");
         this.setOutput(true, "constant_value");
-        this.setColour(230);
+        this.setColour(60);
         this.setTooltip("");
         this.setHelpUrl("");
     }
@@ -292,7 +292,7 @@ Blockly.Blocks['assignment'] = {
             .setCheck(iAssignables);
         this.setPreviousStatement(true, 'IInstruction');
         this.setNextStatement(true, 'IInstruction');
-        this.setColour(230);
+        this.setColour(120);
         this.setTooltip("");
         this.setHelpUrl("");
     }
@@ -305,7 +305,7 @@ Blockly.Blocks['event_call'] = {
             .appendField(this.id, 'NAME');
         this.setPreviousStatement(true, 'IInstruction');
         this.setNextStatement(true, 'IInstruction');
-        this.setStyle('procedure_blocks');
+        this.setColour(120);
         this.arguments_ = [];
         this.argumentVarModels_ = [];
         this.quarkConnections_ = {};
@@ -332,6 +332,7 @@ Blockly.Blocks['break_statement'] = {
         this.appendDummyInput('TOPROW')
             .appendField("Break loop")
         this.setPreviousStatement(true, 'IInstruction');
+        this.setColour(120);
     }
 };
 
@@ -341,7 +342,7 @@ Blockly.Blocks['call_returnable_function'] = {
             .appendField("Execute")
             .appendField(this.id, 'NAME');
         this.setOutput(true, 'call_returnable_function');
-        this.setStyle('procedure_blocks');
+        this.setColour(60);
         this.arguments_ = [];
         this.argumentVarModels_ = [];
         this.quarkConnections_ = {};
@@ -370,7 +371,7 @@ Blockly.Blocks['call_void_function'] = {
             .appendField(this.id, 'NAME');
         this.setPreviousStatement(true, 'IInstruction');
         this.setNextStatement(true, 'IInstruction');
-        this.setStyle('procedure_blocks');
+        this.setColour(120);
         this.arguments_ = [];
         this.argumentVarModels_ = [];
         this.quarkConnections_ = {};
@@ -399,7 +400,7 @@ Blockly.Blocks['condition'] = {
             .appendField("Condition")
             .appendField("");
         this.setOutput(true, "condition");
-        this.setColour(230);
+        this.setColour(315);
         this.setTooltip("");
         this.setHelpUrl("");
     }
@@ -414,7 +415,7 @@ Blockly.Blocks['operation'] = {
         this.appendValueInput("right_side")
             .setCheck(iAssignables);
         this.setOutput(true, "operation");
-        this.setColour(230);
+        this.setColour(60);
         this.setTooltip("");
         this.setHelpUrl("");
     }
@@ -432,7 +433,7 @@ Blockly.Blocks['requirement'] = {
             .appendField(new Blockly.FieldTextInput("[message]"), "ErrorMessage");
         this.setPreviousStatement(true, 'IInstruction');
         this.setNextStatement(true, 'IInstruction');
-        this.setColour(230);
+        this.setColour(120);
         this.setTooltip("");
         this.setHelpUrl("");
     }
@@ -443,7 +444,7 @@ Blockly.Blocks['variable'] = {
         this.appendDummyInput()
             .appendField(new Blockly.FieldVariable(), "NAME");
         this.setOutput(true, "variable");
-        this.setColour(230);
+        this.setColour(60);
         this.setTooltip("");
         this.setHelpUrl("");
     }
@@ -467,7 +468,7 @@ Blockly.Blocks['contract_loop'] = {
             .appendField("Instructions");
         this.setPreviousStatement(true, 'IInstruction');
         this.setNextStatement(true, 'IInstruction');
-        this.setColour(230);
+        this.setColour(120);
         this.setTooltip("");
         this.setHelpUrl("");
     }
@@ -488,7 +489,7 @@ Blockly.Blocks['if_statement'] = {
             .appendField("If false");
         this.setPreviousStatement(true, 'IInstruction');
         this.setNextStatement(true, 'IInstruction');
-        this.setColour(230);
+        this.setColour(120);
         this.setTooltip("");
         this.setHelpUrl("");
     }
@@ -656,6 +657,7 @@ Blockly.Blocks['modifier_appliance'] = {
         this.quarkConnections_ = {};
         this.quarkIds_ = null;
         this.previousEnabledState_ = true;
+        this.setColour(30);
     },
 
     getProcedureCall: Blockly.Blocks['procedures_callnoreturn'].getProcedureCall,
@@ -684,7 +686,7 @@ Blockly.Blocks['variable_declaration'] = {
             .appendField(new Blockly.FieldDropdown(solidityTypes), "TYPE");
         this.setInputsInline(false);
         this.setOutput(true, "variable_declaration");
-        this.setColour(230);
+        this.setColour(60);
         this.setTooltip("");
         this.setHelpUrl("");
     }
@@ -697,7 +699,7 @@ Blockly.Blocks['special_value_call'] = {
             .appendField(new Blockly.FieldDropdown([["Block Coinbase", "0"], ["Block Difficulty", "1"], ["BlockGaslimit", "2"], ["Block Number", "3"], ["Block Timestamp", "4"], ["Gasleft", "5"], ["Message Data", "6"], ["Message Sender", "7"], ["Message Sig", "8"], ["Message Value", "9"], ["Now", "10"], ["Transaction Gasprice", "11"], ["Transaction Origin", "12"]]), "value");
         this.setInputsInline(false);
         this.setOutput(true, "special_value");
-        this.setColour(230);
+        this.setColour(60);
         this.setTooltip("");
         this.setHelpUrl("");
     }
@@ -717,7 +719,7 @@ Blockly.Blocks['return'] = {
 
         this.setPreviousStatement(true, 'IInstruction');
         this.setNextStatement(false, null);
-        this.setColour(230);
+        this.setColour(120);
         this.setTooltip("");
         this.setHelpUrl("");
     },
@@ -775,7 +777,7 @@ Blockly.Blocks['balance_call'] = {
             .setCheck(iAssignables)
             .appendField("Check balance");
         this.setOutput(true, "balance_call");
-        this.setColour(230);
+        this.setColour(60);
         this.setTooltip("");
         this.setHelpUrl("");
     }
@@ -796,7 +798,7 @@ Blockly.Blocks['transfer_call'] = {
 
         this.setPreviousStatement(true, 'IInstruction');
         this.setNextStatement(true, 'IInstruction');
-        this.setColour(230);
+        this.setColour(120);
         this.setTooltip("");
         this.setHelpUrl("");
     },
