@@ -16,7 +16,6 @@ namespace SmartContractsGenerator.Model.Enums
             { SolidityType.UInt, "uint" }
         };
 
-
         public static string GenerateCode(this SolidityType type)
         {
             return AppropriateCode[type];

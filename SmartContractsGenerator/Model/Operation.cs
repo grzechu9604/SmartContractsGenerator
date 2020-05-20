@@ -13,9 +13,9 @@ namespace SmartContractsGenerator.Model
 
         public virtual string GenerateCode()
         {
-            if (LeftSide == null)
+            if (RightSide == null)
             {
-                throw new MissingMandatoryElementException("LeftSide is mandatory in Operation");
+                throw new MissingMandatoryElementException("RightSide is mandatory in Operation with non-unary operator");
             }
 
             if (Operator == null)
@@ -25,12 +25,12 @@ namespace SmartContractsGenerator.Model
 
             if (Operator.Value.IsUnaryOperator())
             {
-                return $"{Operator.Value.GenerateCode()}({LeftSide.GenerateCode()})";
+                return $"{Operator.Value.GenerateCode()}({RightSide.GenerateCode()})";
             }
 
-            if (RightSide == null)
+            if (LeftSide == null)
             {
-                throw new MissingMandatoryElementException("RightSide is mandatory in Operation with non-unary operator");
+                throw new MissingMandatoryElementException("LeftSide is mandatory in Operation");
             }
 
             return $"({LeftSide.GenerateCode()}) {Operator.Value.GenerateCode()} ({RightSide.GenerateCode()})";

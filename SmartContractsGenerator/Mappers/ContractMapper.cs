@@ -21,6 +21,7 @@ namespace SmartContractsGenerator.Mappers
         private const string VariableBlockType = "variable";
         private const string ConstantValueBlockType = "constant_value";
         private const string OperationBlockType = "operation";
+        private const string LogicOperationBlockType = "logic_operation";
         private const string VariableDeclarationBlockType = "variable_declaration";
         private const string IfStatementBlockType = "if_statement";
         private const string ContractLoopBlockType = "contract_loop";
@@ -83,7 +84,8 @@ namespace SmartContractsGenerator.Mappers
             AssignableMappers = new Dictionary<string, Func<XmlNode, XmlNamespaceManager, IAssignable>>()
             {
                 { ConstantValueBlockType, GetConstantValueFromElementNode },
-                { OperationBlockType, GetOperationFromElementNode },
+                { OperationBlockType, GetMathOperationFromElementNode },
+                { LogicOperationBlockType, GetLogicOperationFromElementNode },
                 { VariableBlockType, GetVariableFormXmlNode },
                 { CallReturnableFunctionBlockType, GetFunctionCallFromXmlNode },
                 { SpecialValueCallBlockType, GetSpecialValueCallFromXmlNode },
@@ -395,17 +397,27 @@ namespace SmartContractsGenerator.Mappers
         {
             if (node != null)
             {
-                var conditionNode = node.SelectSingleNode($"gxml:value[@name=\"{ConditionValueName}\"]//gxml:block[@type=\"{OperationBlockType}\"]", nsmgr);
+                var conditionNode = node.SelectSingleNode($"gxml:value[@name=\"{ConditionValueName}\"]//gxml:block[@type=\"{LogicOperationBlockType}\"]", nsmgr);
                 return new Condition()
                 {
-                    ConditionOperation = GetOperationFromElementNode(conditionNode, nsmgr)
+                    ConditionOperation = GetLogicOperationFromElementNode(conditionNode, nsmgr)
                 };
             }
 
             return null;
         }
 
-        public Operation GetOperationFromElementNode(XmlNode node, XmlNamespaceManager nsmgr)
+        public Operation GetLogicOperationFromElementNode(XmlNode node, XmlNamespaceManager nsmgr)
+        {
+            return GetOperationFromElementNode(node, nsmgr, GetLogicOperatorForElementNode);
+        }
+
+        public Operation GetMathOperationFromElementNode(XmlNode node, XmlNamespaceManager nsmgr)
+        {
+            return GetOperationFromElementNode(node, nsmgr, GetMathOperatorForElementNode);
+        }
+
+        private Operation GetOperationFromElementNode(XmlNode node, XmlNamespaceManager nsmgr, Func<XmlNode, XmlNamespaceManager, OperationOperator?> operatorFromNodeGetter)
         {
             if (node != null)
             {
@@ -416,7 +428,7 @@ namespace SmartContractsGenerator.Mappers
                 {
                     LeftSide = GetAssignableFromXmlNode(left, nsmgr),
                     RightSide = GetAssignableFromXmlNode(right, nsmgr),
-                    Operator = GetOperatorForElementNode(node, nsmgr)
+                    Operator = operatorFromNodeGetter(node, nsmgr)
                 };
             }
 
@@ -437,14 +449,24 @@ namespace SmartContractsGenerator.Mappers
             return null;
         }
 
-        public OperationOperator? GetOperatorForElementNode(XmlNode node, XmlNamespaceManager nsmgr)
+        public OperationOperator? GetMathOperatorForElementNode(XmlNode node, XmlNamespaceManager nsmgr)
+        {
+            return GetOperatorForElementNode(node, nsmgr, EnumMappers.MapBlocklyCodeToMathOperationOperator);
+        }
+
+        public OperationOperator? GetLogicOperatorForElementNode(XmlNode node, XmlNamespaceManager nsmgr)
+        {
+            return GetOperatorForElementNode(node, nsmgr, EnumMappers.MapBlocklyCodeToLogicOperationOperator);
+        }
+
+        private OperationOperator? GetOperatorForElementNode(XmlNode node, XmlNamespaceManager nsmgr, Func<string, OperationOperator> mapper)
         {
             if (node != null)
             {
                 var operatorNode = node.SelectSingleNode($"gxml:field[@name=\"{OperatorFieldName}\"]", nsmgr);
                 if (operatorNode != null)
                 {
-                    return EnumMappers.MapBlocklyCodeToOperationOperator(operatorNode.InnerText);
+                    return mapper(operatorNode.InnerText);
                 }
             }
 

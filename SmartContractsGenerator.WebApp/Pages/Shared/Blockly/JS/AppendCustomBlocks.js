@@ -1,4 +1,4 @@
-﻿var iAssignables = ["variable", "operation", "constant_value", "special_value", "call_returnable_function", "balance_call"];
+﻿var iAssignables = ["variable", "operation", "constant_value", "special_value", "call_returnable_function", "balance_call", "logic_operation"];
 var iValueContainers = ["variable", "variable_declaration"];
 var solidityTypes = [["Bool", "0"], ["Int", "1"], ["UInt", "2"], ["Fixed", "3"], ["UFixed", "4"], ["Address", "5"], ["Address Payable", "6"], ["String", "7"]];
 
@@ -396,7 +396,7 @@ Blockly.Blocks['call_void_function'] = {
 Blockly.Blocks['condition'] = {
     init: function () {
         this.appendValueInput("condition")
-            .setCheck("operation")
+            .setCheck("logic_operation")
             .appendField("Condition")
             .appendField("");
         this.setOutput(true, "condition");
@@ -411,7 +411,7 @@ Blockly.Blocks['operation'] = {
         this.appendValueInput("left_side")
             .setCheck(iAssignables);
         this.appendDummyInput()
-            .appendField(new Blockly.FieldDropdown([["+", "0"], ["-", "1"], ["%", "2"], ["/", "3"], ["*", "4"], ["!", "5"], ["||", "6"], ["&&", "7"], ["^", "8"], ["==", "9"], ["!=", "10"]]), "Operator");
+            .appendField(new Blockly.FieldDropdown([["+", "0"], ["-", "1"], ["%", "2"], ["/", "3"], ["*", "4"]]), "Operator");
         this.appendValueInput("right_side")
             .setCheck(iAssignables);
         this.setOutput(true, "operation");
@@ -419,6 +419,39 @@ Blockly.Blocks['operation'] = {
         this.setTooltip("");
         this.setHelpUrl("");
     }
+};
+
+Blockly.Blocks['logic_operation'] = {
+    init: function () {
+        var operatorsDropdown = new Blockly.FieldDropdown([["!", "5"], ["||", "6"], ["&&", "7"], ["^", "8"], ["==", "9"], ["!=", "10"], ["<", "11"], ["<=", "12"], [">", "13"], [">=", "14"]], function (option) {
+            this.sourceBlock_.updateLeftSideInput_(option == 5);
+        });
+
+        this.appendValueInput("left_side")
+            .setCheck(iAssignables);
+        this.appendDummyInput("operator_input")
+            .appendField(operatorsDropdown, "Operator");
+        this.appendValueInput("right_side")
+            .setCheck(iAssignables);
+        this.setOutput(true, "logic_operation");
+        this.setColour(315);
+        this.setTooltip("");
+        this.setHelpUrl("");
+        this.setInputsInline(true);
+    },
+
+    updateLeftSideInput_: function (isUnaryOperator) {
+        var inputExists = this.getInput('left_side');
+        if (!isUnaryOperator) {
+            if (!inputExists) {
+                this.appendValueInput("left_side")
+                    .setCheck(iAssignables);
+                this.moveInputBefore('left_side', 'operator_input');
+            }
+        } else if (inputExists) {
+            this.removeInput('left_side');
+        }
+    },
 };
 
 Blockly.Blocks['requirement'] = {

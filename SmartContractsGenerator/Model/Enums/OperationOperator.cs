@@ -12,6 +12,10 @@
         AND = 7,
         XOR = 8,
         Equals = 9,
-        NotEquals = 10
+        NotEquals = 10,
+        Less = 11,
+        LessEqual = 12,
+        Greater = 13,
+        GreaterEqual = 14
     }
 }

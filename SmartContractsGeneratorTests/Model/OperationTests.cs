@@ -59,7 +59,7 @@ namespace SmartContractsGenerator.Model.Tests
         {
             var op1 = new Operation()
             {
-                LeftSide = new ConstantValue() { Value = "true" },
+                RightSide = new ConstantValue() { Value = "true" },
                 Operator = Enums.OperationOperator.Negation
             };
 
