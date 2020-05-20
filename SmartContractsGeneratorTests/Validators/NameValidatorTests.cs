@@ -28,7 +28,10 @@ namespace SmartContractsGenerator.Validators.Tests
             yield return new object[] { true, "_1" };
             yield return new object[] { false, "1_" };
             yield return new object[] { false, " " };
-            yield return new object[] { false, "" };
+            yield return new object[] { false, "this" };
+            yield return new object[] { false, "returns" };
+            yield return new object[] { false, "years" };
+            yield return new object[] { false, "from" };
         }
     }
 }

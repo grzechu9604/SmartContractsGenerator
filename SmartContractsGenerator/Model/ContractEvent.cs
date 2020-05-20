@@ -19,7 +19,7 @@ namespace SmartContractsGenerator.Model
                 }
                 else
                 {
-                    throw new InvalidOperationException("Defined event has invalid name");
+                    throw new InvalidOperationException($"Defined event has invalid name - {value}");
                 }
             }
         }

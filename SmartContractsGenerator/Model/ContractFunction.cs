@@ -20,7 +20,7 @@ namespace SmartContractsGenerator.Model
                 }
                 else
                 {
-                    throw new InvalidOperationException("Defined contract has invalid name");
+                    throw new InvalidOperationException($"Defined function has invalid name - {value}");
                 }
             }
         }
