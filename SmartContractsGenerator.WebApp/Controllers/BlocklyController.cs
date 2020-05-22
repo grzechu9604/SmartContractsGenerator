@@ -19,6 +19,11 @@ namespace SmartContractsGenerator.WebApp.Controllers
             try
             { 
                 c = mapper.MapXmlDocumentToContract(xmlDocument);
+
+                if (c == null)
+                {
+                    return "Contract was not found! Make sure you are using the Contract block as a root of your contract";
+                }
             } 
             catch (Exception e)
             {
