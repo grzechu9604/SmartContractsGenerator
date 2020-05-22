@@ -1,7 +1,10 @@
-﻿using SmartContractsGenerator.Interfaces;
+﻿using SmartContractsGenerator.Helpers;
+using SmartContractsGenerator.Interfaces;
 using SmartContractsGenerator.Model;
 using SmartContractsGenerator.Model.AbstractPatterns;
+using SmartContractsGenerator.Model.BuiltinFunctionCalls;
 using SmartContractsGenerator.Model.Enums;
+using SmartContractsGenerator.Model.SpecialFunctions;
 using System;
 using System.Collections.Generic;
 using System.Xml;
@@ -18,7 +21,10 @@ namespace SmartContractsGenerator.Mappers
         private const string AssignmentBlockType = "assignment";
         private const string VariableBlockType = "variable";
         private const string ConstantValueBlockType = "constant_value";
+        private const string TrueConstantBlockType = "true_const";
+        private const string FalseConstantBlockType = "false_const";
         private const string OperationBlockType = "operation";
+        private const string LogicOperationBlockType = "logic_operation";
         private const string VariableDeclarationBlockType = "variable_declaration";
         private const string IfStatementBlockType = "if_statement";
         private const string ContractLoopBlockType = "contract_loop";
@@ -28,9 +34,11 @@ namespace SmartContractsGenerator.Mappers
         private const string CallVoidFunctionBlockType = "call_void_function";
         private const string ModifierBlockType = "modifier";
         private const string ReturnBlockType = "return";
-        private const string ModifierApplianceBlockType = "moddifier_appliance";
+        private const string ModifierApplianceBlockType = "modifier_appliance";
         private const string BreakStatementBlockType = "break_statement";
         private const string SpecialValueCallBlockType = "special_value_call";
+        private const string BalanceCallBlockType = "balance_call";
+        private const string TransferCallBlockType = "transfer_call";
 
         private const string PropertiesStatementName = "Properties";
         private const string ConstructorStatementName = "Constructor";
@@ -51,6 +59,8 @@ namespace SmartContractsGenerator.Mappers
         private const string StepInstructionValueName = "step_instruction";
         private const string ModifierValueName = "Modifier";
         private const string ReturnValueValueName = "ReturnValue";
+        private const string AddressValueName = "Address";
+        private const string AmountValueName = "Amount";
 
         private const string VisibilityFieldName = "Visibility";
         private const string OperatorFieldName = "Operator";
@@ -77,10 +87,14 @@ namespace SmartContractsGenerator.Mappers
             AssignableMappers = new Dictionary<string, Func<XmlNode, XmlNamespaceManager, IAssignable>>()
             {
                 { ConstantValueBlockType, GetConstantValueFromElementNode },
-                { OperationBlockType, GetOperationFromElementNode },
+                { TrueConstantBlockType, GetLogicTrueConstantValueFromElementNode },
+                { FalseConstantBlockType, GetLogicFalseConstantValueFromElementNode },
+                { OperationBlockType, GetMathOperationFromElementNode },
+                { LogicOperationBlockType, GetLogicOperationFromElementNode },
                 { VariableBlockType, GetVariableFormXmlNode },
                 { CallReturnableFunctionBlockType, GetFunctionCallFromXmlNode },
-                { SpecialValueCallBlockType, GetSpecialValueCallFromXmlNode }
+                { SpecialValueCallBlockType, GetSpecialValueCallFromXmlNode },
+                { BalanceCallBlockType, GetBalanceCallFromXmlNode }
             };
 
             ValueContainerMappers = new Dictionary<string, Func<XmlNode, XmlNamespaceManager, IValueContainer>>()
@@ -98,7 +112,8 @@ namespace SmartContractsGenerator.Mappers
                 { EventCallBlockType, GetEventCallFromXmlNode },
                 { CallVoidFunctionBlockType, GetFunctionCallFromXmlNode },
                 { ReturnBlockType, GetReturnStatementFromXmlNode },
-                { BreakStatementBlockType, GetBreakStatementFromXmlNode }
+                { BreakStatementBlockType, GetBreakStatementFromXmlNode },
+                { TransferCallBlockType, GetTransferCallFromXmlNode }
             };
 
             OneLineInstructionMappers = new Dictionary<string, Func<XmlNode, XmlNamespaceManager, IOneLineInstruction>>()
@@ -163,6 +178,18 @@ namespace SmartContractsGenerator.Mappers
                     c.Modifiers = GetModifiersFromXmlNode(modifiersRootNode, nsmgr);
                 }
 
+                var fallbackRootNode = node.SelectSingleNode($"gxml:statement[@name=\"FallbackFunction\"]/gxml:block[@type=\"fallback_function\"]", nsmgr);
+                if (fallbackRootNode != null)
+                {
+                    c.FallbackFunction = GetFallbackFunctionFromXmlNode(fallbackRootNode, nsmgr);
+                }
+                
+                var receiveRootNode = node.SelectSingleNode($"gxml:statement[@name=\"ReceiveFunction\"]/gxml:block[@type=\"receive_function\"]", nsmgr);
+                if (receiveRootNode != null)
+                {
+                    c.ReceiveFunction = GetReceiveFunctionFromXmlNode(receiveRootNode, nsmgr);
+                }
+
                 return c;
             }
 
@@ -184,6 +211,37 @@ namespace SmartContractsGenerator.Mappers
                 };
 
                 return c;
+            }
+
+            return null;
+        }
+
+        public ReceiveFunction GetReceiveFunctionFromXmlNode(XmlNode node, XmlNamespaceManager nsmgr)
+        {
+            if (node != null)
+            {
+                var instructionNode = node.SelectSingleNode($"gxml:statement[@name=\"{InstructionsStatementName}\"]/gxml:block", nsmgr);
+
+                return new ReceiveFunction()
+                {
+                    Instructions = GetInstructionsListFromXmlNode(instructionNode, nsmgr)
+                };
+            }
+
+            return null;
+        }
+
+        public FallbackFunction GetFallbackFunctionFromXmlNode(XmlNode node, XmlNamespaceManager nsmgr)
+        {
+            if (node != null)
+            {
+                var instructionNode = node.SelectSingleNode($"gxml:statement[@name=\"{InstructionsStatementName}\"]/gxml:block", nsmgr);
+
+                return new FallbackFunction()
+                {
+                    Instructions = GetInstructionsListFromXmlNode(instructionNode, nsmgr),
+                    IsPayable = GetAcceptsEthersForElementNode(node, nsmgr)
+                };
             }
 
             return null;
@@ -320,9 +378,58 @@ namespace SmartContractsGenerator.Mappers
         {
             if (node != null)
             {
+                var type = GeTypeForElementNode(node, nsmgr);
+                var valueText = GetValueFromFieldForElementNode(node, nsmgr, ValueFieldName);
+
                 return new ConstantValue()
                 {
-                    Value = node.InnerText
+                    Value = GetValueForConstantValue(valueText, type)
+                };
+            }
+
+            return null;
+        }
+
+        public string GetValueForConstantValue(string value, SolidityType? type)
+        {
+            try
+            {
+                switch (type)
+                {
+                    case SolidityType.Int:
+                        return Convert.ToInt64(value).ToString();
+                    case SolidityType.Fixed:
+                        return Convert.ToDecimal(value).ToString();
+                    case SolidityType.String:
+                        return SolidityStringsEscaper.EscapeString(value);
+                    default:
+                        break;
+                }
+            }
+            catch (FormatException fe)
+            {
+                throw new InvalidOperationException($"Couldn't convert value: {value} to {type}", fe);
+            }
+            return SolidityStringsEscaper.EscapeString(value);
+        }
+
+        public ConstantValue GetLogicTrueConstantValueFromElementNode(XmlNode node, XmlNamespaceManager nsmgr)
+        {
+            return GetConstantValueFromElementNodeWithPredefinedValue(node, nsmgr, "true");
+        }
+
+        public ConstantValue GetLogicFalseConstantValueFromElementNode(XmlNode node, XmlNamespaceManager nsmgr)
+        {
+            return GetConstantValueFromElementNodeWithPredefinedValue(node, nsmgr, "false");
+        }
+        
+        private ConstantValue GetConstantValueFromElementNodeWithPredefinedValue(XmlNode node, XmlNamespaceManager nsmgr, string value)
+        {
+            if (node != null)
+            {
+                return new ConstantValue()
+                {
+                    Value = value
                 };
             }
 
@@ -333,8 +440,7 @@ namespace SmartContractsGenerator.Mappers
         {
             if (node != null)
             {
-                //TODO escape special chars
-                return $"\"{node.InnerText}\"";
+                return SolidityStringsEscaper.EscapeString(node.InnerText);
             }
 
             return null;
@@ -344,17 +450,27 @@ namespace SmartContractsGenerator.Mappers
         {
             if (node != null)
             {
-                var conditionNode = node.SelectSingleNode($"gxml:value[@name=\"{ConditionValueName}\"]//gxml:block[@type=\"{OperationBlockType}\"]", nsmgr);
+                var conditionNode = node.SelectSingleNode($"gxml:value[@name=\"{ConditionValueName}\"]//gxml:block[@type=\"{LogicOperationBlockType}\"]", nsmgr);
                 return new Condition()
                 {
-                    ConditionOperation = GetOperationFromElementNode(conditionNode, nsmgr)
+                    ConditionOperation = GetLogicOperationFromElementNode(conditionNode, nsmgr)
                 };
             }
 
             return null;
         }
 
-        public Operation GetOperationFromElementNode(XmlNode node, XmlNamespaceManager nsmgr)
+        public Operation GetLogicOperationFromElementNode(XmlNode node, XmlNamespaceManager nsmgr)
+        {
+            return GetOperationFromElementNode(node, nsmgr, GetLogicOperatorForElementNode);
+        }
+
+        public Operation GetMathOperationFromElementNode(XmlNode node, XmlNamespaceManager nsmgr)
+        {
+            return GetOperationFromElementNode(node, nsmgr, GetMathOperatorForElementNode);
+        }
+
+        private Operation GetOperationFromElementNode(XmlNode node, XmlNamespaceManager nsmgr, Func<XmlNode, XmlNamespaceManager, OperationOperator?> operatorFromNodeGetter)
         {
             if (node != null)
             {
@@ -365,7 +481,7 @@ namespace SmartContractsGenerator.Mappers
                 {
                     LeftSide = GetAssignableFromXmlNode(left, nsmgr),
                     RightSide = GetAssignableFromXmlNode(right, nsmgr),
-                    Operator = GetOperatorForElementNode(node, nsmgr)
+                    Operator = operatorFromNodeGetter(node, nsmgr)
                 };
             }
 
@@ -386,14 +502,24 @@ namespace SmartContractsGenerator.Mappers
             return null;
         }
 
-        public OperationOperator? GetOperatorForElementNode(XmlNode node, XmlNamespaceManager nsmgr)
+        public OperationOperator? GetMathOperatorForElementNode(XmlNode node, XmlNamespaceManager nsmgr)
+        {
+            return GetOperatorForElementNode(node, nsmgr, EnumMappers.MapBlocklyCodeToMathOperationOperator);
+        }
+
+        public OperationOperator? GetLogicOperatorForElementNode(XmlNode node, XmlNamespaceManager nsmgr)
+        {
+            return GetOperatorForElementNode(node, nsmgr, EnumMappers.MapBlocklyCodeToLogicOperationOperator);
+        }
+
+        private OperationOperator? GetOperatorForElementNode(XmlNode node, XmlNamespaceManager nsmgr, Func<string, OperationOperator> mapper)
         {
             if (node != null)
             {
                 var operatorNode = node.SelectSingleNode($"gxml:field[@name=\"{OperatorFieldName}\"]", nsmgr);
                 if (operatorNode != null)
                 {
-                    return EnumMappers.MapBlocklyCodeToOperationOperator(operatorNode.InnerText);
+                    return mapper(operatorNode.InnerText);
                 }
             }
 
@@ -679,6 +805,38 @@ namespace SmartContractsGenerator.Mappers
             return null;
         }
 
+        public TransferCall GetTransferCallFromXmlNode(XmlNode node, XmlNamespaceManager nsmgr)
+        {
+            if (node != null)
+            {
+                var addressNode = node.SelectSingleNode($"gxml:value[@name=\"{AddressValueName}\"]/gxml:block", nsmgr);
+                var amountNode = node.SelectSingleNode($"gxml:value[@name=\"{AmountValueName}\"]/gxml:block", nsmgr);
+
+                return new TransferCall()
+                {
+                    Address = GetAssignableFromXmlNode(addressNode, nsmgr),
+                    ValueToTransfer = GetAssignableFromXmlNode(amountNode, nsmgr)
+                };
+            }
+
+            return null;
+        }
+
+        public BalanceCall GetBalanceCallFromXmlNode(XmlNode node, XmlNamespaceManager nsmgr)
+        {
+            if (node != null)
+            {
+                var addressNode = node.SelectSingleNode($"gxml:value[@name=\"{AddressValueName}\"]/gxml:block", nsmgr);
+
+                return new BalanceCall()
+                {
+                    Address = GetAssignableFromXmlNode(addressNode, nsmgr)
+                };
+            }
+
+            return null;
+        }
+
         public string GetNameForElementNode(XmlNode node, XmlNamespaceManager nsmgr)
         {
             if (node != null)
@@ -721,7 +879,10 @@ namespace SmartContractsGenerator.Mappers
             if (node != null)
             {
                 var mName = GetValueFromFieldForElementNode(node, nsmgr, StateModificationFieldName);
-                return EnumMappers.MapBlocklyCodeToModificationType(mName);
+                if (!string.IsNullOrWhiteSpace(mName))
+                {
+                    return EnumMappers.MapBlocklyCodeToModificationType(mName);
+                }
             }
 
             return ModificationType.None;
@@ -768,20 +929,6 @@ namespace SmartContractsGenerator.Mappers
                 }
             }
                 
-            return string.Empty;
-        }
-
-        public string GetValueForConstantValueNode(XmlNode node, XmlNamespaceManager nsmgr)
-        {
-            if (node != null)
-            {
-                var nameNode = node.SelectSingleNode($"gxml:field[@name=\"{NameFieldName}\"]", nsmgr);
-                if (nameNode != null)
-                {
-                    return nameNode.InnerText;
-                }
-            }
-            
             return string.Empty;
         }
 

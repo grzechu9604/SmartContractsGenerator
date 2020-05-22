@@ -32,7 +32,7 @@ namespace SmartContractsGenerator.Model.Tests
         {
             new Assignment()
             {
-                Destination = variableMocksCreator.PrepareMock("TEST", "TEST2")
+                Destination = variableMocksCreator.PrepareMock("TEST", "TEST2", true)
             }.GenerateCode();
         }
 
@@ -42,7 +42,7 @@ namespace SmartContractsGenerator.Model.Tests
         {
             new Assignment()
             {
-                Source = variableMocksCreator.PrepareMock("TEST", "TEST2")
+                Source = variableMocksCreator.PrepareMock("TEST", "TEST2", true)
             }.GenerateCode();
         }
 
@@ -60,15 +60,15 @@ namespace SmartContractsGenerator.Model.Tests
             var v2 = "VARIABLE 2";
             var a1 = new Assignment()
             {
-                Destination = variableMocksCreator.PrepareMock(v1, null),
-                Source = variableMocksCreator.PrepareMock(v2, null)
+                Destination = variableMocksCreator.PrepareMock(v1, null, false),
+                Source = variableMocksCreator.PrepareMock(v2, null, false)
             };
             yield return new object[] { a1, $"{v1} = {v2}" };
 
             var a2 = new Assignment()
             {
-                Destination = variableMocksCreator.PrepareMock(v2, null),
-                Source = variableMocksCreator.PrepareMock(v1, null)
+                Destination = variableMocksCreator.PrepareMock(v2, null, false),
+                Source = variableMocksCreator.PrepareMock(v1, null, false)
             };
             yield return new object[] { a2, $"{v2} = {v1}" };
         }

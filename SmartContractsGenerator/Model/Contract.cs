@@ -1,5 +1,6 @@
 ﻿using SmartContractsGenerator.Exceptions;
 using SmartContractsGenerator.Model.AbstractPatterns;
+using SmartContractsGenerator.Model.SpecialFunctions;
 using SmartContractsGenerator.Validators;
 using System;
 using System.Collections.Generic;
@@ -21,12 +22,14 @@ namespace SmartContractsGenerator.Model
                 }
                 else
                 {
-                    throw new InvalidOperationException("Defined contract has invalid name");
+                    throw new InvalidOperationException($"Defined contract has invalid name - {value}");
                 }
             }
         }
         private string name;
         public Constructor Constructor { get; set; }
+        public FallbackFunction FallbackFunction { get; set; }
+        public ReceiveFunction ReceiveFunction { get; set; }
         public List<ContractFunction> Functions { get; set; }
         public List<ContractEvent> Events { get; set; }
         public List<ContractProperty> Properties { get; set; }
@@ -45,54 +48,74 @@ namespace SmartContractsGenerator.Model
         {
             StringBuilder codeBuilder = new StringBuilder();
 
-            bool propertiesAdded = false;
+            bool applyAdditionalBlankLine = false;
             if (Properties != null && Properties.Any())
             {
                 Properties.ForEach(property => codeBuilder.Append($"{indentation?.GenerateCode()}{property.GenerateDeclarationCode()};\n"));
-                propertiesAdded = true;
+                applyAdditionalBlankLine = true;
             }
 
-            bool eventsAdded = false;
             if (Events != null && Events.Any())
             {
-                if (propertiesAdded)
+                if (applyAdditionalBlankLine)
                 {
                     codeBuilder.Append("\n");
                 }
+                applyAdditionalBlankLine = true;
 
                 Events.ForEach(contractEvent => codeBuilder.Append($"{indentation?.GenerateCode()}{contractEvent.GenerateCode()};\n"));
-                eventsAdded = true;
             }
 
-            bool constructorAdded = false;
             if (Constructor != null)
             {
-                if (propertiesAdded || eventsAdded)
+                if (applyAdditionalBlankLine)
                 {
                     codeBuilder.Append("\n");
                 }
+                applyAdditionalBlankLine = true;
+
                 codeBuilder.Append($"{indentation?.GenerateCode()}{Constructor.GenerateCode(indentation)}\n");
-                constructorAdded = true;
             }
 
-            bool modifiersAdded = false;
-            if (Modifiers != null && Modifiers.Any())
+            if (FallbackFunction != null)
             {
-                if (constructorAdded || propertiesAdded || eventsAdded)
+                if (applyAdditionalBlankLine)
                 {
                     codeBuilder.Append("\n");
                 }
+                applyAdditionalBlankLine = true;
+
+                codeBuilder.Append($"{indentation?.GenerateCode()}{FallbackFunction.GenerateCode(indentation)}\n");
+            }
+
+            if (ReceiveFunction != null)
+            {
+                if (applyAdditionalBlankLine)
+                {
+                    codeBuilder.Append("\n");
+                }
+                applyAdditionalBlankLine = true;
+
+                codeBuilder.Append($"{indentation?.GenerateCode()}{ReceiveFunction.GenerateCode(indentation)}\n");
+            }
+
+            if (Modifiers != null && Modifiers.Any())
+            {
+                if (applyAdditionalBlankLine)
+                {
+                    codeBuilder.Append("\n");
+                }
+                applyAdditionalBlankLine = true;
 
                 Modifiers.Take(Modifiers.Count - 1).ToList().ForEach(modifer => 
                     codeBuilder.Append($"{indentation?.GenerateCode()}{modifer.GenerateCode(indentation)}\n\n"));
 
                 codeBuilder.Append($"{indentation?.GenerateCode()}{Modifiers.Last().GenerateCode(indentation)}\n");
-                modifiersAdded = true;
             }
 
             if (Functions != null && Functions.Any())
             {
-                if (constructorAdded || propertiesAdded || eventsAdded || modifiersAdded)
+                if (applyAdditionalBlankLine)
                 {
                     codeBuilder.Append("\n");
                 }

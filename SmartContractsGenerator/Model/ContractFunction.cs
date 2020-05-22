@@ -20,7 +20,7 @@ namespace SmartContractsGenerator.Model
                 }
                 else
                 {
-                    throw new InvalidOperationException("Defined contract has invalid name");
+                    throw new InvalidOperationException($"Defined function has invalid name - {value}");
                 }
             }
         }
@@ -46,7 +46,12 @@ namespace SmartContractsGenerator.Model
                 throw new MissingMandatoryElementException("Name is required for function");
             }
 
-             return $"function {Name}({Parameters?.GenerateCode()}) {Visibility.Value.GenerateCode()}{GetModifierHeaderPart()}{GetModificationTypeHeaderPart()}{GetPayablePart()}{GetReturnsHeaderPart()} {{\n";
+            if (IsPayable && ModificationType != ModificationType.None)
+            {
+                throw new InvalidOperationException("Function cannot have state modification type if is accepts Ethers");
+            }
+
+             return $"function {Name}({Parameters?.GenerateCode(true)}) {Visibility.Value.GenerateCode()}{GetModifierHeaderPart()}{GetModificationTypeHeaderPart()}{GetPayablePart()}{GetReturnsHeaderPart()} {{\n";
         }
 
         public virtual string GenerateCallCode()
@@ -71,7 +76,7 @@ namespace SmartContractsGenerator.Model
             }
         }
 
-        public string GetReturnsHeaderPart() => ReturningType.HasValue ? $" returns ({ReturningType.Value.GenerateCode()})" : null;
+        public string GetReturnsHeaderPart() => ReturningType.HasValue ? $" returns ({ReturningType.Value.GenerateCode(true)})" : null;
 
         public string GetModificationTypeHeaderPart()
         {

@@ -19,7 +19,7 @@ namespace SmartContractsGenerator.Model
                 }
                 else
                 {
-                    throw new InvalidOperationException("Defined event has invalid name");
+                    throw new InvalidOperationException($"Defined event has invalid name - {value}");
                 }
             }
         }
@@ -33,7 +33,7 @@ namespace SmartContractsGenerator.Model
                 throw new MissingMandatoryElementException("Name is mandatory element of event");
             }
 
-            return $"event {Name}({Parameters?.GenerateCode()})";
+            return $"event {Name}({Parameters?.GenerateCode(false)})";
         }
 
         public virtual string GenerateCallCode()

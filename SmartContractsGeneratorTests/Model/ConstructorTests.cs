@@ -69,7 +69,7 @@ namespace SmartContractsGenerator.Model.Tests
         static object[] GenerateRow(string parametersListCode, Visibility visibility, string instructionsListCode, string expected)
         {
             var indentation = new Indentation();
-            var parametersListMock = parametersListCode != null ? mockHelper.PrepareMock(parametersListCode, true) : null;
+            var parametersListMock = parametersListCode != null ? mockHelper.PrepareMock(parametersListCode, true, true) : null;
             var instructionsListMock = instructionsListCode != null ? instructionsListMockHelper.PrepareMock(instructionsListCode, false, !string.IsNullOrWhiteSpace(instructionsListCode), indentation.GetIndentationWithIncrementedLevel()) : null;
 
             var c = new Constructor()

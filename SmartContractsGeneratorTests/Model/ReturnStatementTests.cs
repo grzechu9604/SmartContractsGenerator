@@ -36,13 +36,13 @@ namespace SmartContractsGenerator.Model.Tests
 
             var rs = new ReturnStatement()
             {
-                ToReturn = variableMocksCreator.PrepareMock(v1, null)
+                ToReturn = variableMocksCreator.PrepareMock(v1, null, false)
             };
             yield return new object[] { rs, $"return {v1}" };
 
             var rs2 = new ReturnStatement()
             {
-                ToReturn = variableMocksCreator.PrepareMock(v2, null)
+                ToReturn = variableMocksCreator.PrepareMock(v2, null, false)
             };
             yield return new object[] { rs2, $"return {v2}" };
         }

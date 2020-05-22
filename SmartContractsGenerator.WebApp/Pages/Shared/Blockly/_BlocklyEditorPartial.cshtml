@@ -4,62 +4,30 @@
 <script src="~/lib/blockly/msg/js/en.js"></script>
 <script src="~/CustomBlocklyJS/AppendCustomBlocks.js"></script>
 
-
-@*<script>
-        var blocklyArea = document.getElementById('blocklyArea');
-        var blocklyDiv = document.getElementById('blocklyDiv');
-        var workspace = Blockly.inject(blocklyDiv,
-            { toolbox: document.getElementById('toolbox') });
-        var onresize = function (e) {
-            // Compute the absolute coordinates and dimensions of blocklyArea.
-            var element = blocklyArea;
-            var x = 0;
-            var y = 0;
-            do {
-                x += element.offsetLeft;
-                y += element.offsetTop;
-                element = element.offsetParent;
-            } while (element);
-            // Position blocklyDiv over blocklyArea.
-            blocklyDiv.style.left = x + 'px';
-            blocklyDiv.style.top = y + 'px';
-            blocklyDiv.style.width = blocklyArea.offsetWidth + 'px';
-            blocklyDiv.style.height = blocklyArea.offsetHeight + 'px';
-            Blockly.svgResize(workspace);
-        };
-        window.addEventListener('resize', onresize, false);
-        onresize();
-        Blockly.svgResize(workspace);
-    </script>*@
-
-
-<div id="blocklyDiv" style="height: 480px; width: 100%;"></div>
+<div id="blocklyDiv" style="height: 600px; width: 100%;"></div>
 <xml xmlns="https://developers.google.com/blockly/xml" id="toolbox" style="display: none">
-    <category name="Contract">
+    <category name="Contract" colour="0">
         <block type="contract">
-            <field name="Name">[insert contract name]</field>
+            <field name="NAME">[insert contract name]</field>
         </block>
     </category>
-    <category name="Contract elements">
+    <category name="Contract elements" colour="230">
         <block type="contract_property">
             <field name="Visibility">1</field>
         </block>
-        <block type="contract_event">
-            <field name="Name">[event name]</field>
-        </block>
+        <block type="contract_event"></block>
         <block type="contract_constructor">
             <field name="Visibility">1</field>
         </block>
         <block type="contract_function">
-            <field name="Name">[function name]</field>
             <field name="Visibility">1</field>
             <mutation apply_modifier="false"></mutation>
         </block>
-        <block type="modifier">
-            <field name="Name">[modifier name]</field>
-        </block>
+        <block type="modifier"></block>
+        <block type="fallback_function"></block>
+        <block type="receive_function"></block>
     </category>
-    <category name="Function elements">
+    <category name="Function elements" colour="120">
         <block type="assignment"></block>
         <block type="requirement"></block>
         <block type="contract_loop"></block>
@@ -67,47 +35,34 @@
         <block type="return"></block>
         <block type="break_statement"></block>
     </category>
-    <category name="All">
-        <block type="contract">
-            <field name="Name">[insert contract name]</field>
-        </block>
-        <block type="assignment"></block>
+    <category name="Built-in functions" colour="150">
+        <block type="balance_call"></block>
+        <block type="transfer_call"></block>
+    </category>
+    <category name="Variables" colour="60">
+        <block type="variable"></block>
+        <block type="variable_declaration"></block>
+    </category>
+    <category name="Calculation" colour="60">
         <block type="constant_value">
-            <field name="Value">[value]</field>
+            <field name="value">[value]</field>
         </block>
-        <block type="contract_property">
-            <field name="Visibility">1</field>
-        </block>
-        <block type="contract_constructor">
-            <field name="Visibility">1</field>
-        </block>
-        <block type="contract_event">
-            <field name="Name">[event name]</field>
-        </block>
-        <block type="condition"></block>
+        <block type="special_value_call"></block>
         <block type="operation">
             <field name="Operator">0</field>
         </block>
-        <block type="requirement"></block>
-        <block type="variable"></block>
-        <block type="variable_declaration"></block>
-        <block type="contract_loop"></block>
-        <block type="if_statement"></block>
-        <block type="contract_function">
-            <field name="Name">[function name]</field>
-            <field name="Visibility">1</field>
-            <mutation apply_modifier="false"></mutation>
-        </block>
-        <block type="modifier">
-            <field name="Name">[modifier name]</field>
-        </block>
-        <block type="return"></block>
-        <block type="break_statement"></block>
-        <block type="special_value_call"></block>
     </category>
-    <category name="Functions calls" colour="290" custom="MY_PROCEDURE"></category>
-    <category name="Events calls" colour="290" custom="MY_EVENTS"></category>
-    <category name="Modifiers calls" colour="290" custom="MY_MODIFIERS"></category>
+    <category name="Logic" colour="315">
+        <block type="condition"></block>
+        <block type="logic_operation">
+            <field name="Operator">6</field>
+        </block>
+        <block type="true_const"></block>
+        <block type="false_const"></block>
+    </category>
+    <category name="Functions calls" colour="120" custom="MY_PROCEDURE"></category>
+    <category name="Events calls" colour="120" custom="MY_EVENTS"></category>
+    <category name="Modifiers calls" colour="30" custom="MY_MODIFIERS"></category>
 </xml>
 <button id="GenerateCodeButton">Generate code</button>
 
@@ -138,12 +93,23 @@
                 },
                 success: function (result) {
                     console.log(result);
-                    alert(result);
+                    $("#solidityCodeText").text(result);
+                    $("#solidityCodePopup").dialog({
+                        width: screen.width * 0.8,
+                        modal: true,
+                        resizable: true,
+                        dialogClass: 'no-close success-dialog'
+                    });
                 },
                 error: function (result) {
-                    alert('error');
+                    alert('Error during connection: ' + result);
                 }
             });
         });
     });
 </script>
+
+
+<div id="solidityCodePopup" title="Your code" class="test">
+    <pre><code id="solidityCodeText"></code></pre>
+</div>

@@ -12,7 +12,7 @@ namespace SmartContractsGeneratorTests.Model.Helpers
             mocksHolder.Dispose();
         }
 
-        public Variable PrepareMock(string expectedCode, string expectedDeclarationCode)
+        public Variable PrepareMock(string expectedCode, string expectedDeclarationCode, bool pointStorageType)
         {
             var mock = mocksHolder.GetMock();
 
@@ -21,7 +21,7 @@ namespace SmartContractsGeneratorTests.Model.Helpers
                 .Returns(expectedCode);
 
             mock.Mock<Variable>()
-                .Setup(x => x.GenerateDeclarationCode())
+                .Setup(x => x.GenerateDeclarationCode(pointStorageType))
                 .Returns(expectedDeclarationCode);
 
             var preparedMock = mock.Create<Variable>();

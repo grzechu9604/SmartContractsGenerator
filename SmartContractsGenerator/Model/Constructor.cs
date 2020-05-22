@@ -30,7 +30,7 @@ namespace SmartContractsGenerator.Model
             {
                 throw new MissingMandatoryElementException("Visibility specifier is required for constructor");
             }
-            return $"constructor({Parameters?.GenerateCode()}) {Visibility.Value.GenerateCode()} {{\n";
+            return $"constructor({Parameters?.GenerateCode(true)}) {Visibility.Value.GenerateCode()} {{\n";
         }
     }
 }
