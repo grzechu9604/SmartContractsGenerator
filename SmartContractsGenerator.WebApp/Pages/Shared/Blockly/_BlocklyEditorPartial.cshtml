@@ -4,7 +4,7 @@
 <script src="~/lib/blockly/msg/js/en.js"></script>
 <script src="~/CustomBlocklyJS/AppendCustomBlocks.js"></script>
 
-<div id="blocklyDiv" style="height: 480px; width: 100%;"></div>
+<div id="blocklyDiv" style="height: 600px; width: 100%;"></div>
 <xml xmlns="https://developers.google.com/blockly/xml" id="toolbox" style="display: none">
     <category name="Contract" colour="0">
         <block type="contract">
@@ -95,7 +95,7 @@
                     console.log(result);
                     $("#solidityCodeText").text(result);
                     $("#solidityCodePopup").dialog({
-                        width: 600,
+                        width: screen.width * 0.8,
                         modal: true,
                         resizable: true,
                         dialogClass: 'no-close success-dialog'
@@ -111,5 +111,5 @@
 
 
 <div id="solidityCodePopup" title="Your code" class="test">
-    <pre><code style="min-width:800px" id="solidityCodeText"></code></pre>
+    <pre><code id="solidityCodeText"></code></pre>
 </div>
