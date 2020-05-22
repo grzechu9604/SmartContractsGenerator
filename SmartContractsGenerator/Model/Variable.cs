@@ -27,7 +27,7 @@ namespace SmartContractsGenerator.Model
 
         public SolidityType? Type { get; set; }
 
-        public virtual string GenerateDeclarationCode()
+        public virtual string GenerateDeclarationCode(bool pointStorageTypeForComplexObjects)
         {
             if (string.IsNullOrWhiteSpace(Name))
             {
@@ -39,7 +39,7 @@ namespace SmartContractsGenerator.Model
                 throw new MissingMandatoryElementException("Type is required for Variable");
             }
 
-            return $"{Type.Value.GenerateCode()} {Name}";
+            return $"{Type.Value.GenerateCode(pointStorageTypeForComplexObjects)} {Name}";
         }
 
         public virtual string GenerateCode()

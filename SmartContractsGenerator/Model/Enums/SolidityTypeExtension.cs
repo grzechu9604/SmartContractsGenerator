@@ -16,9 +16,21 @@ namespace SmartContractsGenerator.Model.Enums
             { SolidityType.UInt, "uint" }
         };
 
-        public static string GenerateCode(this SolidityType type)
+        private static readonly HashSet<SolidityType> ComplexTypes = new HashSet<SolidityType>()
         {
-            return AppropriateCode[type];
+            SolidityType.String
+        };
+
+        public static string GenerateCode(this SolidityType type, bool pointStorageTypeForComplexObjects)
+        {
+            return AppropriateCode[type] + (pointStorageTypeForComplexObjects ? GenerateStorageTypeCode(type) : string.Empty);
+        }
+
+        private static string GenerateStorageTypeCode(SolidityType type) => type.IsComplexType() ? " memory" : string.Empty;
+
+        public static bool IsComplexType(this SolidityType type)
+        {
+            return ComplexTypes.Contains(type);
         }
     }
 }

@@ -35,7 +35,7 @@ namespace SmartContractsGenerator.Model
                 throw new MissingMandatoryElementException("Name is mandatory element of modifier");
             }
 
-            return $"modifier {Name}({Parameters?.GenerateCode()}) {{\n";
+            return $"modifier {Name}({Parameters?.GenerateCode(true)}) {{\n";
         }
 
         public string GenerateCallCode()

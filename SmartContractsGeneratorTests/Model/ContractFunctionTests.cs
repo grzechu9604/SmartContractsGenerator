@@ -152,22 +152,22 @@ namespace SmartContractsGenerator.Model.Tests
             var expectedWithModifierAndParamList2 = $"function {name1}({parametersCode2}) {visibility4.GenerateCode()} {m2Name}({parametersCode2}) {{\n}}";
             yield return GenerateRow(parametersCode2, name1, null, visibility4, m2, parametersCode2, true, null, ModificationType.None, false, expectedWithModifierAndParamList2);
 
-            var expectedWithModifierAndReturns = $"function {name1}({parametersCode2}) {visibility4.GenerateCode()} {m1Name}() returns ({returningType1.GenerateCode()}) {{\n}}";
+            var expectedWithModifierAndReturns = $"function {name1}({parametersCode2}) {visibility4.GenerateCode()} {m1Name}() returns ({returningType1.GenerateCode(true)}) {{\n}}";
             yield return GenerateRow(parametersCode2, name1, null, visibility4, m1, null, false, returningType1, ModificationType.None, false, expectedWithModifierAndReturns);
 
-            var expectedWithModifierAndReturns2 = $"function {name1}({parametersCode2}) {visibility4.GenerateCode()} {m2Name}() returns ({returningType1.GenerateCode()}) {{\n}}";
+            var expectedWithModifierAndReturns2 = $"function {name1}({parametersCode2}) {visibility4.GenerateCode()} {m2Name}() returns ({returningType1.GenerateCode(true)}) {{\n}}";
             yield return GenerateRow(parametersCode2, name1, null, visibility4, m2, null, false, returningType1, ModificationType.None, false, expectedWithModifierAndReturns2);
 
-            var expectedWithModifierAndReturnsAndEmptyParamList = $"function {name1}({parametersCode2}) {visibility4.GenerateCode()} {m2Name}({parametersCode1}) returns ({returningType1.GenerateCode()}) {{\n}}";
+            var expectedWithModifierAndReturnsAndEmptyParamList = $"function {name1}({parametersCode2}) {visibility4.GenerateCode()} {m2Name}({parametersCode1}) returns ({returningType1.GenerateCode(true)}) {{\n}}";
             yield return GenerateRow(parametersCode2, name1, null, visibility4, m2, parametersCode1, false, returningType1, ModificationType.None, false, expectedWithModifierAndReturnsAndEmptyParamList);
 
-            var expectedWithModifierAndReturnsAndEmptyParamList2 = $"function {name1}({parametersCode2}) {visibility4.GenerateCode()} {m2Name}({parametersCode2}) returns ({returningType2.GenerateCode()}) {{\n}}";
+            var expectedWithModifierAndReturnsAndEmptyParamList2 = $"function {name1}({parametersCode2}) {visibility4.GenerateCode()} {m2Name}({parametersCode2}) returns ({returningType2.GenerateCode(true)}) {{\n}}";
             yield return GenerateRow(parametersCode2, name1, null, visibility4, m2, parametersCode2, false, returningType2, ModificationType.None, false, expectedWithModifierAndReturnsAndEmptyParamList2);
 
-            var expectedWithModifierAndReturnsAndParamList = $"function {name1}({parametersCode2}) {visibility4.GenerateCode()} {m2Name}({parametersCode1}) returns ({returningType2.GenerateCode()}) {{\n}}";
+            var expectedWithModifierAndReturnsAndParamList = $"function {name1}({parametersCode2}) {visibility4.GenerateCode()} {m2Name}({parametersCode1}) returns ({returningType2.GenerateCode(true)}) {{\n}}";
             yield return GenerateRow(parametersCode2, name1, null, visibility4, m2, parametersCode1, true, returningType2, ModificationType.None, false, expectedWithModifierAndReturnsAndParamList);
 
-            var expectedWithModifierAndReturnsAndParamList2 = $"function {name1}({parametersCode2}) {visibility4.GenerateCode()} {m2Name}({parametersCode2}) returns ({returningType2.GenerateCode()}) {{\n}}";
+            var expectedWithModifierAndReturnsAndParamList2 = $"function {name1}({parametersCode2}) {visibility4.GenerateCode()} {m2Name}({parametersCode2}) returns ({returningType2.GenerateCode(true)}) {{\n}}";
             yield return GenerateRow(parametersCode2, name1, null, visibility4, m2, parametersCode2, true, returningType2, ModificationType.None, false, expectedWithModifierAndReturnsAndParamList2);
 
             var expectedWithInstructionsAndPure = $"function {name2}() {visibility2.GenerateCode()} {ModificationType.Pure.GenerateCode()} {{\n{instructionCode1}\n}}";
@@ -176,7 +176,7 @@ namespace SmartContractsGenerator.Model.Tests
             var expectedWithModifierAndViewAndParamList2 = $"function {name1}({parametersCode2}) {visibility4.GenerateCode()} {m2Name}({parametersCode2}) {ModificationType.View.GenerateCode()} {{\n}}";
             yield return GenerateRow(parametersCode2, name1, null, visibility4, m2, parametersCode2, true, null, ModificationType.View, false, expectedWithModifierAndViewAndParamList2);
 
-            var expectedWithModifierAndReturnsAndViewAndParamList2 = $"function {name1}({parametersCode2}) {visibility4.GenerateCode()} {m2Name}({parametersCode2}) {ModificationType.View.GenerateCode()} returns ({returningType2.GenerateCode()}) {{\n}}";
+            var expectedWithModifierAndReturnsAndViewAndParamList2 = $"function {name1}({parametersCode2}) {visibility4.GenerateCode()} {m2Name}({parametersCode2}) {ModificationType.View.GenerateCode()} returns ({returningType2.GenerateCode(true)}) {{\n}}";
             yield return GenerateRow(parametersCode2, name1, null, visibility4, m2, parametersCode2, true, returningType2, ModificationType.View, false, expectedWithModifierAndReturnsAndViewAndParamList2);
 
             var expectedWithInstructionsAndPurePayable = $"function {name2}() {visibility2.GenerateCode()} payable {{\n{instructionCode1}\n}}";
@@ -185,14 +185,14 @@ namespace SmartContractsGenerator.Model.Tests
             var expectedWithModifierAndViewAndParamList2Payable = $"function {name1}({parametersCode2}) {visibility4.GenerateCode()} {m2Name}({parametersCode2}) payable {{\n}}";
             yield return GenerateRow(parametersCode2, name1, null, visibility4, m2, parametersCode2, true, null, ModificationType.None, true, expectedWithModifierAndViewAndParamList2Payable);
 
-            var expectedWithModifierAndReturnsAndViewAndParamList2Payable = $"function {name1}({parametersCode2}) {visibility4.GenerateCode()} {m2Name}({parametersCode2}) payable returns ({returningType2.GenerateCode()}) {{\n}}";
+            var expectedWithModifierAndReturnsAndViewAndParamList2Payable = $"function {name1}({parametersCode2}) {visibility4.GenerateCode()} {m2Name}({parametersCode2}) payable returns ({returningType2.GenerateCode(true)}) {{\n}}";
             yield return GenerateRow(parametersCode2, name1, null, visibility4, m2, parametersCode2, true, returningType2, ModificationType.None, true, expectedWithModifierAndReturnsAndViewAndParamList2Payable);
         }
 
         static object[] GenerateRow(string parametersListCode, string name, string instructionsListCode, Visibility? visibility, Modifier m, string modifierParametersListCode, bool anyModifierParameter, SolidityType? returningType, ModificationType modificationType, bool isPayable, string expected)
         {
             var indentation = new Indentation();
-            var parametersListMock = parametersListCode != null ? mockHelper.PrepareMock(parametersListCode, true) : null;
+            var parametersListMock = parametersListCode != null ? mockHelper.PrepareMock(parametersListCode, true, true) : null;
             var instructionsListMock = instructionsListCode != null ? instructionsListMockHelper.PrepareMock(instructionsListCode, false, !string.IsNullOrWhiteSpace(instructionsListCode), indentation.GetIndentationWithIncrementedLevel()) : null;
 
             var ma = m != null ? new ModifierAppliance()

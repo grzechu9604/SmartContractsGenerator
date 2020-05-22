@@ -29,7 +29,7 @@ namespace SmartContractsGenerator.Model.Tests
         [ExpectedException(typeof(MissingMandatoryElementException))]
         public void EmptyNameGenerateDeclarationCodeTest()
         {
-            new Variable().GenerateDeclarationCode();
+            new Variable().GenerateDeclarationCode(false);
         }
 
         [TestMethod()]
@@ -39,7 +39,7 @@ namespace SmartContractsGenerator.Model.Tests
             new Variable()
             {
                 Name = "name"
-            }.GenerateDeclarationCode();
+            }.GenerateDeclarationCode(false);
         }
 
         [TestMethod()]
@@ -67,7 +67,21 @@ namespace SmartContractsGenerator.Model.Tests
                 Name = name
             };
 
-            Assert.AreEqual($"{type.GenerateCode()} {name}", v.GenerateDeclarationCode());
+            Assert.AreEqual($"{type.GenerateCode(false)} {name}", v.GenerateDeclarationCode(false));
+        }
+
+        [TestMethod()]
+        public void GenerateDeclarationCodeWithMemoryPointingTest()
+        {
+            var name = "name1";
+            var type = SolidityType.Bool;
+            var v = new Variable()
+            {
+                Type = type,
+                Name = name
+            };
+
+            Assert.AreEqual($"{type.GenerateCode(true)} {name}", v.GenerateDeclarationCode(true));
         }
     }
 }

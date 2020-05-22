@@ -86,7 +86,7 @@ namespace SmartContractsGenerator.Model.Tests
             {
                 LeftSide = op3,
                 Operator = Enums.OperationOperator.AND,
-                RightSide = variableMocksCreator.PrepareMock(variableName, null)
+                RightSide = variableMocksCreator.PrepareMock(variableName, null, false)
             };
             yield return new object[] { op4, $"((!(true)) || ((1) == (1))) && ({variableName})" };
 

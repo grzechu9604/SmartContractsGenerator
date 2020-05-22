@@ -32,7 +32,7 @@ namespace SmartContractsGenerator.Model
                 throw new MissingMandatoryElementException("Variable in property is not configured properly");
             }
 
-            return $"{Variable.Type.Value.GenerateCode()} {Visibility.Value.GenerateCode()} {Variable.Name}";
+            return $"{Variable.Type.Value.GenerateCode(false)} {Visibility.Value.GenerateCode()} {Variable.Name}";
         }
     }
 }

@@ -92,22 +92,22 @@ namespace SmartContractsGenerator.Model.Tests
             var type1 = SolidityType.Bool;
             string name1 = "NAME1";
             Visibility v1 = Visibility.Public;
-            yield return new object[] { GetContractProperty(type1, name1, v1), $"{type1.GenerateCode()} {v1.GenerateCode()} {name1}" };
+            yield return new object[] { GetContractProperty(type1, name1, v1), $"{type1.GenerateCode(false)} {v1.GenerateCode()} {name1}" };
 
             var type2 = SolidityType.Int;
             string name2 = "NAME2";
             Visibility v2 = Visibility.Private;
-            yield return new object[] { GetContractProperty(type2, name2, v2), $"{type2.GenerateCode()} {v2.GenerateCode()} {name2}" };
+            yield return new object[] { GetContractProperty(type2, name2, v2), $"{type2.GenerateCode(false)} {v2.GenerateCode()} {name2}" };
 
             var type3 = SolidityType.String;
             string name3 = "NAME3";
             Visibility v3 = Visibility.Private;
-            yield return new object[] { GetContractProperty(type3, name3, v3), $"{type3.GenerateCode()} {v3.GenerateCode()} {name3}" };
+            yield return new object[] { GetContractProperty(type3, name3, v3), $"{type3.GenerateCode(false)} {v3.GenerateCode()} {name3}" };
         }
 
         private static Variable GetVariableMock(string expectedCode, string expectedDeclarationCode)
         {
-            return mocksCreator.PrepareMock(expectedCode, expectedDeclarationCode);
+            return mocksCreator.PrepareMock(expectedCode, expectedDeclarationCode, false);
         }
 
         private static ContractProperty GetContractProperty(SolidityType vType, string vName, Visibility visibility)

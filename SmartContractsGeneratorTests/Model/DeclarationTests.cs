@@ -34,9 +34,9 @@ namespace SmartContractsGenerator.Model.Tests
         static IEnumerable<object[]> GetDataForGenerateCodeTest()
         {
             var d1 = "DECLARATION 1";
-            yield return new object[] { new Declaration() { Variable = variableMocksCreator.PrepareMock(null, d1) }, d1 };
+            yield return new object[] { new Declaration() { Variable = variableMocksCreator.PrepareMock(null, d1, true) }, d1 };
             var d2 = "DECLARATION 2";
-            yield return new object[] { new Declaration() { Variable = variableMocksCreator.PrepareMock(null, d2) }, d2 };
+            yield return new object[] { new Declaration() { Variable = variableMocksCreator.PrepareMock(null, d2, true) }, d2 };
         }
     }
 }

@@ -61,8 +61,8 @@ namespace SmartContractsGenerator.Model.BuiltinFunctionCalls.Tests
             var valueCode1 = "VALUE CODE 1";
             var valueCode2 = "VALUE CODE 2";
 
-            var addressMock1 = mockHelper.PrepareMock(addressCode1, null);
-            var valueMock1 = mockHelper.PrepareMock(valueCode1, null);
+            var addressMock1 = mockHelper.PrepareMock(addressCode1, null, false);
+            var valueMock1 = mockHelper.PrepareMock(valueCode1, null, false);
             var tc1 = new TransferCall()
             {
                 Address = addressMock1,
@@ -70,8 +70,8 @@ namespace SmartContractsGenerator.Model.BuiltinFunctionCalls.Tests
             };
             yield return new object[] { tc1, $"payable({addressCode1}).transfer({valueCode1})" };
 
-            var addressMock2 = mockHelper.PrepareMock(addressCode2, null);
-            var valueMock2 = mockHelper.PrepareMock(valueCode2, null);
+            var addressMock2 = mockHelper.PrepareMock(addressCode2, null, false);
+            var valueMock2 = mockHelper.PrepareMock(valueCode2, null, false);
             var tc2 = new TransferCall()
             {
                 Address = addressMock2,

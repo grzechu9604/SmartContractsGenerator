@@ -21,7 +21,7 @@ namespace SmartContractsGenerator.Model.AbstractPatterns.Tests
         public void GenerateCodeTest(ParametersList parametersList, string expected)
         {
             System.Diagnostics.Contracts.Contract.Requires(parametersList != null);
-            Assert.AreEqual(expected, parametersList.GenerateCode());
+            Assert.AreEqual(expected, parametersList.GenerateCode(true));
         }
 
         static IEnumerable<object[]> GetDataForTests()
@@ -37,7 +37,7 @@ namespace SmartContractsGenerator.Model.AbstractPatterns.Tests
             for (int i = 1; i < bound; i++)
             {
                 var name = $"Type{i} Name{i}";
-                var p = mockHelper.PrepareMock(string.Empty, name);
+                var p = mockHelper.PrepareMock(string.Empty, name, true);
                 parameters.Add(p);
 
                 for (int j = i; j < bound; j++)

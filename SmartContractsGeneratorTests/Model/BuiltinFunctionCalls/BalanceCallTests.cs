@@ -40,14 +40,14 @@ namespace SmartContractsGenerator.Model.BuiltinFunctionCalls.Tests
             var addressCode1 = "ADDRESS CODE 1";
             var addressCode2 = "ADDRESS CODE 2";
 
-            var addressMock1 = mockHelper.PrepareMock(addressCode1, null);
+            var addressMock1 = mockHelper.PrepareMock(addressCode1, null, false);
             var bc1 = new BalanceCall()
             {
                 Address = addressMock1,
             };
             yield return new object[] { bc1, $"payable({addressCode1}).balance" };
 
-            var addressMock2 = mockHelper.PrepareMock(addressCode2, null);
+            var addressMock2 = mockHelper.PrepareMock(addressCode2, null, false);
             var bc2 = new BalanceCall()
             {
                 Address = addressMock2,

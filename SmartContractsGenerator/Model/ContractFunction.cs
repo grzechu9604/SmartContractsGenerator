@@ -51,7 +51,7 @@ namespace SmartContractsGenerator.Model
                 throw new InvalidOperationException("Function cannot have state modification type if is accepts Ethers");
             }
 
-             return $"function {Name}({Parameters?.GenerateCode()}) {Visibility.Value.GenerateCode()}{GetModifierHeaderPart()}{GetModificationTypeHeaderPart()}{GetPayablePart()}{GetReturnsHeaderPart()} {{\n";
+             return $"function {Name}({Parameters?.GenerateCode(true)}) {Visibility.Value.GenerateCode()}{GetModifierHeaderPart()}{GetModificationTypeHeaderPart()}{GetPayablePart()}{GetReturnsHeaderPart()} {{\n";
         }
 
         public virtual string GenerateCallCode()
@@ -76,7 +76,7 @@ namespace SmartContractsGenerator.Model
             }
         }
 
-        public string GetReturnsHeaderPart() => ReturningType.HasValue ? $" returns ({ReturningType.Value.GenerateCode()})" : null;
+        public string GetReturnsHeaderPart() => ReturningType.HasValue ? $" returns ({ReturningType.Value.GenerateCode(true)})" : null;
 
         public string GetModificationTypeHeaderPart()
         {

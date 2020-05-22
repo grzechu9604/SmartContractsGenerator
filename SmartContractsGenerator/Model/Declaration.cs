@@ -13,7 +13,7 @@ namespace SmartContractsGenerator.Model
                 throw new MissingMandatoryElementException("Variable is required for Declaration");
             }
 
-            return Variable.GenerateDeclarationCode();
+            return Variable.GenerateDeclarationCode(true);
         }
     }
 }
