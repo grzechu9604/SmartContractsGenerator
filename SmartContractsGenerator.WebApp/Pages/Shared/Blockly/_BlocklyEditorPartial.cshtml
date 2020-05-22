@@ -93,12 +93,23 @@
                 },
                 success: function (result) {
                     console.log(result);
-                    alert(result);
+                    $("#solidityCodeText").text(result);
+                    $("#solidityCodePopup").dialog({
+                        width: 600,
+                        modal: true,
+                        resizable: true,
+                        dialogClass: 'no-close success-dialog'
+                    });
                 },
                 error: function (result) {
-                    alert('error');
+                    alert('Error during connection: ' + result);
                 }
             });
         });
     });
 </script>
+
+
+<div id="solidityCodePopup" title="Your code" class="test">
+    <pre><code style="min-width:800px" id="solidityCodeText"></code></pre>
+</div>
