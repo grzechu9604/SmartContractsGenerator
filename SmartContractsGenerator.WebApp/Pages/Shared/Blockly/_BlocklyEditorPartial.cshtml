@@ -64,8 +64,8 @@
     <category name="Events calls" colour="120" custom="MY_EVENTS"></category>
     <category name="Modifiers calls" colour="30" custom="MY_MODIFIERS"></category>
 </xml>
-<button id="GenerateCodeButton">Generate code</button>
-<button id="ShowCounterExample">Show example counter</button>
+<span style="font-size:30px;cursor:pointer;margin-right:20px" onclick="openNav()">&#9776; Examples</span>
+<span id="GenerateCodeButton" style="font-size:30px;cursor:pointer">Generate code</span>
 
 <script>
     var demoWorkspace = Blockly.inject('blocklyDiv',
@@ -110,10 +110,23 @@
 
         $("#ShowCounterExample").click(function () {
             Blockly.setExampleOnWorkspace("counter", demoWorkspace);
+            closeNav();
         });
     });
+
+    function openNav() {
+        document.getElementById("mySidenav").style.width = "250px";
+    }
+
+    function closeNav() {
+        document.getElementById("mySidenav").style.width = "0";
+    }
 </script>
 
+<div id="mySidenav" class="sidenav">
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+    <a id="ShowCounterExample" href="javascript:void(0)">Counter</a>
+</div>
 
 <div id="solidityCodePopup" title="Your code" class="solidity-code-div">
     <pre><code id="solidityCodeText"></code></pre>
