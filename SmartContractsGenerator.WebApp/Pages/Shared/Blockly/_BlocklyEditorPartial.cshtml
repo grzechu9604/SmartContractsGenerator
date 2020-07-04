@@ -107,11 +107,6 @@
                 }
             });
         });
-
-        $("#ShowCounterExample").click(function () {
-            Blockly.setExampleOnWorkspace("counter", demoWorkspace);
-            closeNav();
-        });
     });
 
     function openNav() {
@@ -121,11 +116,18 @@
     function closeNav() {
         document.getElementById("mySidenav").style.width = "0";
     }
+
+    function showExample(name) {
+        Blockly.setExampleOnWorkspace(name, demoWorkspace);
+        closeNav();
+    }
 </script>
 
 <div id="mySidenav" class="sidenav">
     <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-    <a id="ShowCounterExample" href="javascript:void(0)">Counter</a>
+    <a href="javascript:void(0)" onclick="showExample('counter')">Counter</a>
+    <a href="javascript:void(0)" onclick="showExample('changeNotifier')">Change notifier</a>
+    <a href="javascript:void(0)" onclick="showExample('piggybank')">Piggybank</a>
 </div>
 
 <div id="solidityCodePopup" title="Your code" class="solidity-code-div">
