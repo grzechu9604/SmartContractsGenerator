@@ -920,6 +920,20 @@ Blockly.Blocks['my_procedures_mutatorcontainer'] = {
     },
 };
 
+Blockly.StrExamples = [];
+
+Blockly.StrExamples['counter'] = "<xml xmlns=\"https://developers.google.com/blockly/xml\"><variables><variable id=\"=0Xj?#Tp`y**Wyp*;_(w\">counter</variable></variables><block type=\"contract\" id=\"C;_1{SjWEy;i083CQ}2$\" x=\"157\" y=\"52\"><field name=\"NAME\">Counter</field><statement name=\"Properties\"><block type=\"contract_property\" id=\"C=Dlpz/.{@,(b)]y(xO_\"><field name=\"Visibility\">1</field><value name=\"Variable\"><block type=\"variable_declaration\" id=\"363DjP[eP_2[Y?+DE5$[\"><field name=\"NAME\" id=\"=0Xj?#Tp`y**Wyp*;_(w\">counter</field><field name=\"TYPE\">2</field></block></value></block></statement><statement name=\"Functions\"><block type=\"contract_function\" id=\"`bq1sC44HOP%Z%YNPNR|\"><field name=\"Visibility\">1</field><field name=\"NAME\">Increment</field><field name=\"AcceptsEthers\">FALSE</field><field name=\"ApplyModifier\">FALSE</field><field name=\"StateModification\">0</field><field name=\"ApplyReturns\">FALSE</field><statement name=\"Instructions\"><block type=\"assignment\" id=\"$R3zzbRa0!=;zu[zG9#`\"><value name=\"Destination\"><block type=\"variable\" id=\"0wQlJg=_V^zIxVD28/}W\"><field name=\"NAME\" id=\"=0Xj?#Tp`y**Wyp*;_(w\">counter</field></block></value><value name=\"Source\"><block type=\"operation\" id=\":GNV:avib4T6xNi_?uve\"><field name=\"Operator\">0</field><value name=\"left_side\"><block type=\"variable\" id=\"~he)pnn5YTlH0Hr,#7J+\"><field name=\"NAME\" id=\"=0Xj?#Tp`y**Wyp*;_(w\">counter</field></block></value><value name=\"right_side\"><block type=\"constant_value\" id=\"Gi$P*b*6UYslTwkw:+xC\"><field name=\"value\">1</field><field name=\"TYPE\">1</field></block></value></block></value></block></statement></block></statement></block></xml>"
+
+Blockly.getExampleAsXML = function (exampleName) {
+    parser = new DOMParser();
+    return parser.parseFromString(Blockly.StrExamples[exampleName], "text/xml").documentElement;
+}
+
+Blockly.setExampleOnWorkspace = function (exampleName, targetWorkspace) {
+    targetWorkspace.clear()
+    Blockly.Xml.domToWorkspace(Blockly.getExampleAsXML(exampleName), targetWorkspace);
+}
+
 myFunctionCategoryCallback = function (workspace) {
     var tuples = Blockly.MyDynamicInputs.allProcedures(workspace);
     var allFunctions = [];

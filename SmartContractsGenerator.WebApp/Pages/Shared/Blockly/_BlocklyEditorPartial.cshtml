@@ -65,6 +65,7 @@
     <category name="Modifiers calls" colour="30" custom="MY_MODIFIERS"></category>
 </xml>
 <button id="GenerateCodeButton">Generate code</button>
+<button id="ShowCounterExample">Show example counter</button>
 
 <script>
     var demoWorkspace = Blockly.inject('blocklyDiv',
@@ -105,6 +106,10 @@
                     alert('Error during connection: ' + result);
                 }
             });
+        });
+
+        $("#ShowCounterExample").click(function () {
+            Blockly.setExampleOnWorkspace("counter", demoWorkspace);
         });
     });
 </script>
